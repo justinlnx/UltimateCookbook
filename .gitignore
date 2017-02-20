@@ -68,3 +68,6 @@ dll/
 *.css.shim.ts
 *.ngsummary.json
 *.shim.ngstyle.ts
+.vscode/.BROWSE.VC.DB
+.vscode/.BROWSE.VC.DB-wal
+.vscode/.BROWSE.VC.DB-shm
