@@ -15,6 +15,7 @@ import {
   PreloadAllModules
 } from '@angular/router';
 import { MaterialModule } from '@angular/material';
+import { AngularFireModule } from 'angularfire2';
 
 /*
  * Platform and Environment providers/directives/pipes
@@ -47,6 +48,14 @@ type StoreType = {
   disposeOldHosts: () => void
 };
 
+export const firebaseConfig = {
+  apiKey: 'AIzaSyAHWHfEBm7GhUh4UXk63ZejmipUC3LF2a0',
+  authDomain: 'cookbookdemo-6bde5.firebaseapp.com',
+  databaseURL: 'https://cookbookdemo-6bde5.firebaseio.com',
+  storageBucket: 'cookbookdemo-6bde5.appspot.com',
+  messagingSenderId: '356763357387'
+};
+
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process
  */
@@ -64,7 +73,8 @@ type StoreType = {
     FormsModule,
     HttpModule,
     RouterModule.forRoot(ROUTES, { useHash: true, preloadingStrategy: PreloadAllModules }),
-    MaterialModule
+    MaterialModule,
+    AngularFireModule.initializeApp(firebaseConfig)
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS,

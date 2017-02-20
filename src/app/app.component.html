@@ -1,5 +1,11 @@
 <main>
     <router-outlet></router-outlet>
+
+    <ul>
+      <li class="text" *ngFor="let item of items | async">
+        {{item.$value}}
+      </li>
+    </ul>
 </main>
 
 <nav>
