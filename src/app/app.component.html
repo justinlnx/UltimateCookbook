@@ -1,0 +1,18 @@
+<main>
+    <router-outlet></router-outlet>
+</main>
+
+<nav>
+    <a md-button [routerLink]=" ['./recipes'] " routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <md-icon>book</md-icon>
+      <title>Recipes</title>
+    </a>
+    <a md-button [routerLink]=" ['./saved'] " routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <md-icon>favorite</md-icon>
+      <title>Favorite</title>
+    </a>
+    <a md-button [routerLink]=" ['./settings'] " routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <md-icon>account_circle</md-icon>
+      <title>Account</title>
+    </a>
+</nav>
