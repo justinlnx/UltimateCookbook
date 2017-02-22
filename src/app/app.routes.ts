@@ -1,6 +1,4 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home';
-import { AboutComponent } from './about';
 import { NoContentComponent } from './no-content';
 
 import { DataResolver } from './app.resolver';
@@ -8,9 +6,6 @@ import { DataResolver } from './app.resolver';
 export const ROUTES: Routes = [
   { path: '',      redirectTo: 'recipes', pathMatch: 'full'},
   { path: 'recipes', loadChildren: './+recipes#RecipesModule'},
-  { path: 'home',  component: HomeComponent },
-  { path: 'about', component: AboutComponent },
-  { path: 'detail', loadChildren: './+detail#DetailModule'},
-  { path: 'barrel', loadChildren: './+barrel#BarrelModule'},
+  { path: 'account', loadChildren: './+account#AccountModule'},
   { path: '**',    component: NoContentComponent },
 ];
