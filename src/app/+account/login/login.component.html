@@ -1,0 +1,14 @@
+<h1>Log in</h1>
+
+<form [formGroup]="loginForm" novalidate>
+  <md-input-container>
+    <input mdInput placeholder="Example: abc@gmail.com" type="email" formControlName="email">
+  </md-input-container>
+  <md-input-container>
+    <input mdInput placeholder="Example: 123456" type="password" formControlName="password">
+  </md-input-container>
+  <div>
+    <button md-raised-button type="button" (click)="onSignIn()">Sign in</button>
+    <button md-raised-button type="button" (click)="onCreateAccount()">Create Account</button>
+  </div>
+</form>

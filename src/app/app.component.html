@@ -1,11 +1,5 @@
 <main>
     <router-outlet></router-outlet>
-
-    <ul>
-      <li class="text" *ngFor="let item of items | async">
-        {{item.$value}}
-      </li>
-    </ul>
 </main>
 
 <nav>
@@ -13,11 +7,11 @@
       <md-icon>book</md-icon>
       <title>Recipes</title>
     </a>
-    <a md-button [routerLink]=" ['./saved'] " routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+    <a md-button [routerLink]=" ['./favorite'] " routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
       <md-icon>favorite</md-icon>
       <title>Favorite</title>
     </a>
-    <a md-button [routerLink]=" ['./settings'] " routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+    <a md-button [routerLink]=" ['./account'] " routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
       <md-icon>account_circle</md-icon>
       <title>Account</title>
     </a>
