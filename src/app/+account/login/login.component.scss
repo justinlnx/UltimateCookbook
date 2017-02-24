@@ -1,0 +1,5 @@
+@import '~@angular/material/core/theming/prebuilt/deeppurple-amber.scss';
+
+md-hint {
+  color: mat-color($accent);
+}

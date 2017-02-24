@@ -9,7 +9,8 @@ import {AngularFire, AuthProviders, AuthMethods} from 'angularfire2';
 
 @Component({
   selector: 'login',
-  templateUrl: './login.component.html'
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
@@ -22,6 +23,22 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.createForm();
+  }
+
+  emailInputColor(): string {
+    return this.inputColor(this.validEmailInput());
+  }
+
+  passwordInputColor(): string {
+    return this.inputColor(this.validPasswordInput());
+  }
+
+  validEmailInput(): boolean {
+    return this.loginForm.controls['email'].valid;
+  }
+
+  validPasswordInput(): boolean {
+    return this.loginForm.controls['password'].valid;
   }
 
   onSignIn() {
@@ -49,6 +66,10 @@ export class LoginComponent implements OnInit {
         this.loginForm.value.password
       );
     }
+  }
+
+  private inputColor(valid: boolean): string {
+    return valid ? 'primary' : 'warn';
   }
 
   private createForm() {
