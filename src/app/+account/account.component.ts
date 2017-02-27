@@ -1,30 +1,20 @@
-import {
-  Component,
-  AfterViewInit,
-  OnDestroy
-} from '@angular/core';
-import { AngularFire } from 'angularfire2';
+import {AfterViewInit, Component, OnDestroy} from '@angular/core';
+import {AngularFire} from 'angularfire2';
 
-@Component({
-  selector: 'account',
-  templateUrl: './account.component.html'
-})
-export class AccountComponent implements AfterViewInit {
+@Component({selector: 'account', templateUrl: './account.component.html'})
+export class AccountComponent implements AfterViewInit, OnDestroy {
+  public userLoggedIn: boolean;
 
-  private userLoggedIn: boolean;
+  constructor(private af: AngularFire) {}
 
-  constructor(
-    private af: AngularFire
-  ) {}
-
-  ngAfterViewInit() {
+  public ngAfterViewInit() {
     this.userLoggedIn = false;
     this.af.auth.subscribe((next) => {
       this.userLoggedIn = next != null;
     });
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     this.af.auth.unsubscribe();
   }
 }

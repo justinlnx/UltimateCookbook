@@ -1,11 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators
-} from '@angular/forms';
-
-import {AngularFire, AuthProviders, AuthMethods} from 'angularfire2';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AngularFire, AuthMethods, AuthProviders} from 'angularfire2';
 
 @Component({
   selector: 'login',
@@ -13,58 +8,47 @@ import {AngularFire, AuthProviders, AuthMethods} from 'angularfire2';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  loginForm: FormGroup;
+  public loginForm: FormGroup;
 
+  constructor(private af: AngularFire, private fb: FormBuilder) {}
 
-  constructor(
-    private af: AngularFire,
-    private fb: FormBuilder
-  ) {}
-
-  ngOnInit() {
+  public ngOnInit() {
     this.createForm();
   }
 
-  emailInputColor(): string {
+  public emailInputColor(): string {
     return this.inputColor(this.validEmailInput());
   }
 
-  passwordInputColor(): string {
+  public passwordInputColor(): string {
     return this.inputColor(this.validPasswordInput());
   }
 
-  validEmailInput(): boolean {
+  public validEmailInput(): boolean {
     return this.loginForm.controls['email'].valid;
   }
 
-  validPasswordInput(): boolean {
+  public validPasswordInput(): boolean {
     return this.loginForm.controls['password'].valid;
   }
 
-  onSignIn() {
-    this.af.auth.login(
-      {
-        email: this.loginForm.value.email,
-        password: this.loginForm.value.password
-      }, {
-        provider: AuthProviders.Password,
-        method: AuthMethods.Password
-      }).then(
-        (state) => {
-          console.log(state);
-        },
-        (err) => {
-          console.error(err);
-        }
-      );
+  public onSignIn() {
+    this.af.auth
+        .login(
+            {email: this.loginForm.value.email, password: this.loginForm.value.password},
+            {provider: AuthProviders.Password, method: AuthMethods.Password})
+        .then(
+            (state) => {
+              console.log(state);
+            },
+            (err) => {
+              console.error(err);
+            });
   }
 
-  onCreateAccount() {
+  public onCreateAccount() {
     if (this.loginForm.valid) {
-      this.createUser(
-        this.loginForm.value.email,
-        this.loginForm.value.password
-      );
+      this.createUser(this.loginForm.value.email, this.loginForm.value.password);
     }
   }
 
@@ -77,22 +61,19 @@ export class LoginComponent implements OnInit {
     let passwordRegex: RegExp = /^.+$/;
 
     this.loginForm = this.fb.group({
-      email: ['', [
-        Validators.required,
-        Validators.pattern(emailRegex)
-      ]],
-      password: ['', [
-        Validators.required,
-        Validators.pattern(passwordRegex)
-      ]]
+      email: ['', [Validators.required, Validators.pattern(emailRegex)]],
+      password: ['', [Validators.required, Validators.pattern(passwordRegex)]]
     });
   }
 
   private createUser(email: string, password: string) {
-    this.af.auth.createUser({email: email, password: password}).then(
-      (state) => {console.log(`User created: ${email}, ${password}`);},
-      (err) => {console.error(err);}
-    );
+    this.af.auth.createUser({email, password})
+        .then(
+            (state) => {
+              console.log(`User created: ${email}, ${password}`);
+            },
+            (err) => {
+              console.error(err);
+            });
   }
-
 }
