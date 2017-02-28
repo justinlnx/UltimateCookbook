@@ -1,46 +1,33 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
-import {
-  NgModule,
-  ApplicationRef
-} from '@angular/core';
-import {
-  removeNgStyles,
-  createNewHosts,
-  createInputTransfer
-} from '@angularclass/hmr';
-import {
-  RouterModule,
-  PreloadAllModules
-} from '@angular/router';
-import { MaterialModule } from '@angular/material';
-import { AngularFireModule } from 'angularfire2';
-
-/*
- * Platform and Environment providers/directives/pipes
- */
-import { ENV_PROVIDERS } from './environment';
-import { ROUTES } from './app.routes';
-// App is our top level component
-import { AppComponent } from './app.component';
-import { APP_RESOLVER_PROVIDERS } from './app.resolver';
-import { AppState, InternalStateType } from './app.service';
-import { HomeComponent } from './home';
-import { AboutComponent } from './about';
-import { NoContentComponent } from './no-content';
-import { XLargeDirective } from './home/x-large';
-
 import 'hammerjs';
-
 import '../styles/styles.scss';
 import '../styles/headings.css';
 
+import {ApplicationRef, NgModule} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {HttpModule} from '@angular/http';
+import {MaterialModule} from '@angular/material';
+import {BrowserModule} from '@angular/platform-browser';
+import {PreloadAllModules, RouterModule} from '@angular/router';
+import {createInputTransfer, createNewHosts, removeNgStyles} from '@angularclass/hmr';
+import {AngularFireModule} from 'angularfire2';
+
+import {AboutComponent} from './about';
+import {ApiService} from './api';
+// App is our top level component
+import {AppComponent} from './app.component';
+import {APP_RESOLVER_PROVIDERS} from './app.resolver';
+import {ROUTES} from './app.routes';
+import {AppState, InternalStateType} from './app.service';
+/*
+ * Platform and Environment providers/directives/pipes
+ */
+import {ENV_PROVIDERS} from './environment';
+import {HomeComponent} from './home';
+import {XLargeDirective} from './home/x-large';
+import {NoContentComponent} from './no-content';
+
 // Application wide providers
-const APP_PROVIDERS = [
-  ...APP_RESOLVER_PROVIDERS,
-  AppState
-];
+const APP_PROVIDERS = [...APP_RESOLVER_PROVIDERS, AppState, ApiService];
 
 type StoreType = {
   state: InternalStateType,
@@ -82,11 +69,7 @@ export const firebaseConfig = {
   ]
 })
 export class AppModule {
-
-  constructor(
-    public appRef: ApplicationRef,
-    public appState: AppState
-  ) {}
+  constructor(public appRef: ApplicationRef, public appState: AppState) {}
 
   public hmrOnInit(store: StoreType) {
     if (!store || !store.state) {
@@ -114,7 +97,7 @@ export class AppModule {
     // recreate root elements
     store.disposeOldHosts = createNewHosts(cmpLocation);
     // save input values
-    store.restoreInputValues  = createInputTransfer();
+    store.restoreInputValues = createInputTransfer();
     // remove styles
     removeNgStyles();
   }
@@ -124,5 +107,4 @@ export class AppModule {
     store.disposeOldHosts();
     delete store.disposeOldHosts;
   }
-
 }
