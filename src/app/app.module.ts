@@ -36,6 +36,13 @@ import 'hammerjs';
 import '../styles/styles.scss';
 import '../styles/headings.css';
 
+import { deleteIconComponent }  from './delete.component';
+import { addIconComponent }     from './add.component';
+import { searchbarComponent }   from './searchbar.component'
+import { mainRecipeComponent }  from './mainRecipe.component';
+import { homeButtonComponent }    from './homeButton.component';
+import { myCookBookButtonComponent }  from './myCookBookButton.component';
+import { settingsButtonComponent }  from './settings.component';
 // Application wide providers
 const APP_PROVIDERS = [
   ...APP_RESOLVER_PROVIDERS,
@@ -66,7 +73,15 @@ export const firebaseConfig = {
     AboutComponent,
     HomeComponent,
     NoContentComponent,
-    XLargeDirective
+    XLargeDirective,
+    AppComponent,
+    deleteIconComponent,
+    addIconComponent,
+    searchbarComponent,
+    mainRecipeComponent,
+    homeButtonComponent,
+    myCookBookButtonComponent,
+    settingsButtonComponent
   ],
   imports: [ // import Angular's modules
     BrowserModule,
