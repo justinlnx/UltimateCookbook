@@ -1,1 +1,2 @@
-export {ApiService} from './api.service';
+export { ApiService } from './api.service';
+export { WebServiceException } from './WebServiceException';

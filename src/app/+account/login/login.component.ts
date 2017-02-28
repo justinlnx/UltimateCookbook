@@ -1,6 +1,7 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {AngularFire, AuthMethods, AuthProviders} from 'angularfire2';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AngularFire, AuthMethods, AuthProviders } from 'angularfire2';
+import { WebServiceException } from '../../api/WebServiceException';
 
 @Component({
   selector: 'login',
@@ -10,7 +11,7 @@ import {AngularFire, AuthMethods, AuthProviders} from 'angularfire2';
 export class LoginComponent implements OnInit {
   public loginForm: FormGroup;
 
-  constructor(private af: AngularFire, private fb: FormBuilder) {}
+  constructor(private af: AngularFire, private fb: FormBuilder) { }
 
   public ngOnInit() {
     this.createForm();
@@ -29,26 +30,54 @@ export class LoginComponent implements OnInit {
   }
 
   public validPasswordInput(): boolean {
-    return this.loginForm.controls['password'].valid;
+    if (!this.loginForm.controls['password'].valid) {
+      return false;
+    }
+    return this.checkPasswordLength();
+  }
+
+  private checkPasswordLength(): boolean {
+    var passwordLength = this.loginForm.controls['password'].value.length;
+    var minimumLength = 6;
+    var maximumLength = 16;
+
+    return passwordLength >= minimumLength && passwordLength <= maximumLength;
   }
 
   public onSignIn() {
     this.af.auth
-        .login(
-            {email: this.loginForm.value.email, password: this.loginForm.value.password},
-            {provider: AuthProviders.Password, method: AuthMethods.Password})
-        .then(
-            (state) => {
-              console.log(state);
-            },
-            (err) => {
-              console.error(err);
-            });
+      .login(
+      { email: this.loginForm.value.email, password: this.loginForm.value.password },
+      { provider: AuthProviders.Password, method: AuthMethods.Password })
+      .then(
+      (state) => {
+        console.log(state);
+      },
+      (err) => {
+        console.error(err);
+        this.throwException(err.message);
+      });
+  }
+
+  private throwException(message: string): never {
+    throw new WebServiceException(message);
   }
 
   public onCreateAccount() {
-    if (this.loginForm.valid) {
-      this.createUser(this.loginForm.value.email, this.loginForm.value.password);
+    this.validateLoginForm();
+
+    this.createUser(this.loginForm.value.email, this.loginForm.value.password);
+  }
+
+  private validateLoginForm(): any {
+    if (!this.validEmailInput()) {
+      var errorMessage = "Invalid email format";
+      this.throwException(errorMessage);
+    }
+
+    if (!this.validPasswordInput()) {
+      var errorMessage = "Invalid password format";
+      this.throwException(errorMessage);
     }
   }
 
@@ -67,13 +96,14 @@ export class LoginComponent implements OnInit {
   }
 
   private createUser(email: string, password: string) {
-    this.af.auth.createUser({email, password})
-        .then(
-            (state) => {
-              console.log(`User created: ${email}, ${password}`);
-            },
-            (err) => {
-              console.error(err);
-            });
+    this.af.auth.createUser({ email, password })
+      .then(
+      (state) => {
+        console.log(`User created: ${email}, ${password}`);
+      },
+      (err) => {
+        console.error(err);
+        this.throwException(err.message);
+      });
   }
 }
