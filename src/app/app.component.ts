@@ -4,14 +4,6 @@ import {
   ViewEncapsulation
 } from '@angular/core';
 import { AppState } from './app.service';
-import { deleteIconComponent }    from './delete.component';
-import { addIconComponent }       from './add.component';
-import { searchbarComponent }   from './searchbar.component';
-import { mainRecipeComponent }  from './mainRecipe.component';
-import { homeButtonComponent }  from './homeButton.component';
-import { myCookBookButtonComponent }  from './myCookBookButton.component';
-import { settingsButtonComponent }  from './settings.component';
-
 
 /*
  * App Component
