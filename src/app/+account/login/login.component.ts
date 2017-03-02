@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AngularFire, AuthMethods, AuthProviders } from 'angularfire2';
 import { WebServiceException } from '../../api/WebServiceException';
-import { DialogResultExample, DialogResultExampleDialog } from '../dialog/error.dialog';
-import { MdDialog, MdDialogRef } from '@angular/material';
 
 @Component({
   selector: 'login',
@@ -12,12 +10,8 @@ import { MdDialog, MdDialogRef } from '@angular/material';
 })
 export class LoginComponent implements OnInit {
   public loginForm: FormGroup;
-  public dialog: DialogResultExample;
-  public mdDialog: MdDialog;
 
-  constructor(private af: AngularFire, private fb: FormBuilder) {
-    this.dialog = new DialogResultExample(this.mdDialog);
-  }
+  constructor(private af: AngularFire, private fb: FormBuilder) {}
 
   public ngOnInit() {
     this.createForm();
@@ -50,14 +44,7 @@ export class LoginComponent implements OnInit {
       },
       (err) => {
         console.error(err);
-        this.openFailedToSignInDialog();
-        // this.throwWebServiceException(err.message);
       });
-  }
-
-  private openFailedToSignInDialog(): void {
-    console.log('test');
-    this.dialog.openDialog();
   }
 
   // NOT BEING USED ANYWHERE, SAFE TO DELETE?
