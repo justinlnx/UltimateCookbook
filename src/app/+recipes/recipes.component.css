@@ -1,0 +1,46 @@
+
+#deleteIcon,#addIcon {
+    color: #000000;
+    position: relative;
+    float: right;
+}
+
+#functionality {
+    margin-bottom: 5%;
+    width: 95%;
+    /*position: relative;
+    float: right;*/
+}
+.btn-class {
+	width: 90%;
+	background-color: transparent;
+	border-top: none;
+	border-right: none;
+	border-left: none;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.recipeName {
+    color: #007888;
+	width: 65%;
+	position: relative;
+	text-align: left;
+	float: left;
+	margin-left: 5%;
+	margin-top: 2%;
+	white-space: initial;
+    word-wrap: break-word;
+}
+
+.img {
+	width: 55px;
+	height: 55px;
+	position: relative;
+	margin-left: 10%;
+	margin-top: 1%;
+	margin-bottom: 1%;
+	float: left;
+	border: 1px solid #979797;
+}

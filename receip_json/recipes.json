@@ -1,0 +1,29 @@
+{
+  "Recipes":[
+    {
+      "Name":"Smoky Pork Burgers with Roasted Vegetables & Piquillo Pepper Sauce",
+      "Author": "admin",
+      "Description": "This recipe gives classic burgers a Spanish-style makeover,thanks to a bevy of flavors synonymous with the country’s cuisine. We’re seasoning our burgers with a delicious blend of spices, including smoked paprika (aSpanish staple), which lends its smoky-sweet depth to the juicy pork. A refreshing layer of baby  greens—you  may  receive  baby  kale  or arugula—balances  the  rich  burgers.  On  the side, we’re dressing a duo of roasted broccoli and  potato  with  a  zesty  sauce  made  from piquillo pepper (a type of mild chile) and a bit of sherry vinegar. ",
+      "ImageReferenceId" :["1", "2", "3", "4"]
+
+
+    },
+    {
+
+      "Name":"Chicken Yakiniku with Sesame-Marinated Carrots & Garlic Rice",
+      "Author": "admin",
+      "Description": "This recipe centers on a beloved Japanese ingredient: yakiniku sauce. Dynamic in flavor, yakiniku (whose name translates to “grilled meat”) is a type of barbecue sauce that combines the sweet notes of teriyaki with the savory depth of sesame (plus a welcome touch of heat). Spooned over pan-seared chicken, it makes for an exciting, delicious glaze, accented by a bright side of sesame-marinated carrots. ",
+      "ImageReferenceId" :["5", "6","7"]
+
+    },
+    {
+
+      "Name":"Tangelo & Honey-Glazed Salmonwith Farro, Apple & Crispy Rosemary",
+      "Author": "admin",
+      "Description": "In the cooler months, we love using unique, peak-season citrus to brighten up hearty meals. The tangy-sweet glaze for tonight’s salmon is made from honey and the juice of a tangelo—a delicious cross between a tangerine and a grapefruit. To complement the salmon and nutty farro (tossed with sautéed apple), we’re topping the dish with pan-fried rosemary, which adds a layer of woodsy flavor and crispy texture.",
+      "ImageReferenceId" :["8", "9", "10"]
+
+    }
+  ]
+
+}
