@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AngularFire, AuthMethods, AuthProviders } from 'angularfire2';
 import { WebServiceException } from '../../api/WebServiceException';
+import { DialogResultExample, DialogResultExampleDialog } from '../dialog/error.dialog';
+import { MdDialog, MdDialogRef } from '@angular/material';
 
 @Component({
   selector: 'login',
@@ -10,8 +12,12 @@ import { WebServiceException } from '../../api/WebServiceException';
 })
 export class LoginComponent implements OnInit {
   public loginForm: FormGroup;
+  public dialog: DialogResultExample;
+  public mdDialog: MdDialog;
 
-  constructor(private af: AngularFire, private fb: FormBuilder) {}
+  constructor(private af: AngularFire, private fb: FormBuilder) {
+    this.dialog = new DialogResultExample(this.mdDialog);
+  }
 
   public ngOnInit() {
     this.createForm();
@@ -44,13 +50,20 @@ export class LoginComponent implements OnInit {
       },
       (err) => {
         console.error(err);
-        this.throwWebServiceException(err.message);
+        this.openFailedToSignInDialog();
+        // this.throwWebServiceException(err.message);
       });
   }
 
-  private throwWebServiceException(message: string): never {
-    throw new WebServiceException(message);
+  private openFailedToSignInDialog(): void {
+    console.log('test');
+    this.dialog.openDialog();
   }
+
+  // NOT BEING USED ANYWHERE, SAFE TO DELETE?
+  // private throwWebServiceException(message: string): never {
+  //   throw new WebServiceException(message);
+  // }
 
   public onCreateAccount() {
     if(this.validateLoginForm()) {
@@ -94,7 +107,8 @@ export class LoginComponent implements OnInit {
       },
       (err) => {
         console.error(err);
-        this.throwWebServiceException(err.message);
+        // this.throwWebServiceException(err.message);
+        // OPEN NEW DIALOG/WARNING
       });
   }
 }
