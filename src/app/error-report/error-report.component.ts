@@ -32,10 +32,6 @@ export class ErrorReportComponent implements OnInit, OnDestroy {
   }
 
   private openSnackbar(errorMessage: string): void {
-    let snackBarRef = this.snackBar.open(errorMessage, 'Dismiss');
-
-    snackBarRef.onAction().subscribe(() => {
-      snackBarRef.dismiss();
-    });
+    this.snackBar.open(errorMessage, null, {duration: 1500});
   }
 }
