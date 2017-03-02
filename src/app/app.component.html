@@ -1,18 +1,20 @@
 <main>
-    <router-outlet></router-outlet>
+  <router-outlet></router-outlet>
 </main>
 
+<error-report></error-report>
+
 <nav>
-    <a md-button [routerLink]=" ['./recipes'] " routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <md-icon>book</md-icon>
-      <title>Recipes</title>
-    </a>
-    <a md-button [routerLink]=" ['./favorite'] " routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <md-icon>favorite</md-icon>
-      <title>Favorite</title>
-    </a>
-    <a md-button [routerLink]=" ['./account'] " routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <md-icon>account_circle</md-icon>
-      <title>Account</title>
-    </a>
+  <a md-button [routerLink]=" ['./recipes'] " routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+    <md-icon>book</md-icon>
+    <title>Recipes</title>
+  </a>
+  <a md-button [routerLink]=" ['./favorite'] " routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+    <md-icon>favorite</md-icon>
+    <title>Favorite</title>
+  </a>
+  <a md-button [routerLink]=" ['./account'] " routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+    <md-icon>account_circle</md-icon>
+    <title>Account</title>
+  </a>
 </nav>
