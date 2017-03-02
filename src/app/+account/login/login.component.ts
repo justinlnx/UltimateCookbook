@@ -30,18 +30,7 @@ export class LoginComponent implements OnInit {
   }
 
   public validPasswordInput(): boolean {
-    if (!this.loginForm.controls['password'].valid) {
-      return false;
-    }
-    return this.checkPasswordLength();
-  }
-
-  private checkPasswordLength(): boolean {
-    var passwordLength = this.loginForm.controls['password'].value.length;
-    var minimumLength = 6;
-    var maximumLength = 16;
-
-    return passwordLength >= minimumLength && passwordLength <= maximumLength;
+    return this.loginForm.controls['password'].valid;
   }
 
   public onSignIn() {
@@ -55,29 +44,36 @@ export class LoginComponent implements OnInit {
       },
       (err) => {
         console.error(err);
-        this.throwException(err.message);
+        this.throwWebServiceException(err.message);
       });
   }
 
-  private throwException(message: string): never {
+  private throwWebServiceException(message: string): never {
     throw new WebServiceException(message);
   }
 
   public onCreateAccount() {
-    this.validateLoginForm();
+    try {
+      this.validateLoginForm();
+    } catch (exception) {
+      if(exception instanceof WebServiceException) {
+        console.log(exception);
+        return;
+      }
+    }
 
     this.createUser(this.loginForm.value.email, this.loginForm.value.password);
   }
 
-  private validateLoginForm(): any {
+  private validateLoginForm(): void | never {
     if (!this.validEmailInput()) {
-      var errorMessage = "Invalid email format";
-      this.throwException(errorMessage);
+      let errorMessage = "Invalid email format";
+      this.throwWebServiceException(errorMessage);
     }
 
     if (!this.validPasswordInput()) {
-      var errorMessage = "Invalid password format";
-      this.throwException(errorMessage);
+      let errorMessage = "Invalid password format";
+      this.throwWebServiceException(errorMessage);
     }
   }
 
@@ -90,8 +86,18 @@ export class LoginComponent implements OnInit {
     let passwordRegex: RegExp = /^.+$/;
 
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.pattern(emailRegex)]],
-      password: ['', [Validators.required, Validators.pattern(passwordRegex)]]
+      email: ['', [
+        Validators.required, 
+        Validators.pattern(emailRegex)
+        ]
+      ],
+      password: ['', [
+        Validators.required, 
+        Validators.pattern(passwordRegex),
+        Validators.minLength(6),
+        Validators.maxLength(16)
+        ]
+      ]
     });
   }
 
@@ -103,7 +109,7 @@ export class LoginComponent implements OnInit {
       },
       (err) => {
         console.error(err);
-        this.throwException(err.message);
+        this.throwWebServiceException(err.message);
       });
   }
 }
