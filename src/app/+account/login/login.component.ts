@@ -11,7 +11,7 @@ import { WebServiceException } from '../../api/WebServiceException';
 export class LoginComponent implements OnInit {
   public loginForm: FormGroup;
 
-  constructor(private af: AngularFire, private fb: FormBuilder) { }
+  constructor(private af: AngularFire, private fb: FormBuilder) {}
 
   public ngOnInit() {
     this.createForm();
@@ -53,28 +53,13 @@ export class LoginComponent implements OnInit {
   }
 
   public onCreateAccount() {
-    try {
-      this.validateLoginForm();
-    } catch (exception) {
-      if(exception instanceof WebServiceException) {
-        console.log(exception);
-        return;
-      }
+    if(this.validateLoginForm()) {
+      this.createUser(this.loginForm.value.email, this.loginForm.value.password);
     }
-
-    this.createUser(this.loginForm.value.email, this.loginForm.value.password);
   }
 
-  private validateLoginForm(): void | never {
-    if (!this.validEmailInput()) {
-      let errorMessage = "Invalid email format";
-      this.throwWebServiceException(errorMessage);
-    }
-
-    if (!this.validPasswordInput()) {
-      let errorMessage = "Invalid password format";
-      this.throwWebServiceException(errorMessage);
-    }
+  private validateLoginForm(): boolean {
+    return this.validEmailInput() && this.validPasswordInput();
   }
 
   private inputColor(valid: boolean): string {

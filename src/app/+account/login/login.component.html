@@ -2,7 +2,7 @@
 
 <form [formGroup]="loginForm" novalidate>
   <md-input-container [dividerColor]="emailInputColor()">
-    <input mdInput placeholder="Email" type="email" formControlName="email" >
+    <input mdInput placeholder="Email" type="email" formControlName="email">
     <md-hint *ngIf="!validEmailInput()">Incorrect email format</md-hint>
   </md-input-container>
   <md-input-container [dividerColor]="passwordInputColor()">
@@ -10,7 +10,7 @@
     <md-hint *ngIf="!validPasswordInput()">Incorrect password format</md-hint>
   </md-input-container>
   <div>
-    <button md-raised-button type="button" (click)="onSignIn()">Sign in</button>
-    <button md-raised-button type="button" (click)="onCreateAccount()">Create Account</button>
+    <button md-raised-button [disabled]='!validateLoginForm()' type="button" (click)="onSignIn()">Sign in</button>
+    <button md-raised-button [disabled]='!validateLoginForm()' type="button" (click)="onCreateAccount()">Create Account</button>
   </div>
 </form>
