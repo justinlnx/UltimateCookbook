@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AngularFire, AuthMethods, AuthProviders } from 'angularfire2';
-import { WebServiceException } from '../../api/WebServiceException';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AngularFire, AuthMethods, AuthProviders} from 'angularfire2';
+import {WebServiceException} from '../../api/WebServiceException';
+import {ErrorReportService} from '../../error-report';
 
 @Component({
   selector: 'login',
@@ -11,7 +12,9 @@ import { WebServiceException } from '../../api/WebServiceException';
 export class LoginComponent implements OnInit {
   public loginForm: FormGroup;
 
-  constructor(private af: AngularFire, private fb: FormBuilder) {}
+  constructor(
+      private af: AngularFire, private fb: FormBuilder,
+      private errorReportService: ErrorReportService) {}
 
   public ngOnInit() {
     this.createForm();
@@ -35,25 +38,20 @@ export class LoginComponent implements OnInit {
 
   public onSignIn() {
     this.af.auth
-      .login(
-      { email: this.loginForm.value.email, password: this.loginForm.value.password },
-      { provider: AuthProviders.Password, method: AuthMethods.Password })
-      .then(
-      (state) => {
-        console.log(state);
-      },
-      (err) => {
-        console.error(err);
-      });
+        .login(
+            {email: this.loginForm.value.email, password: this.loginForm.value.password},
+            {provider: AuthProviders.Password, method: AuthMethods.Password})
+        .then(
+            (state) => {
+              console.log(state);
+            },
+            (err) => {
+              this.errorReportService.send(err.message);
+            });
   }
 
-  // NOT BEING USED ANYWHERE, SAFE TO DELETE?
-  // private throwWebServiceException(message: string): never {
-  //   throw new WebServiceException(message);
-  // }
-
   public onCreateAccount() {
-    if(this.validateLoginForm()) {
+    if (this.validateLoginForm()) {
       this.createUser(this.loginForm.value.email, this.loginForm.value.password);
     }
   }
@@ -71,31 +69,25 @@ export class LoginComponent implements OnInit {
     let passwordRegex: RegExp = /^.+$/;
 
     this.loginForm = this.fb.group({
-      email: ['', [
-        Validators.required, 
-        Validators.pattern(emailRegex)
-        ]
-      ],
-      password: ['', [
-        Validators.required, 
-        Validators.pattern(passwordRegex),
-        Validators.minLength(6),
-        Validators.maxLength(16)
+      email: ['', [Validators.required, Validators.pattern(emailRegex)]],
+      password: [
+        '',
+        [
+          Validators.required, Validators.pattern(passwordRegex), Validators.minLength(6),
+          Validators.maxLength(16)
         ]
       ]
     });
   }
 
   private createUser(email: string, password: string) {
-    this.af.auth.createUser({ email, password })
-      .then(
-      (state) => {
-        console.log(`User created: ${email}, ${password}`);
-      },
-      (err) => {
-        console.error(err);
-        // this.throwWebServiceException(err.message);
-        // OPEN NEW DIALOG/WARNING
-      });
+    this.af.auth.createUser({email, password})
+        .then(
+            (state) => {
+              console.log(`User created: ${email}, ${password}`);
+            },
+            (err) => {
+              this.errorReportService.send(err.message);
+            });
   }
 }

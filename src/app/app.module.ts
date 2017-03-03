@@ -22,12 +22,13 @@ import {AppState, InternalStateType} from './app.service';
  * Platform and Environment providers/directives/pipes
  */
 import {ENV_PROVIDERS} from './environment';
+import {ErrorReportComponent, ErrorReportService} from './error-report';
 import {HomeComponent} from './home';
 import {XLargeDirective} from './home/x-large';
 import {NoContentComponent} from './no-content';
 
 // Application wide providers
-const APP_PROVIDERS = [...APP_RESOLVER_PROVIDERS, AppState, ApiService];
+const APP_PROVIDERS = [...APP_RESOLVER_PROVIDERS, AppState, ApiService, ErrorReportService];
 
 type StoreType = {
   state: InternalStateType,
@@ -53,7 +54,8 @@ export const firebaseConfig = {
     AboutComponent,
     HomeComponent,
     NoContentComponent,
-    XLargeDirective
+    XLargeDirective,
+    ErrorReportComponent
   ],
   imports: [ // import Angular's modules
     BrowserModule,
