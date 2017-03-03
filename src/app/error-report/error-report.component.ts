@@ -4,12 +4,11 @@ import {Subscription} from 'rxjs/Subscription';
 
 import {ErrorReportService} from './error-report.service';
 
-
 @Component({selector: 'error-report', template: ``})
 export class ErrorReportComponent implements OnInit, OnDestroy {
   private errorReportSubscription: Subscription;
 
-  constructor(private ers: ErrorReportService, private snackBar: MdSnackBar) {}
+  constructor(private errorReportService: ErrorReportService, private snackBar: MdSnackBar) {}
 
   public ngOnInit(): void {
     this.subscribeToErrorReport();
@@ -20,11 +19,12 @@ export class ErrorReportComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToErrorReport(): void {
-    this.errorReportSubscription = this.ers.asObservable().subscribe((nextErrorMessage: string) => {
-      if (nextErrorMessage.length !== 0) {
-        this.openSnackbar(nextErrorMessage);
-      }
-    });
+    this.errorReportSubscription =
+        this.errorReportService.asObservable().subscribe((nextErrorMessage: string) => {
+          if (nextErrorMessage.length !== 0) {
+            this.openSnackbar(nextErrorMessage);
+          }
+        });
   }
 
   private unsubscribeToErrorReport(): void {

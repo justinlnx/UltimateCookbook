@@ -12,7 +12,9 @@ import {ErrorReportService} from '../../error-report';
 export class LoginComponent implements OnInit {
   public loginForm: FormGroup;
 
-  constructor(private af: AngularFire, private fb: FormBuilder, private ers: ErrorReportService) {}
+  constructor(
+      private af: AngularFire, private fb: FormBuilder,
+      private errorReportService: ErrorReportService) {}
 
   public ngOnInit() {
     this.createForm();
@@ -44,7 +46,7 @@ export class LoginComponent implements OnInit {
               console.log(state);
             },
             (err) => {
-              this.ers.send(err.message);
+              this.errorReportService.send(err.message);
             });
   }
 
@@ -85,7 +87,7 @@ export class LoginComponent implements OnInit {
               console.log(`User created: ${email}, ${password}`);
             },
             (err) => {
-              this.ers.send(err.message);
+              this.errorReportService.send(err.message);
             });
   }
 }
