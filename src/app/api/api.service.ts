@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
-import {AngularFire} from 'angularfire2';
+import {AngularFire, FirebaseListObservable, FirebaseObjectObservable} from 'angularfire2';
 import {Observable} from 'rxjs/Observable';
+
+type Guid = string;
 
 interface Recipe {
   name: string;
@@ -13,13 +15,11 @@ interface Recipe {
 export class ApiService {
   constructor(private af: AngularFire) {}
 
-  // for example
   public getAllRecipes(): Observable<Recipe[]> {
-    // this.af.database.
-    return Observable.of([]);
+    return this.af.database.list('/public/recipes');
   }
 
-  public getRecipe(name: string): Observable<Recipe> {
+  public getRecipe(id: Guid): Observable<Recipe> {
     return Observable.of(null);
   }
 
