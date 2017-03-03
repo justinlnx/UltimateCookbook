@@ -13,13 +13,27 @@ interface Recipe {
 
 @Injectable()
 export class ApiService {
-  constructor(private af: AngularFire) {}
+  recipes: FirebaseListObservable<any>;
+
+  constructor(private af: AngularFire) {
+    this.recipes = this.af.database.list('/public/recipes');
+  }
 
   public getAllRecipes(): Observable<Recipe[]> {
-    return this.af.database.list('/public/recipes');
+    return this.recipes;
   }
 
   public getRecipe(id: Guid): Observable<Recipe> {
+    this.recipes.subscribe(recipeList => {
+      recipeList.forEach(recipe => {
+        if(recipe.id === id) {
+          return recipe;
+        }
+        else {
+          console.log('Recipe id not found.');
+        }
+      });
+    });
     return Observable.of(null);
   }
 
