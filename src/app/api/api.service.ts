@@ -15,7 +15,7 @@ interface Recipe {
 export class ApiService {
   constructor(private af: AngularFire) {}
 
-  public getAllRecipes(): Observable<Recipe[]> {
+  public getAllRecipes(): FirebaseListObservable<Recipe[]> {
     return this.af.database.list('/public/recipes');
   }
 
