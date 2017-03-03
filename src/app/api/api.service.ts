@@ -5,7 +5,7 @@ import {ErrorReportService} from '../error-report';
 
 type Guid = string;
 
-interface Recipe {
+export interface Recipe {
   id: string;
   name: string;
   author: string;
