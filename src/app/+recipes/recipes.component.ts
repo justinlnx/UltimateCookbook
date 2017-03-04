@@ -1,10 +1,14 @@
-import {Component} from '@angular/core';
-import { MainRecipeComponent }  from './mainRecipe.component';
+import {Component, OnInit} from '@angular/core';
 
-@Component({
-  selector: 'recipes',
-  templateUrl: './recipes.component.html'
-})
-export class RecipesComponent {
+import {ApiService, FirebaseListObservable, Recipe} from '../api';
 
+@Component({selector: 'recipes', templateUrl: './recipes.component.html'})
+export class RecipesComponent implements OnInit {
+  public recipesListObservable: FirebaseListObservable<Recipe[]>;
+
+  constructor(private apiService: ApiService) {}
+
+  ngOnInit() {
+    this.recipesListObservable = this.apiService.getAllRecipes();
+  }
 }
