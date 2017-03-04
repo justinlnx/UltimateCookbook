@@ -8,10 +8,11 @@ import {Recipe} from '../../api';
   template: `
   <md-list-item>
     <img md-list-avatar [src]="safeImageUrl" alt="showcase">
-    <h3 md-line>{{recipe.name}}</h3>
+    <h4 md-line class="recipe-name">{{recipe.name}}</h4>
   </md-list-item>
   <md-divider></md-divider>
-  `
+  `,
+  styleUrls: ['./recipe-list-item.component.scss']
 })
 export class RecipeListItemComponent implements OnInit {
   @Input() recipe: Recipe;
