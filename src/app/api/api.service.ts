@@ -1,40 +1,56 @@
 import {Injectable} from '@angular/core';
 import {AngularFire, FirebaseListObservable, FirebaseObjectObservable} from 'angularfire2';
 import {Observable} from 'rxjs/Observable';
+import {ErrorReportService} from '../error-report';
 
 type Guid = string;
 
 interface Recipe {
+  id: string;
   name: string;
   author: string;
   description: string;
   imageSources: string[];
 }
 
+const PUBLIC_RECIPES_URL = '/public/recipes';
+
 @Injectable()
 export class ApiService {
-  recipes: FirebaseListObservable<any>;
+  private recipeListObservable: FirebaseListObservable<Recipe[]>;
+  private recipes: Recipe[];
 
-  constructor(private af: AngularFire) {
-    this.recipes = this.af.database.list('/public/recipes');
+  constructor(private af: AngularFire, private errorReportService: ErrorReportService) {
+    this.recipes = [];
+
+    this.af.database.list(PUBLIC_RECIPES_URL)
+        .subscribe(
+            (recipes) => {
+              if (recipes) {
+                this.recipes = recipes;
+              }
+            },
+            (err) => {
+              this.errorReportService.send(err);
+            });
   }
 
   public getAllRecipes(): Observable<Recipe[]> {
+    return this.recipeListObservable;
+  }
+
+  public getAllCachedRecipes(): Recipe[] {
     return this.recipes;
   }
 
-  public getRecipe(id: Guid): Observable<Recipe> {
-    this.recipes.subscribe(recipeList => {
-      recipeList.forEach(recipe => {
-        if(recipe.id === id) {
-          return recipe;
-        }
-        else {
-          console.log('Recipe id not found.');
-        }
-      });
-    });
-    return Observable.of(null);
+  public getRecipe(id: Guid): Recipe {
+    if (this.recipes.length === 0) {
+      return null;
+    } else {
+      let found = this.recipes.find((recipe) => {return recipe.id === id});
+
+      return found ? found : null;
+    };
   }
 
   public addRecipe(recipe: Recipe): Observable<boolean> {
