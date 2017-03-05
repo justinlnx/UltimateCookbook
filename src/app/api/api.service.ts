@@ -23,16 +23,17 @@ export class ApiService {
   constructor(private af: AngularFire, private errorReportService: ErrorReportService) {
     this.recipes = [];
 
-    this.af.database.list(PUBLIC_RECIPES_URL)
-        .subscribe(
-            (recipes) => {
-              if (recipes) {
-                this.recipes = recipes;
-              }
-            },
-            (err) => {
-              this.errorReportService.send(err);
-            });
+    this.recipeListObservable = this.af.database.list(PUBLIC_RECIPES_URL);
+
+    this.recipeListObservable.subscribe(
+        (recipes) => {
+          if (recipes) {
+            this.recipes = recipes;
+          }
+        },
+        (err) => {
+          this.errorReportService.send(err);
+        });
   }
 
   public getAllRecipes(): FirebaseListObservable<Recipe[]> {
