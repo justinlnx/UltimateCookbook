@@ -35,7 +35,7 @@ export class ApiService {
             });
   }
 
-  public getAllRecipes(): Observable<Recipe[]> {
+  public getAllRecipes(): FirebaseListObservable<Recipe[]> {
     return this.recipeListObservable;
   }
 
