@@ -5,7 +5,7 @@ import {ErrorReportService} from '../error-report';
 
 type Guid = string;
 
-interface Recipe {
+export interface Recipe {
   id: string;
   name: string;
   author: string;
@@ -43,8 +43,7 @@ export class ApiService {
   public getAllCachedRecipes(): Recipe[] {
     return this.recipes;
   }
-
-  public getRecipe(id: Guid): Recipe {
+     public getRecipe(id: Guid): Recipe {
     if (this.recipes.length === 0) {
       return null;
     } else {
