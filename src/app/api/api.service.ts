@@ -1,14 +1,12 @@
 import {Injectable} from '@angular/core';
 import {AngularFire, FirebaseListObservable, FirebaseObjectObservable} from 'angularfire2';
-import {Observable} from 'rxjs';
+import {Observable} from 'rxjs/Observable';
 import {ErrorReportService} from '../error-report';
-import {generateGuid} from './guid';
 
 type Guid = string;
 
-export interface Recipe {
+interface Recipe {
   id: string;
-  avatar: string;
   name: string;
   author: string;
   description: string;
@@ -56,13 +54,8 @@ export class ApiService {
     };
   }
 
-  public addRecipe(recipe: Recipe): void {
-    recipe.id = generateGuid();
-
-    let list = this.af.database.list(PUBLIC_RECIPES_URL);
-
-    list.push(recipe).then(
-        _ => console.log('success.'), (err) => this.errorReportService.send(err.message));
+  public addRecipe(recipe: Recipe): Observable<boolean> {
+    return Observable.of(true);
   }
 
   public deleteRecipe(recipe: Recipe): Observable<boolean> {

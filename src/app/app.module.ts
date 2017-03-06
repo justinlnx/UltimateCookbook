@@ -51,7 +51,10 @@ export const firebaseConfig = {
   bootstrap: [ AppComponent ],
   declarations: [
     AppComponent,
+    AboutComponent,
+    HomeComponent,
     NoContentComponent,
+    XLargeDirective,
     ErrorReportComponent
   ],
   imports: [ // import Angular's modules
