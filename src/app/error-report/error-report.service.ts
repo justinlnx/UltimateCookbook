@@ -2,6 +2,8 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
 
+const GENERIC_ERROR_MESSAGE = 'Something went wrong.';
+
 /**
  * Error Report Service
  *
@@ -16,8 +18,20 @@ export class ErrorReportService {
     this.errorReporter = new Subject<string>();
   }
 
-  public send(message: string) {
-    this.errorReporter.next(message);
+  public send(message: any) {
+    let actualMessage: string = '';
+
+    if (typeof message === 'string') {
+      actualMessage = message;
+    } else if (message instanceof Error) {
+      actualMessage = message.message;
+    } else {
+      actualMessage = GENERIC_ERROR_MESSAGE;
+
+      // for developer to track bug
+      console.error(message);
+    }
+    this.errorReporter.next(actualMessage);
   }
 
   public asObservable(): Observable<string> {
