@@ -20,8 +20,13 @@ export class RecipeComponent implements OnInit {
         });
   }
   private updateTrustedImageUrls() {
-    this.trustedImageUrls = this.recipe.imageSources.map((imageSource) => {
-      return this.domSanitizer.bypassSecurityTrustResourceUrl(imageSource);
-    });
+    if (this.recipe.imageSources != null) {
+      this.trustedImageUrls = this.recipe.imageSources.map((imageSource) => {
+        return this.domSanitizer.bypassSecurityTrustResourceUrl(imageSource);
+      });
+    } else {
+          this.trustedImageUrls = [];
+          console.log('null')
+    }
   }
 }
