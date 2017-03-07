@@ -1,12 +1,2 @@
-<h1>Cook Book</h1>
-
-<md-icon>delete</md-icon>
-<!-- <p>Delete</p> -->
-
-<md-icon>add</md-icon>
-<!-- <p>Add</p> -->
-
 <input type="text" name="search" placeholder=" Search" id="searchBox">
-<mainRecipe></mainRecipe>
-
-<router-outlet></router-outlet>
+<recipe-list [recipes]="recipesListObservable | async"></recipe-list>

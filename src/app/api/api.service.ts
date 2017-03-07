@@ -7,6 +7,7 @@ type Guid = string;
 
 export interface Recipe {
   id: string;
+  avatar: string;
   name: string;
   author: string;
   description: string;

@@ -6,7 +6,7 @@ import {ErrorReportService} from '../error-report';
 export class AccountComponent implements AfterViewInit, OnDestroy {
   public userLoggedIn: boolean;
 
-  constructor(private af: AngularFire, private ers: ErrorReportService) {}
+  constructor(private af: AngularFire, private errorReportService: ErrorReportService) {}
 
   public ngAfterViewInit() {
     this.userLoggedIn = false;
@@ -15,14 +15,7 @@ export class AccountComponent implements AfterViewInit, OnDestroy {
           this.userLoggedIn = next != null;
         },
         (err) => {
-          if (typeof err === 'string') {
-            this.ers.send(err);
-          } else {
-            this.ers.send('Server error during authentication.');
-
-            // This is for developers to see the actual error
-            console.error(err);
-          }
+          this.errorReportService.send(err);
         });
   }
 
