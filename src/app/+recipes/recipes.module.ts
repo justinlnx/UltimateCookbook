@@ -6,9 +6,10 @@ import {SharedModule} from '../shared';
 import {RecipeListComponent, RecipeListItemComponent} from './recipe-list';
 import {RecipesComponent} from './recipes.component';
 import {routes} from './recipes.routes';
+import {RecipeComponent} from './recipe'
 @NgModule({
   imports: [SharedModule, RouterModule.forChild(routes)],
-  declarations: [RecipesComponent, RecipeListComponent, RecipeListItemComponent]
+  declarations: [RecipesComponent, RecipeListComponent, RecipeListItemComponent, RecipeComponent]
 })
 export class RecipesModule {
 }
