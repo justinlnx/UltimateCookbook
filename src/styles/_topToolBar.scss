@@ -11,3 +11,8 @@
   top: $toolbar-height;
   bottom: $bottom-navbar-height;
 }
+
+.back-button {
+  min-width: 30px !important;
+  padding: 0 !important;
+}
