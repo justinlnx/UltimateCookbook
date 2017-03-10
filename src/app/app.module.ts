@@ -23,8 +23,7 @@ import {AppState, InternalStateType} from './app.service';
  */
 import {ENV_PROVIDERS} from './environment';
 import {ErrorReportComponent, ErrorReportService} from './error-report';
-import {HomeComponent} from './home';
-import {XLargeDirective} from './home/x-large';
+
 import {NoContentComponent} from './no-content';
 
 // Application wide providers
