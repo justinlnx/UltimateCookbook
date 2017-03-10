@@ -4,11 +4,7 @@ import {ActivatedRoute, Params, Router} from '@angular/router'
 import {Observable} from 'rxjs/Observable';
 
 import {ApiService, Recipe} from '../../api';
-@Component({
-  selector: 'recipe',
-  templateUrl: './recipe.component.html',
-  styleUrls: ['./recipe.component.scss']
-})
+@Component({selector: 'recipe', templateUrl: './recipe.component.html'})
 export class RecipeComponent implements OnInit {
   private recipe: Recipe;
   private trustedImageUrls: SafeResourceUrl[];
