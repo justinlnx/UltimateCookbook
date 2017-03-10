@@ -28,8 +28,7 @@ export class RecipeListItemComponent implements OnInit {
     this.safeImageUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(this.recipe.avatar);
   }
   public showDetails(recipe: Recipe) {
-    console.log(recipe.id);
-    this.router.navigateByUrl(`/recipes/recipe/${recipe.id}`);
+    console.log(recipe.$key);
+    this.router.navigateByUrl(`/recipes/recipe/${recipe.$key}`);
   }
-
 }

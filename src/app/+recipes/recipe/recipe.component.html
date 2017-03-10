@@ -9,7 +9,7 @@
 </md-toolbar>
 
 <div class="page-content">
-  <p>{{recipe.description}}</p>
+  <p>{{recipe?.description}}</p>
 
   <img *ngFor="let trustedImageUrl of trustedImageUrls" [src]="trustedImageUrl" alt="recipe image" style="width: 100%;max-height: 100%">
 </div>
