@@ -1,0 +1,15 @@
+.search-box {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  z-index: 100;
+
+  background-color: white;
+
+  md-input-container {
+    padding: 0px 15px;
+  }
+}
+
+
