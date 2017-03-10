@@ -32,7 +32,7 @@ import {ErrorReportService} from '../error-report';
   </div>
 
   `,
-  styles: ['form {margin-top: 24px;}']
+  styleUrls: ['./add-recipe.component.scss']
 })
 export class AddRecipeComponent implements OnInit {
   public userLoggedIn: boolean = false;
