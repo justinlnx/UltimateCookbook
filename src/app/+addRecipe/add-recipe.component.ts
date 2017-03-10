@@ -4,28 +4,35 @@ import {Router} from '@angular/router';
 import {AngularFire, FirebaseAuthState} from 'angularfire2';
 import {Subscription} from 'rxjs/Subscription';
 
-import {ApiService, Recipe} from '../api';
+import {ApiService, PushRecipe, Recipe} from '../api';
 import {ErrorReportService} from '../error-report';
 
 @Component({
   selector: 'add-recipe',
   template: `
-  <login-warning *ngIf="!userLoggedIn"></login-warning>
-  <div class="add-field" *ngIf="userLoggedIn">
-    <h1>Add new Recipe</h1>
-    <form [formGroup]="addRecipeForm" novalidate>
-      <md-input-container>
-        <input mdInput placeholder="Name" type="text" formControlName="name">
-      </md-input-container>
-      <md-input-container>
-        <input mdInput placeholder="Description" type="text" formControlName="description">
-      </md-input-container>
-      <div>
-        <button md-raised-button [disabled]="!validAddRecipeForm" type="button" (click)="onAddRecipe()">Add</button>
-      </div>
-    </form>
+  <md-toolbar class="top-toolbar" color="primary">
+    <span>Add new recipe</span>
+  </md-toolbar>
+
+  <div class="page-content">
+    <login-warning *ngIf="!userLoggedIn"></login-warning>
+    <div class="add-field" *ngIf="userLoggedIn">
+      <form [formGroup]="addRecipeForm" novalidate>
+        <md-input-container>
+          <input mdInput placeholder="Name" type="text" formControlName="name">
+        </md-input-container>
+        <md-input-container>
+          <input mdInput placeholder="Description" type="text" formControlName="description">
+        </md-input-container>
+        <div>
+          <button md-raised-button [disabled]="!validAddRecipeForm" type="button" (click)="onAddRecipe()">Add</button>
+        </div>
+      </form>
+    </div>
   </div>
-  `
+
+  `,
+  styles: ['form {margin-top: 24px;}']
 })
 export class AddRecipeComponent implements OnInit {
   public userLoggedIn: boolean = false;
@@ -63,14 +70,8 @@ export class AddRecipeComponent implements OnInit {
     let description = this.addRecipeForm.value.description;
     let author = this.authState.auth.email;
 
-    let newRecipe: Recipe = {
-      name: name,
-      description: description,
-      id: '',
-      author: author,
-      avatar: '',
-      imageSources: []
-    };
+    let newRecipe: PushRecipe =
+        {name: name, description: description, author: author, avatar: '', imageSources: []};
 
     this.apiService.addRecipe(newRecipe);
     this.nagivateToRecipesPage();

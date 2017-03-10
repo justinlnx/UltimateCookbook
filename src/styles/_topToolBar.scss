@@ -4,6 +4,14 @@
   top: 0;
   padding: 0;
   z-index: 100;
+
+  .right-icon {
+    padding: 0 14px;
+  }
+
+  .toolbar-spacer {
+    flex: 1 1 auto;
+  }
 }
 
 .page-content {
