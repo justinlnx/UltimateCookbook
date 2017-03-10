@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {AngularFire, FirebaseListObservable, FirebaseObjectObservable} from 'angularfire2';
 import {Observable} from 'rxjs/Observable';
-import {ErrorReportService} from '../error-report';
 
 type Guid = string;
 
 export interface Recipe {
+  $key: string;
   id: string;
   avatar: string;
   name: string;
@@ -21,37 +21,18 @@ export class ApiService {
   private recipeListObservable: FirebaseListObservable<Recipe[]>;
   private recipes: Recipe[];
 
-  constructor(private af: AngularFire, private errorReportService: ErrorReportService) {
+  constructor(private af: AngularFire) {
     this.recipes = [];
 
     this.recipeListObservable = this.af.database.list(PUBLIC_RECIPES_URL);
-
-    this.recipeListObservable.subscribe(
-        (recipes) => {
-          if (recipes) {
-            this.recipes = recipes;
-          }
-        },
-        (err) => {
-          this.errorReportService.send(err);
-        });
   }
 
   public getAllRecipes(): FirebaseListObservable<Recipe[]> {
     return this.recipeListObservable;
   }
 
-  public getAllCachedRecipes(): Recipe[] {
-    return this.recipes;
-  }
-     public getRecipe(id: Guid): Recipe {
-    if (this.recipes.length === 0) {
-      return null;
-    } else {
-      let found = this.recipes.find((recipe) => {return recipe.id === id});
-
-      return found ? found : null;
-    };
+  public getRecipe($key: string): FirebaseObjectObservable<Recipe> {
+    return this.af.database.object(`${PUBLIC_RECIPES_URL}/${$key}`);
   }
 
   public addRecipe(recipe: Recipe): Observable<boolean> {
