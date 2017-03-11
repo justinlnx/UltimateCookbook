@@ -44,7 +44,7 @@ export class RecipeListComponent implements OnInit {
   private filterRecipeList(): void {
     if (!this.recipes) return;
     this.filteredRecipes = this.recipes.filter((recipe) => {
-      return recipe.name.includes(this.searchInput);
+      return recipe.name.search(new RegExp(this.searchInput, "i")) != -1;
     });
   }
 }
