@@ -1,0 +1,15 @@
+image: node:6.9
+before_script:
+    - npm install --global webpack
+    - npm install --global typescript
+    - npm install --global karma-cli
+    - npm install --global protractor
+    - npm install 
+unit_test:
+  script:
+     - npm run test
+
+e2e_test:
+  script:
+    # this will start a test server and launch Protractor
+    - npm run e2e
