@@ -1,15 +1,26 @@
 image: node:6.9
+
+cache:
+  paths:
+  - node_modules/
+
 before_script:
+    - bash ci/install-chrome
     - npm install --global webpack
     - npm install --global typescript
     - npm install --global karma-cli
     - npm install --global protractor
-    - npm install 
+    - npm install
+    - npm run webdriver:update
+    - export DISPLAY=:99.0
+    - Xvfb :99 &
+    - sleep 3
+
 unit_test:
   script:
      - npm run test
 
 e2e_test:
   script:
-    # this will start a test server and launch Protractor
-    - npm run e2e
+    - npm run build:prod
+    - npm run e2e:ci

@@ -26,7 +26,7 @@
     "clean": "npm cache clean && npm run rimraf -- node_modules doc coverage dist compiled dll",
     "docs": "npm run typedoc -- --options typedoc.json --exclude '**/*.spec.ts' ./src/",
     "e2e:live": "npm-run-all -p -r server:prod:ci protractor:live",
-    "e2e:travis": "npm-run-all -p -r server:prod:ci protractor:delay",
+    "e2e:ci": "npm-run-all -p -r server:prod:ci protractor:delay",
     "e2e": "npm-run-all -p -r server:prod:ci protractor",
     "lint": "npm run tslint \"src/**/*.ts\"",
     "postinstall": "npm run webdriver:update",
