@@ -39,7 +39,7 @@ export class ApiService {
 
   public addRecipe(recipe: PushRecipe): void {
     this.recipeListObservable.push(recipe).then(
-        _ => console.log('success.'), (err) => this.errorReportService.send(err.message));
+        (_) => console.log('success.'), (err) => this.errorReportService.send(err.message));
   }
 
   public deleteRecipe(recipe: Recipe): Observable<boolean> {

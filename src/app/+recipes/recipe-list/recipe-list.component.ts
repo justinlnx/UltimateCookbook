@@ -14,6 +14,11 @@ import {ApiService, Recipe} from '../../api';
 })
 export class RecipeListComponent implements OnInit {
   public filteredRecipes: Recipe[];
+
+  public searchInput: string = '';
+
+  private recipesSubscription: Subscription;
+
   private _recipes: Recipe[];
   get recipes(): Recipe[] {
     return this._recipes;
@@ -22,9 +27,6 @@ export class RecipeListComponent implements OnInit {
     this._recipes = recipes;
     this.filterRecipeList();
   }
-  public searchInput: string = '';
-
-  private recipesSubscription: Subscription;
 
   constructor(private apiService: ApiService) {}
 
@@ -42,9 +44,12 @@ export class RecipeListComponent implements OnInit {
   }
 
   private filterRecipeList(): void {
-    if (!this.recipes) return;
+    if (!this.recipes) {
+      return;
+    }
+
     this.filteredRecipes = this.recipes.filter((recipe) => {
-      return recipe.name.search(new RegExp(this.searchInput, "i")) != -1;
+      return recipe.name.search(new RegExp(this.searchInput, 'i')) !== -1;
     });
   }
 }
