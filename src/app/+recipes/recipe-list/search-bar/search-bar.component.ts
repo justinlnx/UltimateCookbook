@@ -12,7 +12,7 @@ import {Component, EventEmitter, Output} from '@angular/core';
   styleUrls: ['./search-bar.component.scss']
 })
 export class SearchBarComponent {
-  @Output() searchInputChange = new EventEmitter<string>();
+  @Output() public searchInputChange = new EventEmitter<string>();
 
   public onKeyup(input: string): void {
     this.searchInputChange.emit(input);

@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
-import {Router} from '@angular/router'
+import {Router} from '@angular/router';
 import {Recipe} from '../../api';
 
 @Component({
@@ -15,20 +15,21 @@ import {Recipe} from '../../api';
   styleUrls: ['./recipe-list-item.component.scss']
 })
 export class RecipeListItemComponent implements OnInit {
-  @Input() recipe: Recipe;
+  @Input() public recipe: Recipe;
   public safeImageUrl: SafeResourceUrl;
 
   constructor(private domSanitizer: DomSanitizer, private router: Router) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.updateBypassImageSrc();
+  }
+
+  public showDetails(recipe: Recipe) {
+    console.log(recipe.$key);
+    this.router.navigateByUrl(`/recipes/recipe/${recipe.$key}`);
   }
 
   private updateBypassImageSrc() {
     this.safeImageUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(this.recipe.avatar);
-  }
-  public showDetails(recipe: Recipe) {
-    console.log(recipe.$key);
-    this.router.navigateByUrl(`/recipes/recipe/${recipe.$key}`);
   }
 }

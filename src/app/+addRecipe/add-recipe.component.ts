@@ -25,7 +25,9 @@ import {ErrorReportService} from '../error-report';
           <input mdInput placeholder="Description" type="text" formControlName="description">
         </md-input-container>
         <div>
-          <button md-raised-button [disabled]="!validAddRecipeForm" type="button" (click)="onAddRecipe()">Add</button>
+          <button md-raised-button
+                  [disabled]="!validAddRecipeForm" type="button"
+                  (click)="onAddRecipe()">Add</button>
         </div>
       </form>
     </div>
@@ -34,7 +36,7 @@ import {ErrorReportService} from '../error-report';
   `,
   styleUrls: ['./add-recipe.component.scss']
 })
-export class AddRecipeComponent implements OnInit {
+export class AddRecipeComponent implements OnInit, OnDestroy {
   public userLoggedIn: boolean = false;
   public addRecipeForm: FormGroup;
   private logInSubscription: Subscription;
@@ -66,12 +68,13 @@ export class AddRecipeComponent implements OnInit {
   }
 
   public onAddRecipe() {
+    let avatar = '';
     let name = this.addRecipeForm.value.name;
     let description = this.addRecipeForm.value.description;
     let author = this.authState.auth.email;
+    let imageSources = [];
 
-    let newRecipe: PushRecipe =
-        {name: name, description: description, author: author, avatar: '', imageSources: []};
+    let newRecipe: PushRecipe = {avatar, name, description, author, imageSources};
 
     this.apiService.addRecipe(newRecipe);
     this.nagivateToRecipesPage();
@@ -79,7 +82,7 @@ export class AddRecipeComponent implements OnInit {
 
   private createAddRecipeForm() {
     this.addRecipeForm = this.fb.group(
-        {'name': ['', [Validators.required]], 'description': ['', [Validators.required]]});
+        {name: ['', [Validators.required]], description: ['', [Validators.required]]});
   }
 
   private nagivateToRecipesPage() {
