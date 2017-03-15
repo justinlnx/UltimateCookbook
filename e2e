@@ -12,3 +12,18 @@ describe('Home page', () => {
         expect(ng2Img.isDisplayed()).toBeTruthy();
     });
 });
+
+//install first
+npm install selenium-webdriver  
+
+//require
+var webdriver = require('selenuim-webdriver');
+
+var driver = new webdriver.Builder().
+    withCapabilities(webdriver.Capabilities.chrome()).
+    build();
+
+driver.get('url');
+
+//test
+node testfile.js  
