@@ -18,16 +18,17 @@ import {AppComponent} from './app.component';
 import {APP_RESOLVER_PROVIDERS} from './app.resolver';
 import {ROUTES} from './app.routes';
 import {AppState, InternalStateType} from './app.service';
+import {AuthService} from './auth';
 /*
  * Platform and Environment providers/directives/pipes
  */
 import {ENV_PROVIDERS} from './environment';
 import {ErrorReportComponent, ErrorReportService} from './error-report';
-
 import {NoContentComponent} from './no-content';
 
 // Application wide providers
-const APP_PROVIDERS = [...APP_RESOLVER_PROVIDERS, AppState, ApiService, ErrorReportService];
+const APP_PROVIDERS =
+    [...APP_RESOLVER_PROVIDERS, AppState, ApiService, ErrorReportService, AuthService];
 
 type StoreType = {
   state: InternalStateType,
