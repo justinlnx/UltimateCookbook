@@ -53,6 +53,7 @@ export class ApiService {
           .remove($key)
           .then((_) => console.log('200: OK'), (err) => this.errorReportService.send(err.message));
     }
+    }
   }
 
   public updateRecipe($key: string, updateRecipe: Recipe): void {
