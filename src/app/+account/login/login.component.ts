@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AngularFire, AuthMethods, AuthProviders } from 'angularfire2';
-import { WebServiceException } from '../../api/WebServiceException';
-import { ErrorReportService } from '../../error-report';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AuthService} from '../../auth';
+import {ErrorReportService} from '../../error-report';
 
 @Component({
   selector: 'login',
@@ -13,8 +12,8 @@ export class LoginComponent implements OnInit {
   public loginForm: FormGroup;
 
   constructor(
-    private af: AngularFire, private fb: FormBuilder,
-    private errorReportService: ErrorReportService) { }
+      public authService: AuthService, public fb: FormBuilder,
+      public errorReportService: ErrorReportService) {}
 
   public ngOnInit() {
     this.createForm();
@@ -37,23 +36,11 @@ export class LoginComponent implements OnInit {
   }
 
   public onSignIn() {
-    this.af.auth
-      .login(
-      { email: this.loginForm.value.email, password: this.loginForm.value.password },
-      { provider: AuthProviders.Password, method: AuthMethods.Password })
-      .then(
-      (state) => {
-        console.log(state);
-      },
-      (err) => {
-        this.errorReportService.send(err.message);
-      });
+    this.authService.login(this.loginForm.value.email, this.loginForm.value.password);
   }
 
   public onCreateAccount() {
-    if (this.validateLoginForm()) {
-      this.createUser(this.loginForm.value.email, this.loginForm.value.password);
-    }
+    this.createUser(this.loginForm.value.email, this.loginForm.value.password);
   }
 
   public validateLoginForm(): boolean {
@@ -81,13 +68,6 @@ export class LoginComponent implements OnInit {
   }
 
   private createUser(email: string, password: string) {
-    this.af.auth.createUser({ email, password })
-      .then(
-      (state) => {
-        console.log(`User created: ${email}, ${password}`);
-      },
-      (err) => {
-        this.errorReportService.send(err.message);
-      });
+    this.authService.createUser(email, password);
   }
 }
