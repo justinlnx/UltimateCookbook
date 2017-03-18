@@ -63,34 +63,46 @@ export class ApiService {
       this.errorReportService.send(exception);
     } else {
       let currentRecipe;
-      this.af.database.object(`${PUBLIC_RECIPES_URL}/${$key}`).subscribe((x) => currentRecipe = x);
-      if (currentRecipe.steps !== updateRecipe.steps) {
-        this.updateSteps($key, updateRecipe.steps);
-      }
-      if (currentRecipe.author !== updateRecipe.author) {
-        this.updateAuthor($key, updateRecipe.author);
-      }
-      if (currentRecipe.avatar !== updateRecipe.avatar) {
-        this.updateAvatar($key, updateRecipe.avatar);
-      }
-      if (currentRecipe.description !== updateRecipe.description) {
-        this.updateDescription($key, updateRecipe.description);
-      }
-      if (currentRecipe.imageSources !== updateRecipe.imageSources) {
-        this.updateImageSources($key, updateRecipe.imageSources);
-      }
-      if (currentRecipe.ingredients !== updateRecipe.ingredients) {
-        this.updateIngredients($key, updateRecipe.ingredients);
-      }
-      if (currentRecipe.name !== updateRecipe.name) {
-        this.updateName($key, updateRecipe.avatar);
-      }
-      if (currentRecipe.rating !== updateRecipe.rating) {
-        this.updateRating($key, updateRecipe.rating);
-      }
+      this.getRecipe($key).subscribe((x) => {
+        currentRecipe = x;
+        if (!this.checkArrayEqual(currentRecipe.steps, updateRecipe.steps)) {
+          this.updateSteps($key, updateRecipe.steps);
+        }
+        if (currentRecipe.author !== updateRecipe.author) {
+          this.updateAuthor($key, updateRecipe.author);
+        }
+        if (currentRecipe.avatar !== updateRecipe.avatar) {
+          this.updateAvatar($key, updateRecipe.avatar);
+        }
+        if (currentRecipe.description !== updateRecipe.description) {
+          this.updateDescription($key, updateRecipe.description);
+        }
+        if (!this.checkArrayEqual(currentRecipe.imageSources, updateRecipe.imageSources)) {
+          this.updateImageSources($key, updateRecipe.imageSources);
+        }
+        if (!this.checkArrayEqual(currentRecipe.ingredients, updateRecipe.ingredients)) {
+          this.updateIngredients($key, updateRecipe.ingredients);
+        }
+        if (currentRecipe.name !== updateRecipe.name) {
+          this.updateName($key, updateRecipe.avatar);
+        }
+        if (currentRecipe.rating !== updateRecipe.rating) {
+          this.updateRating($key, updateRecipe.rating);
+        }
+      });
     }
   }
-
+  private checkArrayEqual(arr1: string[], arr2: string[]): boolean {
+    if (arr1.length !== arr2.length) {
+      return false;
+    }
+    for (let i = 0; i < arr1.length; i++) {
+      if (arr1[i] !== arr2[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
   private updateSteps($key: string, newSteps: string[]): void {
     this.af.database.list(PUBLIC_RECIPES_URL)
       .update($key, { steps: newSteps })
