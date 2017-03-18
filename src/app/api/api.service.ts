@@ -11,7 +11,10 @@ export interface PushRecipe {
   name: string;
   author: string;
   description: string;
+  rating: number;
   imageSources: string[];
+  steps: string[];
+  ingredients: string[];
 }
 
 export interface Recipe extends PushRecipe { $key: string; }
@@ -52,36 +55,37 @@ export class ApiService {
     }
   }
 
-  public updateRecipe($key: string, attributeName: string, newValue: any): void {
+  public updateRecipe($key: string, updateRecipe: Recipe): void {
 
     if ($key === undefined || $key === null || $key.length === 0) {
       let exception = 'Invalid Key';
       this.errorReportService.send(exception);
-    }
-    else {
-      if (attributeName === "steps") {
-        this.updateSteps($key, newValue);
+    } else {
+      let currentRecipe;
+      this.af.database.object(`${PUBLIC_RECIPES_URL}/${$key}`).subscribe((x) => currentRecipe = x);
+      if (currentRecipe.steps !== updateRecipe.steps) {
+        this.updateSteps($key, updateRecipe.steps);
       }
-      else if (attributeName === "author") {
-        this.updateAuthor($key, newValue);
+      if (currentRecipe.author !== updateRecipe.author) {
+        this.updateAuthor($key, updateRecipe.author);
       }
-      else if (attributeName === "avatar") {
-        this.updateAvatar($key, newValue);
+      if (currentRecipe.avatar !== updateRecipe.avatar) {
+        this.updateAvatar($key, updateRecipe.avatar);
       }
-      else if (attributeName === "description") {
-        this.updateDescription($key, newValue);
+      if (currentRecipe.description !== updateRecipe.description) {
+        this.updateDescription($key, updateRecipe.description);
       }
-      else if (attributeName === "imageSources") {
-        this.updateImageSources($key, newValue);
+      if (currentRecipe.imageSources !== updateRecipe.imageSources) {
+        this.updateImageSources($key, updateRecipe.imageSources);
       }
-      else if (attributeName === "ingredients") {
-        this.updateIngredients($key, newValue);
+      if (currentRecipe.ingredients !== updateRecipe.ingredients) {
+        this.updateIngredients($key, updateRecipe.ingredients);
       }
-      else if (attributeName === "name") {
-        this.updateName($key, newValue);
+      if (currentRecipe.name !== updateRecipe.name) {
+        this.updateName($key, updateRecipe.avatar);
       }
-      else if (attributeName === "rating") {
-        this.updateRating($key, newValue);
+      if (currentRecipe.rating !== updateRecipe.rating) {
+        this.updateRating($key, updateRecipe.rating);
       }
     }
   }
