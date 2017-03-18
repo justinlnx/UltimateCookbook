@@ -1,5 +1,3 @@
-import {DebugElement} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {AngularFire} from 'angularfire2';
 import {Observable} from 'rxjs/Observable';
 import {ErrorReportService} from '../error-report';
@@ -22,17 +20,17 @@ describe('delete api', () => {
     apiService = new ApiService(afStub as AngularFire, new ErrorReportService());
   });
 
-  it('delete recipe with empty key throws', async((done) => {
-       apiService.errorReportService.asObservable().subscribe(
-           (errorMessage) => expect(errorMessage).toEqual('Invalid Key'),
-           (_) => {
-             console.log('Error occurred');
-           },
-           () => {
-             done();
-           });
-       apiService.deleteRecipe('');
-       apiService.deleteRecipe(undefined);
-       apiService.deleteRecipe(null);
-     }));
+  it('Delete recipe with empty key throws', () => {
+    let errorMessage = 'Empty Key';
+
+    expect(() => {
+      apiService.deleteRecipe('');
+    }).toThrowError(errorMessage);
+    expect(() => {
+      apiService.deleteRecipe(undefined);
+    }).toThrowError(errorMessage);
+    expect(() => {
+      apiService.deleteRecipe(null);
+    }).toThrowError(errorMessage);
+  });
 });

@@ -44,8 +44,7 @@ export class ApiService {
 
   public deleteRecipe($key: string): void {
     if ($key === undefined || $key === null || $key.length === 0) {
-      let exception = 'Invalid Key';
-      this.errorReportService.send(exception);
+      throw new Error('Empty Key');
     } else {
       this.af.database.list(PUBLIC_RECIPES_URL)
           .remove($key)
