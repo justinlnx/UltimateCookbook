@@ -11,7 +11,6 @@ import {PreloadAllModules, RouterModule} from '@angular/router';
 import {createInputTransfer, createNewHosts, removeNgStyles} from '@angularclass/hmr';
 import {AngularFireModule} from 'angularfire2';
 
-import {AboutComponent} from './about';
 import {ApiService} from './api';
 // App is our top level component
 import {AppComponent} from './app.component';
@@ -25,6 +24,7 @@ import {AuthService} from './auth';
 import {ENV_PROVIDERS} from './environment';
 import {ErrorReportComponent, ErrorReportService} from './error-report';
 import {NoContentComponent} from './no-content';
+import {ShiftBottomNavigationComponent} from './shift-bottom-navigation';
 
 // Application wide providers
 const APP_PROVIDERS =
@@ -52,7 +52,8 @@ export const firebaseConfig = {
   declarations: [
     AppComponent,
     NoContentComponent,
-    ErrorReportComponent
+    ErrorReportComponent,
+    ShiftBottomNavigationComponent
   ],
   imports: [ // import Angular's modules
     BrowserModule,

@@ -1,9 +1,6 @@
-import {
-  Component,
-  OnInit,
-  ViewEncapsulation
-} from '@angular/core';
-import { AppState } from './app.service';
+import {Component, ViewEncapsulation} from '@angular/core';
+
+import {Section} from './shift-bottom-navigation';
 
 /*
  * App Component
@@ -11,20 +8,19 @@ import { AppState } from './app.service';
  */
 @Component({
   selector: 'app',
-  styleUrls: [
-    './app.component.scss'
-  ],
+  styleUrls: ['./app.component.scss'],
   templateUrl: './app.component.html',
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent implements OnInit {
-  constructor(
-    public appState: AppState,
-  ) {
+export class AppComponent {
+  public sections: Section[];
+  constructor() {
+    this.sections = [
+      {name: 'Cart', url: './cart', icon: 'shopping_cart'},
+      {name: 'Recipes', url: './recipes', icon: 'book'},
+      {name: 'Favorite', url: './favorite', icon: 'favorite'},
+      {name: 'Create', url: './personal_recipes', icon: 'create'},
+      {name: 'Profile', url: './account', icon: 'account_circle'}
+    ];
   }
-
-  public ngOnInit() {
-    console.log('Initial App State', this.appState.state);
-  }
-
 }
