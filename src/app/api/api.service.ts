@@ -86,7 +86,7 @@ export class ApiService {
     }
   }
 
-  private updateSteps($key: string, newSteps: Array<string>): void {
+  private updateSteps($key: string, newSteps: string[]): void {
     this.af.database.list(PUBLIC_RECIPES_URL)
       .update($key, { steps: newSteps })
       .then((_) => console.log('200: OK'), (err) => this.errorReportService.send(err.message));
@@ -110,13 +110,13 @@ export class ApiService {
       .then((_) => console.log('200: OK'), (err) => this.errorReportService.send(err.message));
   }
 
-  private updateImageSources($key: string, newImageSources: Array<string>): void {
+  private updateImageSources($key: string, newImageSources: string[]): void {
     this.af.database.list(PUBLIC_RECIPES_URL)
       .update($key, { imageSources: newImageSources })
       .then((_) => console.log('200: OK'), (err) => this.errorReportService.send(err.message));
   }
 
-  private updateIngredients($key: string, newIngredients: Array<string>): void {
+  private updateIngredients($key: string, newIngredients: string[]): void {
     this.af.database.list(PUBLIC_RECIPES_URL)
       .update($key, { ingredients: newIngredients })
       .then((_) => console.log('200: OK'), (err) => this.errorReportService.send(err.message));
