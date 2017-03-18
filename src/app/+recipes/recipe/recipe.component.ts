@@ -26,23 +26,41 @@ import { ErrorReportService } from '../../error-report';
     <p>{{recipe?.description}}</p>
     <p>Current Rate: <b>{{recipe?.rating}}</b></p>
 
-    <rating 
-      [max]="maxRateValue"
-      (onHover)="overStarDoSomething($event)" 
-      (onLeave)="resetRatingStar($event)">
-    </rating>
+    <md-card>
+      <md-card-title>INGREDIENTS</md-card-title>
 
+      <md-card-content>
+        <md-list>
+          <div>
+            <ul *ngFor="let ingredient of recipe?.ingredients; let i = index">
+              <p>{{i+1}} : {{ingredient}}</p>
+            </ul>
+          </div>
+        </md-list>
+      </md-card-content>
+    </md-card>
 
+    <md-card>
+      <md-card-title>STEPS</md-card-title>
+
+      <md-card-content>
+        <md-list>
+          <div>
+            <ul *ngFor="let step of recipe?.steps; let i = index">
+              <p>{{i+1}} : {{step}}</p>
+            </ul>
+          </div>
+        </md-list>
+      </md-card-content>
+    </md-card>
+
+    
     <img *ngFor="let trustedImageUrl of trustedImageUrls" [src]="trustedImageUrl" alt="recipe image" style="width: 100%;max-height: 100%">
   </div>
-  `
+  `,
 })
 export class RecipeComponent implements OnInit, OnDestroy {
-
-  private maxRateValue: number = 10;
-  private isRatingReadonly: boolean = false;
-  private overStar: number;
-  private ratingPercent: number;
+  // temp
 
   private recipeSubscription: Subscription;
 
@@ -83,17 +101,4 @@ export class RecipeComponent implements OnInit, OnDestroy {
     }
   }
 
-  private ratingStatesItems: any = [
-    { stateOn: 'glyphicon-ok-sign', stateOff: 'glyphicon-ok-circle' },
-
-  ];
-
-  private resetRatingStar() {
-    this.overStar = null;
-  }
-
-  private overStarDoSomething(value: number): void {
-    this.overStar = value;
-    this.ratingPercent = 100 * (value / this.maxRateValue);
-  };
 }
