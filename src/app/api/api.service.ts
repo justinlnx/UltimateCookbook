@@ -23,7 +23,7 @@ export class ApiService {
   private recipeListObservable: FirebaseListObservable<Recipe[]>;
   private recipes: Recipe[];
 
-  constructor(private af: AngularFire, private errorReportService: ErrorReportService) {
+  constructor(private af: AngularFire, public errorReportService: ErrorReportService) {
     this.recipes = [];
 
     this.recipeListObservable = this.af.database.list(PUBLIC_RECIPES_URL);
@@ -42,8 +42,15 @@ export class ApiService {
         (_) => console.log('success.'), (err) => this.errorReportService.send(err.message));
   }
 
-  public deleteRecipe(recipe: Recipe): Observable<boolean> {
-    return Observable.of(true);
+  public deleteRecipe($key: string): void {
+    if ($key === undefined || $key === null || $key.length === 0) {
+      let exception = 'Invalid Key';
+      this.errorReportService.send(exception);
+    } else {
+      this.af.database.list(PUBLIC_RECIPES_URL)
+          .remove($key)
+          .then((_) => console.log('200: OK'), (err) => this.errorReportService.send(err.message));
+    }
   }
 
   public updateRecipe(recipe: Recipe): Observable<boolean> {
