@@ -1,12 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { ActivatedRoute, Params, Router } from '@angular/router'
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { Rating } from './rating.component';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import {ActivatedRoute, Params, Router} from '@angular/router';
+import {Observable} from 'rxjs/Observable';
+import {Subscription} from 'rxjs/Subscription';
 
-import { ApiService, Recipe } from '../../api';
-import { ErrorReportService } from '../../error-report';
+import {ApiService, Recipe} from '../../api';
+import {ErrorReportService} from '../../error-report';
+
+import {Rating} from './rating.component';
 
 @Component({
   selector: 'recipe',
@@ -55,32 +56,33 @@ import { ErrorReportService } from '../../error-report';
     </md-card>
 
     
-    <img *ngFor="let trustedImageUrl of trustedImageUrls" [src]="trustedImageUrl" alt="recipe image" style="width: 100%;max-height: 100%">
+    <img *ngFor="let trustedImageUrl of trustedImageUrls" 
+      [src]="trustedImageUrl" alt="recipe image" style="width: 100%;max-height: 100%">
   </div>
   `,
 })
 export class RecipeComponent implements OnInit, OnDestroy {
-  // temp
+  public recipe: Recipe;
 
   private recipeSubscription: Subscription;
 
   private trustedImageUrls: SafeResourceUrl[];
 
   constructor(
-    private route: ActivatedRoute, private apiService: ApiService,
-    private domSanitizer: DomSanitizer, private router: Router,
-    private errorReportService: ErrorReportService) { }
+      private route: ActivatedRoute, private apiService: ApiService,
+      private domSanitizer: DomSanitizer, private router: Router,
+      private errorReportService: ErrorReportService) {}
 
   public ngOnInit(): void {
     this.route.params
-      .switchMap((params: Params) => Observable.of(this.apiService.getRecipe(params['id'])))
+        .switchMap((params: Params) => Observable.of(this.apiService.getRecipe(params['id'])))
         .subscribe((recipeObservable) => {
-        this.recipeSubscription = recipeObservable.subscribe((recipe) => {
-          console.log(recipe);
-          this.recipe = recipe;
-          this.updateTrustedImageUrls();
-        }, (err) => this.errorReportService.send(err));
-      });
+          this.recipeSubscription = recipeObservable.subscribe((recipe) => {
+            console.log(recipe);
+            this.recipe = recipe;
+            this.updateTrustedImageUrls();
+          }, (err) => this.errorReportService.send(err));
+        });
   }
 
   public ngOnDestroy(): void {
@@ -100,5 +102,4 @@ export class RecipeComponent implements OnInit, OnDestroy {
       this.trustedImageUrls = [];
     }
   }
-
 }
