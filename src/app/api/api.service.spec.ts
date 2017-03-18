@@ -17,17 +17,22 @@ describe('delete api', () => {
       }
     }
   };
-  let stubApiService = {AngularFire: afStub, ErrorReportService: new ErrorReportService()};
-
-  TestBed.configureTestingModule({providers: [{provide: ApiService, useValue: stubApiService}]});
 
   beforeEach(() => {
-    apiService = TestBed.get(ApiService);
+    apiService = new ApiService(afStub as AngularFire, new ErrorReportService());
   });
 
-  it('delete recipe with empty key throws', () => {
-    this.apiService.deleteRecipe('').subscribe((errorMessage) => {
-      expect(errorMessage).toBe('Invalid Key');
-    });
-  });
+  it('delete recipe with empty key throws', async((done) => {
+       apiService.errorReportService.asObservable().subscribe(
+           (errorMessage) => expect(errorMessage).toEqual('Invalid Key'),
+           (_) => {
+             console.log('Error occurred');
+           },
+           () => {
+             done();
+           });
+       apiService.deleteRecipe('');
+       apiService.deleteRecipe(undefined);
+       apiService.deleteRecipe(null);
+     }));
 });
