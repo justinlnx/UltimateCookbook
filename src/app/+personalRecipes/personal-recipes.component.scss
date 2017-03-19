@@ -1,7 +1,13 @@
+$button-fab-width: 5.600rem !default;
+$button-fab-height: 5.600rem !default;
+$button-fab-line-height: 5.600rem !default;
+$button-fab-padding: 1.60rem !default;
+
 .add-button {
     top: auto;
-    right: 20px;
-    bottom: 20px;
+    right: ($button-fab-width - $button-fab-padding)/2;
+    bottom: (2*$button-fab-height - $button-fab-padding)/2;
     left: auto;
     position: absolute;
 }
+
