@@ -17,7 +17,7 @@ import {Recipe} from '../api';
     </md-icon>
   </md-list-item>
   <md-divider></md-divider>`,
-  styleUrls: ['./recipe-list-item.component.scss'],
+   styleUrls: ['./recipe-list-item.component.scss']
 })
 export class RecipeListItemComponent implements OnInit {
   @Input() public recipe: Recipe;
