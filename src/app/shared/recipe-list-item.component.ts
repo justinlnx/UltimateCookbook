@@ -6,9 +6,12 @@ import {Recipe} from '../api';
 @Component({
   selector: 'recipe-list-item',
   template: `
-  <md-list-item >
+  <md-list-item class="md-2-line">
     <img md-list-avatar [src]="safeImageUrl" alt="showcase" (click)="showDetails(recipe)">
-    <h4 md-line class="recipe-name" (click)="showDetails(recipe)">{{recipe?.name}}</h4>
+      <div class="mat-list-text">
+     <h4 md-line class="recipe-name" (click)="showDetails(recipe)">{{recipe?.name}}</h4>
+      <p>{{recipe?.rating}} likes</p>
+      </div>
     <md-icon (click)="likeRecipe(recipe)">
       <span md-icon [class.fav-button]="recipe?.rating == '1'">favorite</span>
     </md-icon>
