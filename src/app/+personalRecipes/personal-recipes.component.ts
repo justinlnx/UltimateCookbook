@@ -14,11 +14,11 @@ import {ApiService} from '../api';
       <md-icon class="md-24">add</md-icon>
     </button>
   `,
-  styleUrls:['./personal-recipes.component.scss']
+  styleUrls: ['./personal-recipes.component.scss']
 })
 export class PersonalRecipesComponent {
   public list;
   constructor(public apiService: ApiService) {
     this.list = apiService.getAllRecipes();
   }
-} 
+}
