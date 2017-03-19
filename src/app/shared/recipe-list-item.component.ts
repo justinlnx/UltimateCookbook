@@ -35,7 +35,7 @@ export class RecipeListItemComponent implements OnInit {
 
   public likeRecipe(recipe: Recipe) {
     console.log(recipe.rating);
-    if(recipe.rating == 0) {
+    if (recipe.rating === 0) {
       recipe.rating = 1;
     } else {
       recipe.rating = 0;
