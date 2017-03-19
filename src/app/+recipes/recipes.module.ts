@@ -5,14 +5,14 @@ import {RouterModule} from '@angular/router';
 import {SharedModule} from '../shared';
 
 import {RecipeComponent} from './recipe';
-import {RecipeListComponent, RecipeListItemComponent, SearchBarComponent} from './recipe-list';
+import {RecipeListComponent, SearchBarComponent} from './recipe-list';
 import {RecipesComponent} from './recipes.component';
 import {routes} from './recipes.routes';
 
 @NgModule({
   imports: [SharedModule, RouterModule.forChild(routes)],
   declarations: [
-    RecipesComponent, RecipeListComponent, RecipeListItemComponent, RecipeComponent,
+    RecipesComponent, RecipeListComponent, RecipeComponent,
     SearchBarComponent
   ],
 })

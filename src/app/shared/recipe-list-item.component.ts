@@ -1,18 +1,16 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {Router} from '@angular/router';
-import {Recipe} from '../../api';
+import {Recipe} from '../api';
 
 @Component({
   selector: 'recipe-list-item',
   template: `
   <md-list-item (click)="showDetails(recipe)">
     <img md-list-avatar [src]="safeImageUrl" alt="showcase">
-    <h4 md-line class="recipe-name">{{recipe.name}}</h4>
+    <h4 md-line class="recipe-name">{{recipe?.name}}</h4>
   </md-list-item>
-  <md-divider></md-divider>
-  `,
-  styleUrls: ['./recipe-list-item.component.scss']
+  <md-divider></md-divider>`
 })
 export class RecipeListItemComponent implements OnInit {
   @Input() public recipe: Recipe;
@@ -30,6 +28,9 @@ export class RecipeListItemComponent implements OnInit {
   }
 
   private updateBypassImageSrc() {
+    if (this.recipe.avatar) {
     this.safeImageUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(this.recipe.avatar);
+    }
+    
   }
 }
