@@ -12,6 +12,7 @@ export interface PushRecipe {
   author: string;
   description: string;
   imageSources: string[];
+  rating: number;
 }
 
 export interface Recipe extends PushRecipe { $key: string; }

@@ -18,7 +18,7 @@ export class AppComponent {
     this.sections = [
       {name: 'Cart', url: './cart', icon: 'shopping_cart'},
       {name: 'Search', url: './recipes', icon: 'search'},
-      {name: 'Favorite', url: './favorite', icon: 'favorite'},
+      {name: 'Favorites', url: './favorite', icon: 'favorite'},
       {name: 'Mine', url: './personal_recipes', icon: 'local_library'},
       {name: 'Profile', url: './account', icon: 'account_circle'}
     ];
