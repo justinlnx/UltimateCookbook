@@ -25,11 +25,10 @@ import {Rating} from './rating.component';
 
   <div class="page-content">
     <p>{{recipe?.description}}</p>
-    <p>Current Rate: <b>{{recipe?.rating}}</b></p>
+    <p>Likes: <b>{{recipe?.rating}}</b></p>
 
     <md-card>
       <md-card-title>INGREDIENTS</md-card-title>
-
       <md-card-content>
         <md-list>
           <div>
@@ -43,7 +42,6 @@ import {Rating} from './rating.component';
 
     <md-card>
       <md-card-title>STEPS</md-card-title>
-
       <md-card-content>
         <md-list>
           <div>
@@ -55,13 +53,49 @@ import {Rating} from './rating.component';
       </md-card-content>
     </md-card>
 
-    
+    <md-card>
+      <md-card-title>COMMENTS</md-card-title>
+      <md-card-content>
+        <ul  *ngFor="let comment of recipe?.comments; let i = index">
+          <md-card>
+            <md-card-content>
+              <md-list>
+                <div>
+                  <p>{{comment}}</p>
+                </div>
+              </md-list>
+
+            </md-card-content>
+
+          </md-card> 
+        </ul>
+      </md-card-content>
+            <md-card-content>
+ 
+              <md-card>
+                <md-card-content>
+                    <div>
+                      <input mdInput placeholder="Add comment">           
+                    </div>
+                    <div>
+                      <button md-raised-button class="sign-in-btn" type="button">Add</button>  
+                    </div>
+
+                </md-card-content>
+
+              </md-card> 
+
+      </md-card-content>
+    </md-card>
+
     <img *ngFor="let trustedImageUrl of trustedImageUrls" 
       [src]="trustedImageUrl" alt="recipe image" style="width: 100%;max-height: 100%">
+
   </div>
   `,
 })
 export class RecipeComponent implements OnInit, OnDestroy {
+  private max: number;
   public recipe: Recipe;
 
   private recipeSubscription: Subscription;
