@@ -76,7 +76,6 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
     let rating = 0;
     let steps = [];
     let ingredients = [];
-
     let newRecipe:
         PushRecipe = {avatar, name, author, description, rating, imageSources, steps, ingredients};
 
