@@ -74,8 +74,10 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
     let author = this.authState.auth.email;
     let imageSources = [];
     let rating = 0;
-
-    let newRecipe: PushRecipe = {avatar, name, description, author, imageSources, rating};
+    let steps = [];
+    let ingredients = [];
+    let newRecipe:
+        PushRecipe = {avatar, name, author, description, rating, imageSources, steps, ingredients};
 
     this.apiService.addRecipe(newRecipe);
     this.nagivateToRecipesPage();
