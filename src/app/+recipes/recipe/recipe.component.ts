@@ -11,21 +11,27 @@ import {Rating} from './rating.component';
 
 @Component({
   selector: 'recipe',
-  // templateUrl: './recipe.component.html'
   template: `
   <md-toolbar class="top-toolbar" color="primary">
-  <span>
-    <button md-button class="back-button" (click)="onNavigatingBack()">
-      <md-icon>arrow_back</md-icon>
-    </button>
-    {{recipe?.name}}
-  </span>
-
+    <span>
+      <button md-button class="back-button" (click)="onNavigatingBack()">
+        <md-icon>arrow_back</md-icon>
+      </button>
+      {{recipe?.name}}
+    </span>
   </md-toolbar>
 
   <div class="page-content">
-    <p>{{recipe?.description}}</p>
-    <p>Likes: <b>{{recipe?.rating}}</b></p>
+
+    <md-card>
+        <md-card-title>DESCRIPTION</md-card-title>
+        <md-card-content>
+            <div>
+              <p>{{recipe?.description}}</p>
+              <p style = "color: #283593">Likes: <b>{{recipe?.rating}}</b></p>
+            </div>
+        </md-card-content>
+    </md-card>
 
     <md-card>
       <md-card-title>INGREDIENTS</md-card-title>
@@ -33,7 +39,7 @@ import {Rating} from './rating.component';
         <md-list>
           <div>
             <ul *ngFor="let ingredient of recipe?.ingredients; let i = index">
-              <p>{{i+1}} : {{ingredient}}</p>
+              <p>{{ingredient}}</p>
             </ul>
           </div>
         </md-list>
@@ -46,56 +52,47 @@ import {Rating} from './rating.component';
         <md-list>
           <div>
             <ul *ngFor="let step of recipe?.steps; let i = index">
-              <p>{{i+1}} : {{step}}</p>
+              <p>{{i+1}} {{step}}</p>
             </ul>
+            <img *ngFor="let trustedImageUrl of trustedImageUrls" 
+                [src]="trustedImageUrl" alt="recipe image" style="width: 100%;max-height: 100%">
           </div>
         </md-list>
       </md-card-content>
     </md-card>
 
     <md-card>
-      <md-card-title>COMMENTS</md-card-title>
-      <md-card-content>
-        <ul  *ngFor="let comment of recipe?.comments; let i = index">
-          <md-card>
-            <md-card-content>
-              <md-list>
-                <div>
-                  <p>{{comment}}</p>
-                </div>
-              </md-list>
+    <md-card-title>COMMENTS</md-card-title>
+    <md-card-content>
+      <div  *ngFor="let comment of recipe?.comments; let i = index">
+        <md-card>
+          <md-card-content>
+            <md-list>
+              <p>{{comment.userID}}</p>
+              <p>{{comment.content}}</p>
+            </md-list>
+          </md-card-content>
+        </md-card> 
+      </div>
 
-            </md-card-content>
-
-          </md-card> 
-        </ul>
-      </md-card-content>
-            <md-card-content>
- 
-              <md-card>
-                <md-card-content>
-                    <div>
-                      <input mdInput placeholder="Add comment">           
-                    </div>
-                    <div>
-                      <button md-raised-button class="sign-in-btn" type="button">Add</button>  
-                    </div>
-
-                </md-card-content>
-
-              </md-card> 
-
-      </md-card-content>
+      <md-card>
+        <md-card-content>
+          <div>
+            <textarea cols="40" rows="5"></textarea>          
+          </div>   
+          <md-card-actions>
+            <button md-button>ADD COMMENT</button>
+          </md-card-actions>   
+        </md-card-content>
+      </md-card> 
+    </md-card-content>
     </md-card>
-
-    <img *ngFor="let trustedImageUrl of trustedImageUrls" 
-      [src]="trustedImageUrl" alt="recipe image" style="width: 100%;max-height: 100%">
 
   </div>
   `,
+  styleUrls: ['./recipe.component.scss'],
 })
 export class RecipeComponent implements OnInit, OnDestroy {
-  private max: number;
   public recipe: Recipe;
 
   private recipeSubscription: Subscription;
