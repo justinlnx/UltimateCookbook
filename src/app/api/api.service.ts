@@ -90,12 +90,18 @@ export class ApiService {
       });
     }
   }
-  private checkArrayEqual(arr1: string[], arr2: string[]): boolean {
-    if (arr1.length !== arr2.length) {
+  private checkArrayEqual(oldArr: string[], newArr: string[]): boolean {
+    if (newArr === null || newArr === undefined) {
+      return true;
+    }
+    if (oldArr === null || oldArr === undefined) {
       return false;
     }
-    for (let i = 0; i < arr1.length; i++) {
-      if (arr1[i] !== arr2[i]) {
+    if (oldArr.length !== newArr.length) {
+      return false;
+    }
+    for (let i = 0; i < oldArr.length; i++) {
+      if (oldArr[i] !== newArr[i]) {
         return false;
       }
     }
