@@ -19,8 +19,18 @@ import {Component} from '@angular/core';
                     </md-card-subtitle>
                     <md-card-content>
                         <md-card-actions>
-                            <button md-button>Action 1</button>
-                            <button md-button>Action 2</button>
+                            <md-list>
+                                <md-list-item class="md-3-line" ng-repeat="item in messages">
+                                    <div class="ingredient-numbers"> 
+                                        <span class="ingredient-numbers">5</span>
+                                    </div>
+                                    <div class="ingredient-name">
+                                        <span>Ingredients #1</span>
+                                    </div>
+                                    <i class="material-icons">check_circle</i>
+                                    <md-divider ng-if="!$last"></md-divider>
+                                </md-list-item>
+                            </md-list>
                         </md-card-actions>
                     </md-card-content>
                 </md-card>    

@@ -1,3 +1,32 @@
+@import '~@angular/material/core/theming/theming';
+@import 'src/styles/styles';
+
 md-tab {
     width: 50%!important;
+}
+
+md-card-title {
+    margin-bottom: 5px!important;
+}
+
+md-card-subtitle {
+    margin-bottom: 0px!important;
+}
+
+md-card-actions {
+    padding-top: 0px!important;
+
+    md-list {
+        padding-top: 0px!important;
+    }
+
+    .ingredient-name {
+        width: 70%;
+        font-size: 21px;
+    }
+
+    .ingredient-numbers {
+        width: 20%;
+        font-size: 21px;
+    }
 }
