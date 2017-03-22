@@ -52,8 +52,12 @@ export class LoginComponent implements OnInit {
         this.loginForm.value.email, this.loginForm.value.password, this.loginForm.value.name);
   }
 
-  public validateLoginForm(): boolean {
-    return this.loginForm.valid;
+  public validSigninInput(): boolean {
+    return this.validEmailInput() && this.validPasswordInput();
+  }
+
+  public validCreateInput(): boolean {
+    return this.validEmailInput() && this.validPasswordInput() && this.validUserNameInput();
   }
 
   private inputColor(valid: boolean): string {

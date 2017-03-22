@@ -10,7 +10,7 @@ import {Recipe} from '../api';
     <img md-list-avatar [src]="safeImageUrl" alt="showcase">
       <div class="mat-list-text">
      <h4 md-line class="recipe-name">{{recipe?.name}}</h4>
-      <p md-line class="recipe-rating">{{recipe?.rating}} likes</p>
+      <p md-line class="recipe-rating">{{recipe?.likedUsers?.length}} likes</p>
       </div>
     <md-icon (click)="likeRecipe(recipe); $event.stopPropagation()">
       <span md-icon [class.fav-button]="true">favorite</span>

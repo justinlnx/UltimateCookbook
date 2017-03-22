@@ -9,9 +9,7 @@ import {commentsUrl, PUBLIC_RECIPES_URL, USERS_URL} from './api-urls';
 import {generateGuid} from './guid';
 import {Comment, PushRecipe, Recipe} from './recipe';
 import {RecipeId, UserId} from './types';
-import {User} from './user';
-
-type Guid = string;
+import {PushUser, User} from './user';
 
 @Injectable()
 export class ApiService {
@@ -47,7 +45,9 @@ export class ApiService {
     this.af.auth.createUser({email, password})
         .then(
             (state) => {
-              let newUser = {$key: state.uid, name, recipes: [], likedRecipes: []};
+              let id = state.uid;
+
+              let newUser: PushUser = {id, name, recipes: [], likedRecipes: []};
 
               this.userListObservable.push(newUser).then(
                   (_) => console.log(`User created: ${email}, ${password}, ${name}`),
@@ -57,11 +57,6 @@ export class ApiService {
             (err) => {
               this.errorReportService.send(err.message);
             });
-  }
-
-  public getUser(userId: UserId): FirebaseObjectObservable<User> {
-    this.checkAuthState();
-    return this.af.database.object(`${USERS_URL}/${userId}`);
   }
 
   public toggleLike(recipe: Recipe): void {
@@ -76,7 +71,11 @@ export class ApiService {
     let userId = this.authState.uid;
     let recipeId = recipe.$key;
 
-    let subscription = this.getUser(userId).subscribe((user) => {
+    let subscription = this.userListObservable.subscribe((users) => {
+      let user = users.find((usr) => {
+        return usr.id === userId;
+      });
+
       let userLikedRecipes = this.createEmptyOnNull<RecipeId>(user.likedRecipes);
 
       if (likedUsers.find((id) => {
