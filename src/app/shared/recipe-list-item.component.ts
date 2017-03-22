@@ -6,18 +6,18 @@ import {Recipe} from '../api';
 @Component({
   selector: 'recipe-list-item',
   template: `
-  <md-list-item class="md-2-line">
-    <img md-list-avatar [src]="safeImageUrl" alt="showcase" (click)="showDetails(recipe)">
+  <md-list-item class="md-2-line"  (click)="showDetails(recipe)">
+    <img md-list-avatar [src]="safeImageUrl" alt="showcase">
       <div class="mat-list-text">
-     <h4 md-line class="recipe-name" (click)="showDetails(recipe)">{{recipe?.name}}</h4>
+     <h4 md-line class="recipe-name">{{recipe?.name}}</h4>
       <p md-line class="recipe-rating">{{recipe?.rating}} likes</p>
       </div>
-    <md-icon (click)="likeRecipe(recipe)">
+    <md-icon (click)="likeRecipe(recipe); $event.stopPropagation()">
       <span md-icon [class.fav-button]="recipe?.rating == '1'">favorite</span>
     </md-icon>
   </md-list-item>
   <md-divider></md-divider>`,
-   styleUrls: ['./recipe-list-item.component.scss'],
+  styleUrls: ['./recipe-list-item.component.scss'],
 })
 export class RecipeListItemComponent implements OnInit {
   @Input() public recipe: Recipe;
