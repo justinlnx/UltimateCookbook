@@ -1,5 +1,7 @@
+@import '~@angular/material/core/theming/theming';
+
 md-card-title {
-    color: #283593;
+    color: map-get($mat-indigo, 800);;
     margin-bottom: 0px; 
 }
 
@@ -9,4 +11,8 @@ md-card {
 
 md-list {
     padding-top: 0px;
+}
+
+.like {
+    color: map-get($mat-indigo, 800);
 }

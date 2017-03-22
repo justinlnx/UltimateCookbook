@@ -28,7 +28,7 @@ import {Rating} from './rating.component';
         <md-card-content>
             <div>
               <p>{{recipe?.description}}</p>
-              <p style = "color: #283593">Likes: <b>{{recipe?.rating}}</b></p>
+              <p class = "like">Likes: <b>{{recipe?.rating}}</b></p>
             </div>
         </md-card-content>
     </md-card>
