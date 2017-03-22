@@ -30,6 +30,10 @@ export class ApiService {
         () => console.error('No more authentication state!!!'));
   }
 
+  public isLoggedIn() {
+    return !!this.authState;
+  }
+
   public getAuth() {
     return this.af.auth;
   }
@@ -78,11 +82,11 @@ export class ApiService {
       return;
     }
 
-    let likedUsers = this.createEmptyOnNull<UserId>(recipe.likedUsers);
-    let userId = this.authState.uid;
-    let recipeId = recipe.$key;
+    this.userListObservable.first().subscribe((users) => {
+      let likedUsers = this.createEmptyOnNull<UserId>(recipe.likedUsers);
+      let userId = this.authState.uid;
+      let recipeId = recipe.$key;
 
-    let subscription = this.userListObservable.subscribe((users) => {
       let user = users.find((usr) => {
         return usr.id === userId;
       });
@@ -104,20 +108,9 @@ export class ApiService {
       }
 
       this.updateLikedUsers(recipeId, likedUsers);
-      this.updateUserLikedRecipes(userId, userLikedRecipes);
+      this.updateUserLikedRecipes(user.$key, userLikedRecipes);
 
-      subscription.unsubscribe();
     }, (err) => this.errorReportService.send(err));
-  }
-
-  public commentOnRecipe(recipe: Recipe, comment: Comment): void {
-    this.checkAuthState();
-
-    let recipeId = recipe.$key;
-
-    this.af.database.list(commentsUrl(recipeId))
-        .push(comment)
-        .then((_) => console.log('success.'), (err) => this.errorReportService.send(err.message));
   }
 
   public getLikedRecipes(): Observable<Recipe[]> {
@@ -136,6 +129,38 @@ export class ApiService {
             return !!found;
           });
         });
+  }
+
+  public ownsRecipe(recipe: Recipe): boolean {
+    this.checkAuthState();
+
+    return this.authState.uid === recipe.authorId;
+  }
+
+  public isLiked(recipe: Recipe): boolean {
+    this.checkAuthState();
+
+    let likedUsers = recipe.likedUsers;
+
+    if (!likedUsers) {
+      return false;
+    }
+
+    let found = likedUsers.find((userId) => {
+      return userId === this.authState.uid;
+    });
+
+    return !!found;
+  }
+
+  public commentOnRecipe(recipe: Recipe, comment: Comment): void {
+    this.checkAuthState();
+
+    let recipeId = recipe.$key;
+
+    this.af.database.list(commentsUrl(recipeId))
+        .push(comment)
+        .then((_) => console.log('success.'), (err) => this.errorReportService.send(err.message));
   }
 
   public getAllRecipes(): FirebaseListObservable<Recipe[]> {
@@ -262,7 +287,7 @@ export class ApiService {
   }
 
   private checkAuthState() {
-    if (!this.authState) {
+    if (!this.isLoggedIn()) {
       throw new Error('Not signed in!!!');
     }
   }

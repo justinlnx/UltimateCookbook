@@ -77,10 +77,7 @@ export class LoginComponent implements OnInit {
           Validators.maxLength(16)
         ]
       ],
-      name: [
-
-        '', [Validators.required]
-      ]
+      name: ['', [Validators.required]]
     });
   }
 
