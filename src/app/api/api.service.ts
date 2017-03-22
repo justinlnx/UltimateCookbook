@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {AngularFire, AuthMethods, AuthProviders, FirebaseAuthState} from 'angularfire2';
 import {FirebaseListObservable, FirebaseObjectObservable} from 'angularfire2';
 import {Observable} from 'rxjs/Observable';
+import * as Rx from 'rxjs/Rx';
 
 import {ErrorReportService} from '../error-report';
 
@@ -21,12 +22,22 @@ export class ApiService {
     this.recipeListObservable = this.af.database.list(PUBLIC_RECIPES_URL);
     this.userListObservable = this.af.database.list(USERS_URL);
 
-    this.af.auth.subscribe(
+    this.getAuth().subscribe(
         (newState) => {
           this.authState = newState;
         },
         (err) => this.errorReportService.send(err),
         () => console.error('No more authentication state!!!'));
+  }
+
+  public getAuth() {
+    return this.af.auth;
+  }
+
+  public getLoginObservable(): Observable<boolean> {
+    return this.getAuth().map((authState) => {
+      return !!authState;
+    });
   }
 
   public login(email: string, password: string): void {
@@ -107,6 +118,24 @@ export class ApiService {
     this.af.database.list(commentsUrl(recipeId))
         .push(comment)
         .then((_) => console.log('success.'), (err) => this.errorReportService.send(err.message));
+  }
+
+  public getLikedRecipes(): Observable<Recipe[]> {
+    return Rx.Observable.combineLatest(
+        this.recipeListObservable, this.userListObservable,
+        (recipeList: Recipe[], userList: User[]) => {
+          let user: User = userList.find((usr) => {
+            return usr.id === this.authState.uid;
+          });
+
+          return recipeList.filter((recipe: Recipe) => {
+            let found = user.likedRecipes.find((recipeId) => {
+              return recipeId === recipe.$key;
+            });
+
+            return !!found;
+          });
+        });
   }
 
   public getAllRecipes(): FirebaseListObservable<Recipe[]> {

@@ -6,11 +6,8 @@ import {SharedModule} from '../shared';
 
 import {AddRecipeComponent} from './add-recipe.component';
 import {routes} from './add-recipe.routes';
-import {LoginWarningComponent} from './login-warning.component';
 
-@NgModule({
-  imports: [SharedModule, RouterModule.forChild(routes)],
-  declarations: [AddRecipeComponent, LoginWarningComponent]
-})
+@NgModule(
+    {imports: [SharedModule, RouterModule.forChild(routes)], declarations: [AddRecipeComponent]})
 export class AddRecipeModule {
 }
