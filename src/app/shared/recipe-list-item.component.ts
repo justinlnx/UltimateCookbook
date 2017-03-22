@@ -13,7 +13,7 @@ import {Recipe} from '../api';
       <p md-line class="recipe-rating">{{recipe?.rating}} likes</p>
       </div>
     <md-icon (click)="likeRecipe(recipe); $event.stopPropagation()">
-      <span md-icon [class.fav-button]="recipe?.rating == '1'">favorite</span>
+      <span md-icon [class.fav-button]="true">favorite</span>
     </md-icon>
   </md-list-item>
   <md-divider></md-divider>`,
@@ -35,12 +35,7 @@ export class RecipeListItemComponent implements OnInit {
   }
 
   public likeRecipe(recipe: Recipe) {
-    console.log(recipe.rating);
-    if (recipe.rating === 0) {
-      recipe.rating = 1;
-    } else {
-      recipe.rating = 0;
-    }
+    console.log('liked');
   }
 
   private updateBypassImageSrc() {

@@ -17,7 +17,6 @@ import {AppComponent} from './app.component';
 import {APP_RESOLVER_PROVIDERS} from './app.resolver';
 import {ROUTES} from './app.routes';
 import {AppState, InternalStateType} from './app.service';
-import {AuthService} from './auth';
 /*
  * Platform and Environment providers/directives/pipes
  */
@@ -27,8 +26,7 @@ import {NoContentComponent} from './no-content';
 import {ShiftBottomNavigationComponent} from './shift-bottom-navigation';
 
 // Application wide providers
-const APP_PROVIDERS =
-    [...APP_RESOLVER_PROVIDERS, AppState, ApiService, ErrorReportService, AuthService];
+const APP_PROVIDERS = [...APP_RESOLVER_PROVIDERS, AppState, ApiService, ErrorReportService];
 
 type StoreType = {
   state: InternalStateType,

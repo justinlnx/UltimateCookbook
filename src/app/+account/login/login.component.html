@@ -12,6 +12,10 @@
       <input mdInput placeholder="Password" type="password" formControlName="password">
       <md-hint *ngIf="!validPasswordInput()">Incorrect password format</md-hint>
     </md-input-container>
+    <md-input-container [dividerColor]="userNameInputColor()">
+      <input mdInput placeholder="User name" type="text" formControlName="name">
+      <md-hint *ngIf="!validUserNameInput()">Incorrect user name format</md-hint>
+    </md-input-container>
     <div>
       <button md-raised-button class="sign-in-btn" [disabled]='!validateLoginForm()' type="button" (click)="onSignIn()">Sign in</button>
       <button md-raised-button class="create-account-btn" [disabled]='!validateLoginForm()' type="button" (click)="onCreateAccount()">Create Account</button>

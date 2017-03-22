@@ -1,35 +1,113 @@
 import {Injectable} from '@angular/core';
-import {AngularFire, FirebaseListObservable, FirebaseObjectObservable} from 'angularfire2';
+import {AngularFire, AuthMethods, AuthProviders, FirebaseAuthState} from 'angularfire2';
+import {FirebaseListObservable, FirebaseObjectObservable} from 'angularfire2';
 import {Observable} from 'rxjs/Observable';
+
 import {ErrorReportService} from '../error-report';
+
+import {commentsUrl, PUBLIC_RECIPES_URL, USERS_URL} from './api-urls';
 import {generateGuid} from './guid';
+import {Comment, PushRecipe, Recipe} from './recipe';
+import {RecipeId, UserId} from './types';
+import {User} from './user';
 
 type Guid = string;
 
-export interface PushRecipe {
-  avatar: string;
-  name: string;
-  author: string;
-  description: string;
-  rating: number;
-  imageSources: string[];
-  steps: string[];
-  ingredients: string[];
-}
-
-export interface Recipe extends PushRecipe { $key: string; }
-
-const PUBLIC_RECIPES_URL = '/public/recipes';
-
 @Injectable()
 export class ApiService {
+  private authState: FirebaseAuthState = null;
   private recipeListObservable: FirebaseListObservable<Recipe[]>;
-  private recipes: Recipe[];
+  private userListObservable: FirebaseListObservable<User[]>;
 
   constructor(private af: AngularFire, public errorReportService: ErrorReportService) {
-    this.recipes = [];
-
     this.recipeListObservable = this.af.database.list(PUBLIC_RECIPES_URL);
+    this.userListObservable = this.af.database.list(USERS_URL);
+
+    this.af.auth.subscribe(
+        (newState) => {
+          this.authState = newState;
+        },
+        (err) => this.errorReportService.send(err),
+        () => console.error('No more authentication state!!!'));
+  }
+
+  public login(email: string, password: string): void {
+    this.af.auth
+        .login({email, password}, {provider: AuthProviders.Password, method: AuthMethods.Password})
+        .then(
+            (state) => {
+              console.log(state);
+            },
+            (err) => {
+              this.errorReportService.send(err.message);
+            });
+  }
+
+  public createUser(email: string, password: string, name: string): void {
+    this.af.auth.createUser({email, password})
+        .then(
+            (state) => {
+              let newUser = {$key: state.uid, name, recipes: [], likedRecipes: []};
+
+              this.userListObservable.push(newUser).then(
+                  (_) => console.log(`User created: ${email}, ${password}, ${name}`),
+                  (err) => this.errorReportService.send(err.message));
+
+            },
+            (err) => {
+              this.errorReportService.send(err.message);
+            });
+  }
+
+  public getUser(userId: UserId): FirebaseObjectObservable<User> {
+    this.checkAuthState();
+    return this.af.database.object(`${USERS_URL}/${userId}`);
+  }
+
+  public toggleLike(recipe: Recipe): void {
+    this.checkAuthState();
+
+    if (recipe.authorId === this.authState.uid) {
+      this.errorReportService.send('Cannot like yourself!');
+      return;
+    }
+
+    let likedUsers = this.createEmptyOnNull<UserId>(recipe.likedUsers);
+    let userId = this.authState.uid;
+    let recipeId = recipe.$key;
+
+    let subscription = this.getUser(userId).subscribe((user) => {
+      let userLikedRecipes = this.createEmptyOnNull<RecipeId>(user.likedRecipes);
+
+      if (likedUsers.find((id) => {
+            return id === userId;
+          })) {
+        likedUsers = likedUsers.filter((id) => {
+          return id !== userId;
+        });
+        userLikedRecipes = userLikedRecipes.filter((id) => {
+          return id !== recipeId;
+        });
+      } else {
+        likedUsers.push(userId);
+        userLikedRecipes.push(recipeId);
+      }
+
+      this.updateLikedUsers(recipeId, likedUsers);
+      this.updateUserLikedRecipes(userId, userLikedRecipes);
+
+      subscription.unsubscribe();
+    }, (err) => this.errorReportService.send(err));
+  }
+
+  public commentOnRecipe(recipe: Recipe, comment: Comment): void {
+    this.checkAuthState();
+
+    let recipeId = recipe.$key;
+
+    this.af.database.list(commentsUrl(recipeId))
+        .push(comment)
+        .then((_) => console.log('success.'), (err) => this.errorReportService.send(err.message));
   }
 
   public getAllRecipes(): FirebaseListObservable<Recipe[]> {
@@ -45,9 +123,12 @@ export class ApiService {
         (_) => console.log('success.'), (err) => this.errorReportService.send(err.message));
   }
 
-  public deleteRecipe($key: string): void {
+  public deleteRecipe(recipe: Recipe): void {
+    let $key = recipe.$key;
     if ($key === undefined || $key === null || $key.length === 0) {
       throw new Error('Empty Key');
+    } else if (this.authState.uid !== recipe.authorId) {
+      throw new Error('Action not permitted by current user.');
     } else {
       this.af.database.list(PUBLIC_RECIPES_URL)
           .remove($key)
@@ -55,37 +136,35 @@ export class ApiService {
     }
   }
 
-  public updateRecipe($key: string, updateRecipe: Recipe): void {
+  public updateRecipe(updateRecipe: Recipe): void {
+    let $key = updateRecipe.$key;
+
     if ($key === undefined || $key === null || $key.length === 0) {
       let exception = 'Invalid Key';
       this.errorReportService.send(exception);
+    } else if (this.authState.uid !== updateRecipe.authorId) {
+      throw new Error('Action not permitted by current user.');
     } else {
-      let currentRecipe;
-      this.getRecipe($key).subscribe((x) => {
-        currentRecipe = x;
-        if (!this.checkArrayEqual(currentRecipe.steps, updateRecipe.steps)) {
-          this.updateSteps($key, updateRecipe.steps);
+      this.getRecipe($key).subscribe((currentRecipe) => {
+
+        if (currentRecipe.authorId !== updateRecipe.authorId) {
+          throw new Error('Author id cannot be modified.');
         }
-        if (currentRecipe.author !== updateRecipe.author) {
-          this.updateAuthor($key, updateRecipe.author);
-        }
+
+        // if (!this.checkArrayEqual(currentRecipe.steps, updateRecipe.steps)) {
+        //   this.updateSteps($key, updateRecipe.steps);
+        // }
         if (currentRecipe.avatar !== updateRecipe.avatar) {
           this.updateAvatar($key, updateRecipe.avatar);
         }
         if (currentRecipe.description !== updateRecipe.description) {
           this.updateDescription($key, updateRecipe.description);
         }
-        if (!this.checkArrayEqual(currentRecipe.imageSources, updateRecipe.imageSources)) {
-          this.updateImageSources($key, updateRecipe.imageSources);
-        }
         if (!this.checkArrayEqual(currentRecipe.ingredients, updateRecipe.ingredients)) {
           this.updateIngredients($key, updateRecipe.ingredients);
         }
         if (currentRecipe.name !== updateRecipe.name) {
           this.updateName($key, updateRecipe.avatar);
-        }
-        if (currentRecipe.rating !== updateRecipe.rating) {
-          this.updateRating($key, updateRecipe.rating);
         }
       });
     }
@@ -110,12 +189,6 @@ export class ApiService {
   private updateSteps($key: string, newSteps: string[]): void {
     this.af.database.list(PUBLIC_RECIPES_URL)
         .update($key, {steps: newSteps})
-        .then((_) => console.log('200: OK'), (err) => this.errorReportService.send(err.message));
-  }
-
-  private updateAuthor($key: string, newAuthor: string): void {
-    this.af.database.list(PUBLIC_RECIPES_URL)
-        .update($key, {author: newAuthor})
         .then((_) => console.log('200: OK'), (err) => this.errorReportService.send(err.message));
   }
 
@@ -149,9 +222,28 @@ export class ApiService {
         .then((_) => console.log('200: OK'), (err) => this.errorReportService.send(err.message));
   }
 
-  private updateRating($key: string, newRating: number): void {
+  private updateLikedUsers($key: RecipeId, newList: UserId[]): void {
     this.af.database.list(PUBLIC_RECIPES_URL)
-        .update($key, {rating: newRating})
+        .update($key, {likedUsers: newList})
         .then((_) => console.log('200: OK'), (err) => this.errorReportService.send(err.message));
+  }
+
+  private updateUserLikedRecipes($key: UserId, newList: RecipeId[]): void {
+    this.userListObservable.update($key, {likedRecipes: newList})
+        .then((_) => console.log('200: OK'), (err) => this.errorReportService.send(err.message));
+  }
+
+  private checkAuthState() {
+    if (!this.authState) {
+      throw new Error('Not signed in!!!');
+    }
+  }
+
+  private createEmptyOnNull<T>(arrayLike: T[]): T[] {
+    if (!arrayLike) {
+      return [];
+    } else {
+      return arrayLike;
+    }
   }
 }
