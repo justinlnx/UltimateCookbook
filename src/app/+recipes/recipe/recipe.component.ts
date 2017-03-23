@@ -27,6 +27,19 @@ import {Rating} from './rating.component';
   <div class="page-content">
 
     <md-card>
+      <md-card-title>AUTHOR</md-card-title>
+      <md-card-content>  
+      <md-list-item class="md-2-line">
+        <img md-card-avatar class = "avatar" src={{recipe.avatar}}>
+         <div class="mat-list-text">
+            <p md-line class = "authorName"> Shiba Inu </p>
+          </div>
+          <md-icon>message</md-icon>
+      </md-list-item>
+      </md-card-content>
+    </md-card>
+
+    <md-card>
         <md-card-title>DESCRIPTION</md-card-title>
         <md-card-content>
             <p class = "description">{{recipe?.description}}</p>
@@ -36,10 +49,8 @@ import {Rating} from './rating.component';
     <md-card>
       <md-card-title>INGREDIENTS</md-card-title>
       <md-card-content>
-        <md-list>
-          <ul *ngFor="let ingredient of recipe?.ingredients; let i = index">
+        <md-list *ngFor="let ingredient of recipe?.ingredients; let i = index">
             <p>{{ingredient}}</p>
-          </ul>
         </md-list>
       </md-card-content>
     </md-card>
@@ -47,12 +58,10 @@ import {Rating} from './rating.component';
     <md-card>
       <md-card-title>STEPS</md-card-title>
       <md-card-content>
-        <md-list>
-          <ul *ngFor="let step of recipe?.steps; let i = index">
+        <md-list *ngFor="let step of recipe?.steps; let i = index">
             <p>{{i+1}} {{step.content}}</p>
             <img src={{step.imageSource}} style="width: 100%;max-height: 100%"> 
                     alt="recipe image" style="width: 100%;max-height: 100%">
-          </ul>
         </md-list>
       </md-card-content>
     </md-card>
