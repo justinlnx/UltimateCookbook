@@ -28,7 +28,7 @@ import {Rating} from './rating.component';
         <md-card-content>
             <div>
               <p>{{recipe?.description}}</p>
-              <p class = "like">Likes: <b>{{recipe?.rating}}</b></p>
+              <p class = "like">Likes: <b>{{recipe?.likedUsers?.length}}</b></p>
             </div>
         </md-card-content>
     </md-card>
@@ -52,10 +52,10 @@ import {Rating} from './rating.component';
         <md-list>
           <div>
             <ul *ngFor="let step of recipe?.steps; let i = index">
-              <p>{{i+1}} {{step}}</p>
+              <p>{{i+1}} {{step.content}}</p>
+              <img *ngIf="step.imageSource" [src]="bypassUrl(step.imageSource)"
+                    alt="recipe image" style="width: 100%;max-height: 100%">
             </ul>
-            <img *ngFor="let trustedImageUrl of trustedImageUrls" 
-                [src]="trustedImageUrl" alt="recipe image" style="width: 100%;max-height: 100%">
           </div>
         </md-list>
       </md-card-content>
@@ -68,23 +68,23 @@ import {Rating} from './rating.component';
         <md-card>
           <md-card-content>
             <md-list>
-              <p>{{comment.userID}}</p>
+              <p>{{comment.userId}}</p>
               <p>{{comment.content}}</p>
             </md-list>
           </md-card-content>
-        </md-card> 
+        </md-card>
       </div>
 
       <md-card>
         <md-card-content>
           <div>
-            <textarea cols="40" rows="5"></textarea>          
-          </div>   
+            <textarea cols="40" rows="5"></textarea>
+          </div>
           <md-card-actions>
             <button md-button>ADD COMMENT</button>
-          </md-card-actions>   
+          </md-card-actions>
         </md-card-content>
-      </md-card> 
+      </md-card>
     </md-card-content>
     </md-card>
 
@@ -96,8 +96,6 @@ export class RecipeComponent implements OnInit, OnDestroy {
   public recipe: Recipe;
 
   private recipeSubscription: Subscription;
-
-  private trustedImageUrls: SafeResourceUrl[];
 
   constructor(
       private route: ActivatedRoute, private apiService: ApiService,
@@ -111,7 +109,6 @@ export class RecipeComponent implements OnInit, OnDestroy {
           this.recipeSubscription = recipeObservable.subscribe((recipe) => {
             console.log(recipe);
             this.recipe = recipe;
-            this.updateTrustedImageUrls();
           }, (err) => this.errorReportService.send(err));
         });
   }
@@ -124,13 +121,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl('recipes/all');
   }
 
-  private updateTrustedImageUrls() {
-    if (this.recipe.imageSources) {
-      this.trustedImageUrls = this.recipe.imageSources.map((imageSource) => {
-        return this.domSanitizer.bypassSecurityTrustResourceUrl(imageSource);
-      });
-    } else {
-      this.trustedImageUrls = [];
-    }
+  public bypassUrl(imageSource: string): SafeResourceUrl {
+    return this.domSanitizer.bypassSecurityTrustResourceUrl(imageSource);
   }
 }

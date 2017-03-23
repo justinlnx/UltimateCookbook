@@ -1,5 +1,8 @@
-import {Component} from '@angular/core';
-import {ApiService} from '../api';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Observable} from 'rxjs/Observable';
+import {Subscription} from 'rxjs/Subscription';
+
+import {ApiService, Recipe} from '../api';
 
 @Component({
   selector: 'favorite',
@@ -8,15 +11,43 @@ import {ApiService} from '../api';
     <span>Favorites</span>
   </md-toolbar>
   <div class="page-content">
-    <md-list>
-      <recipe-list-item *ngFor="let recipe of list | async" [recipe]="recipe"></recipe-list-item>
+    <login-warning *ngIf="!isLoggedIn"></login-warning>
+    <md-list *ngIf="isLoggedIn">
+      <recipe-list-item *ngFor="let recipe of recipeList | async" [recipe]="recipe">
+      </recipe-list-item>
     </md-list>
   </div>
   `
 })
-export class FavoriteComponent {
-  public list;
-  constructor(public apiService: ApiService) {
-    this.list = apiService.getAllRecipes();
+export class FavoriteComponent implements OnInit, OnDestroy {
+  public recipeList: Observable<Recipe[]>;
+
+  private subscription: Subscription;
+
+  private _isLoggedIn: boolean;
+  set isLoggedIn(status: boolean) {
+    this._isLoggedIn = status;
+    if (status) {
+      this.getLikedRecipes();
+    }
+  }
+  get isLoggedIn(): boolean {
+    return this._isLoggedIn;
+  }
+
+  constructor(public apiService: ApiService) {}
+
+  public ngOnInit() {
+    this.subscription = this.apiService.getLoginObservable().subscribe((isLoggedIn) => {
+      this.isLoggedIn = isLoggedIn;
+    });
+  }
+
+  public ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+  private getLikedRecipes() {
+    this.recipeList = this.apiService.getLikedRecipes();
   }
 }

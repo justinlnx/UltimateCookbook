@@ -2,7 +2,7 @@ import {DebugElement} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 
-import {AuthService, MockAuthService} from '../../auth';
+import {ApiService, MockApiStub} from '../../api';
 import {ErrorReportService} from '../../error-report';
 import {SharedModule} from '../../shared';
 
@@ -17,9 +17,7 @@ describe('login component', () => {
         .configureTestingModule({
           imports: [SharedModule],
           declarations: [LoginComponent],
-          providers: [
-            ErrorReportService, {provide: AuthService, useValue: new MockAuthService(null, null)}
-          ]
+          providers: [ErrorReportService, {provide: ApiService, useValue: MockApiStub}]
         })
         .compileComponents();
   }));
@@ -36,8 +34,8 @@ describe('login component', () => {
     expect(component).toBeDefined();
   });
 
-  it('should use mock auth service', () => {
-    expect(TestBed.get(AuthService)).toBeDefined();
+  it('should use mock api service', () => {
+    expect(TestBed.get(ApiService)).toBeDefined();
   });
 
   it('should have form setup', () => {
@@ -114,12 +112,15 @@ describe('login component', () => {
 
     let emailInput = getEmailInput();
     let passwordInput = getPasswordInput();
+    let userNameInput = getUserNameInput();
 
     emailInput.nativeElement.value = '123';
     passwordInput.nativeElement.value = 'abc';
+    userNameInput.nativeElement.value = '';
 
     emailInput.nativeElement.dispatchEvent(new Event('input'));
     passwordInput.nativeElement.dispatchEvent(new Event('input'));
+    userNameInput.nativeElement.dispatchEvent(new Event('input'));
 
     fixture.detectChanges();
 
@@ -134,32 +135,36 @@ describe('login component', () => {
 
     let emailInput = getEmailInput();
     let passwordInput = getPasswordInput();
+    let userNameInput = getUserNameInput();
 
     let email = '123@abc.com';
     let password = 'abcdefg';
+    let userName = 'John';
 
     emailInput.nativeElement.value = email;
     passwordInput.nativeElement.value = password;
+    userNameInput.nativeElement.value = userName;
 
     emailInput.nativeElement.dispatchEvent(new Event('input'));
     passwordInput.nativeElement.dispatchEvent(new Event('input'));
+    userNameInput.nativeElement.dispatchEvent(new Event('input'));
 
     fixture.detectChanges();
 
-    let authService = getAuthService();
+    let apiService = getApiService();
 
-    spyOn(authService, 'login');
-    spyOn(authService, 'createUser');
+    spyOn(apiService, 'login');
+    spyOn(apiService, 'createUser');
 
     signInButton.triggerEventHandler('click', null);
     createAccountButton.triggerEventHandler('click', null);
 
-    expect(authService.login).toHaveBeenCalledWith(email, password);
-    expect(authService.createUser).toHaveBeenCalledWith(email, password);
+    expect(apiService.login).toHaveBeenCalledWith(email, password);
+    expect(apiService.createUser).toHaveBeenCalledWith(email, password, userName);
   });
 
-  function getAuthService() {
-    return TestBed.get(AuthService);
+  function getApiService() {
+    return TestBed.get(ApiService);
   }
 
   function getEmailInput(): DebugElement {
@@ -168,6 +173,10 @@ describe('login component', () => {
 
   function getPasswordInput(): DebugElement {
     return getAllInputs()[1];
+  }
+
+  function getUserNameInput(): DebugElement {
+    return getAllInputs()[2];
   }
 
   function getAllInputs(): DebugElement[] {
