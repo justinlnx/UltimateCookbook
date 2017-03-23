@@ -6,9 +6,11 @@ import {ApiService, Recipe} from '../../api';
   selector: 'recipe-list',
   template: `
   <search-bar (searchInputChange)="onSearchInputChange($event)"></search-bar>
+ <div class="page-content">
   <md-list>
     <recipe-list-item *ngFor="let recipe of filteredRecipes" [recipe]="recipe"></recipe-list-item>
   </md-list>
+  </div>
   `,
   styleUrls: ['./recipe-list.component.scss']
 })
