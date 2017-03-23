@@ -1,3 +1,8 @@
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
 .top-toolbar {
   position: fixed;
   left: 0;
@@ -14,9 +19,13 @@
 }
 
 .page-content {
-  position: relative;
-  top: $toolbar-height;
-  bottom: $bottom-navbar-height;
+    position: absolute;
+    left: 0;
+    right: 0;
+    overflow: auto;
+    margin: 36px 0;
+    top: 3%;
+    bottom: 3%;
 }
 
 .back-button {
