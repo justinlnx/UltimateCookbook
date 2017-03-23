@@ -13,12 +13,15 @@ import {Rating} from './rating.component';
   selector: 'recipe',
   template: `
   <md-toolbar class="top-toolbar" color="primary">
-    <span>
+    <span class = "recipeName">
       <button md-button class="back-button" (click)="onNavigatingBack()">
         <md-icon>arrow_back</md-icon>
       </button>
       {{recipe?.name}}
     </span>
+    <md-icon (click)="likeRecipe(recipe); $event.stopPropagation()">
+      <span md-icon [class.fav-button]="recipe?.rating == '1'">favorite</span>
+    </md-icon>
   </md-toolbar>
 
   <div class="page-content">
@@ -26,10 +29,7 @@ import {Rating} from './rating.component';
     <md-card>
         <md-card-title>DESCRIPTION</md-card-title>
         <md-card-content>
-            <div>
-              <p>{{recipe?.description}}</p>
-              <p class = "like">Likes: <b>{{recipe?.likedUsers?.length}}</b></p>
-            </div>
+            <p class = "description">{{recipe?.description}}</p>
         </md-card-content>
     </md-card>
 
@@ -37,11 +37,9 @@ import {Rating} from './rating.component';
       <md-card-title>INGREDIENTS</md-card-title>
       <md-card-content>
         <md-list>
-          <div>
-            <ul *ngFor="let ingredient of recipe?.ingredients; let i = index">
-              <p>{{ingredient}}</p>
-            </ul>
-          </div>
+          <ul *ngFor="let ingredient of recipe?.ingredients; let i = index">
+            <p>{{ingredient}}</p>
+          </ul>
         </md-list>
       </md-card-content>
     </md-card>
@@ -50,13 +48,11 @@ import {Rating} from './rating.component';
       <md-card-title>STEPS</md-card-title>
       <md-card-content>
         <md-list>
-          <div>
-            <ul *ngFor="let step of recipe?.steps; let i = index">
-              <p>{{i+1}} {{step.content}}</p>
-              <img *ngIf="step.imageSource" [src]="bypassUrl(step.imageSource)"
+          <ul *ngFor="let step of recipe?.steps; let i = index">
+            <p>{{i+1}} {{step.content}}</p>
+            <img src={{step.imageSource}} style="width: 100%;max-height: 100%"> 
                     alt="recipe image" style="width: 100%;max-height: 100%">
-            </ul>
-          </div>
+          </ul>
         </md-list>
       </md-card-content>
     </md-card>
@@ -123,5 +119,14 @@ export class RecipeComponent implements OnInit, OnDestroy {
 
   public bypassUrl(imageSource: string): SafeResourceUrl {
     return this.domSanitizer.bypassSecurityTrustResourceUrl(imageSource);
+    }
+  }
+
+  public likeRecipe(recipe: Recipe) {
+    console.log(recipe.rating);
+    if (recipe.rating === 0) {
+      recipe.rating = 1;
+    } else {
+      recipe.rating = 0;
   }
 }
