@@ -10,7 +10,7 @@ import {Component} from '@angular/core';
     <div class="page-content">
         <md-tab-group>
             <md-tab class="list-label" label="LIST">
-                <md-card>
+                <md-card class="mat-elevation-z8">
                     <md-card-title>
                         <span class="md-headline">Recipe_1</span>
                     </md-card-title>

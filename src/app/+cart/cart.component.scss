@@ -5,16 +5,24 @@ md-tab {
     width: 50%!important;
 }
 
+md-card {
+    padding: 0!important;
+    margin: 5px 5px 5px 5px;
+    background: map-get($mat-yellow, 300)!important;
+}
+
 md-card-title {
-    margin-bottom: 5px!important;
+    padding: 10px 0px 5px 10px;
+    margin-bottom: 0px!important;
 }
 
 md-card-subtitle {
+    padding: 10px 0px 5px 10px;
     margin-bottom: 0px!important;
 }
 
 md-card-actions {
-    padding-top: 0px!important;
+    padding: 10px 0px 5px 10px;
 
     md-list {
         padding-top: 0px!important;
