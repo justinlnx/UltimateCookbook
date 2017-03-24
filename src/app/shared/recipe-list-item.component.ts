@@ -19,12 +19,12 @@ import {ApiService, Recipe} from '../api';
         <md-icon [class.fav-button]="isLiked(recipe)">favorite</md-icon>
       </button>
       <md-chip-list *ngIf="isOwner(recipe)" [selectable]="false">
-        <md-chip>Owner</md-chip>
+        <md-chip>Owned</md-chip>
       </md-chip-list>
     </div>
   </md-list-item>
   <md-divider></md-divider>`,
-   styleUrls: ['./recipe-list-item.component.scss']
+  styleUrls: ['./recipe-list-item.component.scss']
 })
 export class RecipeListItemComponent implements OnInit {
   @Input() public recipe: Recipe;
