@@ -135,6 +135,16 @@ export class ApiService {
         });
   }
 
+  public getOwnedRecipes(): Observable<Recipe[]> {
+    this.checkAuthState();
+
+    return this.recipeListObservable.map((recipes: Recipe[]) => {
+      return recipes.filter((recipe) => {
+        return recipe.authorId === this.authState.uid;
+      });
+    });
+  }
+
   public ownsRecipe(recipe: Recipe): boolean {
     this.checkAuthState();
 
