@@ -11,14 +11,18 @@ import {ApiService, Recipe} from '../api';
     <span>My Recipes</span>
   </md-toolbar>
   <div class="page-content">
-    <md-list>
-      <recipe-list-item *ngFor="let recipe of ownedRecipeList | async"
-                        [recipe]="recipe"></recipe-list-item>
-    </md-list>
+    <login-warning *ngIf="!isLoggedIn"></login-warning>
+    <div *ngIf="isLoggedIn">
+      <md-list>
+        <recipe-list-item *ngFor="let recipe of ownedRecipeList | async"
+                          [recipe]="recipe"></recipe-list-item>
+      </md-list>
+      <button md-fab class="add-button">
+        <md-icon class="md-24">add</md-icon>
+      </button>
+    </div>
   </div>
-  <button md-fab class="add-button">
-      <md-icon class="md-24">add</md-icon>
-  </button>
+
   `,
   styleUrls: ['./personal-recipes.component.scss']
 })
