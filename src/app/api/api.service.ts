@@ -121,6 +121,10 @@ export class ApiService {
             return usr.id === this.authState.uid;
           });
 
+          if (!user.likedRecipes) {
+            return [];
+          }
+
           return recipeList.filter((recipe: Recipe) => {
             let found = user.likedRecipes.find((recipeId) => {
               return recipeId === recipe.$key;
