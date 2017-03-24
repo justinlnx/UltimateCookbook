@@ -27,7 +27,9 @@ import {Component} from '@angular/core';
                                     <div class="ingredient-name">
                                         <span>Ingredients #1</span>
                                     </div>
-                                    <button class="material-icons">check_circle</button>
+                                    <button md-icon-button>
+                                        <md-icon class="material-icons">check_circle</md-icon>
+                                    </button>
                                 </md-list-item>
                             </md-list>
                         </md-card-actions>
