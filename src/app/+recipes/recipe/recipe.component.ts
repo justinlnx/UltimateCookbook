@@ -33,7 +33,7 @@ import {Rating} from './rating.component';
       <md-list-item class="md-2-line">
         <img md-card-avatar class = "avatar" [src]="recipe.avatar">
          <div class="mat-list-text">
-            <p md-line class = "authorName"> Shiba Inu </p>
+            <p md-line class = "name"> Shiba Inu </p>
           </div>
           <md-icon>message</md-icon>
       </md-list-item>
@@ -72,26 +72,30 @@ import {Rating} from './rating.component';
     <md-card-title>COMMENTS</md-card-title>
     <md-card-content>
       <div  *ngFor="let comment of recipe?.comments; let i = index">
-        <md-card>
           <md-card-content>
             <md-list>
-              <p>{{comment.userId}}</p>
+              <md-list-item class="md-2-line">
+                <img md-card-avatar class = "avatar" [src]="recipe.avatar">
+                <div class="mat-list-text">
+                <p md-line class = "name"> Shiba Inu </p>
+                </div>
+              </md-list-item>
               <p>{{comment.content}}</p>
             </md-list>
+            <md-divider></md-divider>
           </md-card-content>
-        </md-card>
       </div>
 
-      <md-card>
-        <md-card-content>
-          <div>
+
+      <md-card-content style="margin-bottom: 20px">
+        <div>
             <textarea cols="40" rows="5"></textarea>
           </div>
-          <md-card-actions>
-            <button md-button>ADD COMMENT</button>
+        <md-card-actions>
+          <button md-button>ADD COMMENT</button>
           </md-card-actions>
-        </md-card-content>
-      </md-card>
+      </md-card-content>
+
     </md-card-content>
     </md-card>
 
