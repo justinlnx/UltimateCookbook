@@ -20,15 +20,14 @@ import {Component} from '@angular/core';
                     <md-card-content>
                         <md-card-actions>
                             <md-list>
-                                <md-list-item class="md-3-line" ng-repeat="item in messages">
+                                <md-list-item class="md-3-line" ngFor="ingredient in ingredients">
                                     <div class="ingredient-numbers"> 
                                         <span class="ingredient-numbers">5</span>
                                     </div>
                                     <div class="ingredient-name">
                                         <span>Ingredients #1</span>
                                     </div>
-                                    <i class="material-icons">check_circle</i>
-                                    <md-divider ng-if="!$last"></md-divider>
+                                    <button class="material-icons">check_circle</button>
                                 </md-list-item>
                             </md-list>
                         </md-card-actions>
