@@ -1,3 +1,4 @@
+import {CartEntry} from './cart';
 import {RecipeId, UserId} from './types';
 
 export interface PushUser {
@@ -5,6 +6,7 @@ export interface PushUser {
   name: string;
   recipes: RecipeId[];
   likedRecipes: RecipeId[];
+  cart: CartEntry[];
 }
 
 export interface User extends PushUser { $key: string; }
