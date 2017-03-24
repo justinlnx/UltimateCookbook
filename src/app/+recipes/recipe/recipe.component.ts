@@ -29,13 +29,15 @@ import {Rating} from './rating.component';
     <md-card>
       <md-card-title>AUTHOR</md-card-title>
       <md-card-content>  
+      <md-list>
       <md-list-item class="md-2-line">
-        <img md-card-avatar class = "avatar" src={{recipe.avatar}}>
+        <img md-card-avatar class = "avatar" [src]="recipe.avatar">
          <div class="mat-list-text">
             <p md-line class = "authorName"> Shiba Inu </p>
           </div>
           <md-icon>message</md-icon>
       </md-list-item>
+      </md-list>
       </md-card-content>
     </md-card>
 
@@ -60,7 +62,7 @@ import {Rating} from './rating.component';
       <md-card-content>
         <md-list *ngFor="let step of recipe?.steps; let i = index">
             <p>{{i+1}} {{step.content}}</p>
-            <img src={{step.imageSource}} style="width: 100%;max-height: 100%"> 
+            <img [src]="step.imageSource" style="width: 100%;max-height: 100%"> 
                     alt="recipe image" style="width: 100%;max-height: 100%">
         </md-list>
       </md-card-content>
@@ -126,16 +128,16 @@ export class RecipeComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl('recipes/all');
   }
 
-  public bypassUrl(imageSource: string): SafeResourceUrl {
-    return this.domSanitizer.bypassSecurityTrustResourceUrl(imageSource);
-    }
-  }
-
   public likeRecipe(recipe: Recipe) {
     console.log(recipe.rating);
     if (recipe.rating === 0) {
       recipe.rating = 1;
     } else {
       recipe.rating = 0;
+    }
+  }
+
+    return this.domSanitizer.bypassSecurityTrustResourceUrl(imageSource);
+    }
   }
 }
