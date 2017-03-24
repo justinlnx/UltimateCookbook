@@ -15,7 +15,9 @@ import {Rating} from './rating.component';
   <md-toolbar class="top-toolbar" color="primary">
     <span class = "recipeName">
       <button md-button class="back-button" (click)="onNavigatingBack()">
-        <md-icon>arrow_back</md-icon>
+        <md-icon>
+          arrow_back
+        </md-icon>
       </button>
       {{recipe?.name}}
     </span>
@@ -35,7 +37,9 @@ import {Rating} from './rating.component';
          <div class="mat-list-text">
             <p md-line class = "name"> Shiba Inu </p>
           </div>
-          <md-icon>message</md-icon>
+          <md-icon>
+            message
+          </md-icon>
       </md-list-item>
       </md-list>
       </md-card-content>
@@ -44,15 +48,15 @@ import {Rating} from './rating.component';
     <md-card>
         <md-card-title>DESCRIPTION</md-card-title>
         <md-card-content>
-            <p class = "description">{{recipe?.description}}</p>
+          <p class = "description">{{recipe?.description}}</p>
         </md-card-content>
     </md-card>
 
     <md-card>
       <md-card-title>INGREDIENTS</md-card-title>
       <md-card-content>
-        <md-list *ngFor="let ingredient of recipe?.ingredients; let i = index">
-            <p>{{ingredient}}</p>
+        <md-list *ngFor="let ingredient of recipe?.ingredients">
+          <p>{{ingredient}}</p>
         </md-list>
       </md-card-content>
     </md-card>
@@ -62,7 +66,7 @@ import {Rating} from './rating.component';
       <md-card-content>
         <md-list *ngFor="let step of recipe?.steps; let i = index">
             <p>{{i+1}} {{step.content}}</p>
-            <img [src]="step.imageSource" style="width: 100%;max-height: 100%"> 
+            <img [src]="step.imageSource" style="width: 100%;max-height: 100%"
                     alt="recipe image" style="width: 100%;max-height: 100%">
         </md-list>
       </md-card-content>
@@ -71,7 +75,7 @@ import {Rating} from './rating.component';
     <md-card>
     <md-card-title>COMMENTS</md-card-title>
     <md-card-content>
-      <div  *ngFor="let comment of recipe?.comments; let i = index">
+      <div *ngFor="let comment of recipe?.comments">
           <md-card-content>
             <md-list>
               <md-list-item class="md-2-line">
@@ -86,11 +90,10 @@ import {Rating} from './rating.component';
           </md-card-content>
       </div>
 
-
-      <md-card-content style="margin-bottom: 20px">
+      <md-card-content>
         <div>
             <textarea cols="40" rows="5"></textarea>
-          </div>
+        </div>
         <md-card-actions>
           <button md-button>ADD COMMENT</button>
           </md-card-actions>
@@ -133,15 +136,6 @@ export class RecipeComponent implements OnInit, OnDestroy {
   }
 
   public likeRecipe(recipe: Recipe) {
-    console.log(recipe.rating);
-    if (recipe.rating === 0) {
-      recipe.rating = 1;
-    } else {
-      recipe.rating = 0;
-    }
-  }
-
-    return this.domSanitizer.bypassSecurityTrustResourceUrl(imageSource);
-    }
+    this.apiService.toggleLike(recipe);
   }
 }
