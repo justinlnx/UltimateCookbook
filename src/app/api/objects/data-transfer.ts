@@ -12,4 +12,14 @@ export class Mapper {
       return receiveScheme.receive(value);
     });
   }
+
+  public static mapListObservable(
+      observable: Observable<DatabaseSchema[]>,
+      receiveScheme: ReceiveScheme): Observable<FrontendObject[]> {
+    return observable.map((list) => {
+      return list.map((value) => {
+        return receiveScheme.receive(value);
+      });
+    });
+  }
 }

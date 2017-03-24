@@ -20,7 +20,7 @@ export interface RecipeSchema extends DatabaseSchema {
 
 export class Recipe extends FrontendObject {
   constructor(
-      public $key: string, public avatart: string, public name: string, public authorId: string,
+      public $key: string, public avatar: string, public name: string, public authorId: string,
       public description: string, public ingredients: Ingredient[], public likedUsers: string[],
       public steps: CookStep[], public comments: Comment[]) {
     super();
