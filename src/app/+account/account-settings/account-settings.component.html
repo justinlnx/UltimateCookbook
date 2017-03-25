@@ -1,7 +1,34 @@
 <md-toolbar class="top-toolbar" color="primary">
-  <span>Account settings</span>
+  <span id="profile-text">Profile</span>
   <span class="toolbar-spacer"></span>
   <button md-raised-button (click)="onLogout()" class="right-icon" color="warn">Sign out</button>
 </md-toolbar>
 <div class="page-content">
+  <md-card id="header-section">
+    <md-card-content>
+      <img md-card-avatar id="profile-image" src="https://firebasestorage.googleapis.com/v0/b/cookbookdemo-6bde5.appspot.com/o/public%2Fprofile.jpg?alt=media&token=3657d502-21aa-4c52-9e20-57cfcf756616"
+        alt="Stickman">
+      <p id="full-name">Kevin Tian</p>
+    </md-card-content>
+  </md-card>
+  <md-card id="information-section">
+    <md-card-content>
+      <md-list>
+        <md-list-item>
+          <h4 md-line class="tag">
+            <md-icon>email</md-icon>
+            Email Address:
+          </h4>
+          <p md-line class="personal-information">xxx@sfu.ca</p>
+        </md-list-item>
+        <md-list-item>
+          <h4 md-line class="tag">
+            <md-icon>call</md-icon>
+            Phone Number:
+          </h4>
+          <p md-line class="personal-information">604-xxx-xxx</p>
+        </md-list-item>
+      </md-list>
+    </md-card-content>
+  </md-card>
 </div>
