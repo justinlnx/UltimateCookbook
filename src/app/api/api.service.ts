@@ -94,31 +94,21 @@ export class ApiService {
 
     this.userListMappedObservable.first().subscribe((users) => {
       let likedUsers = recipe.likedUsers;
-      let userId = this.authState.uid;
-      let recipeId = recipe.$key;
 
-      let user = users.find((usr) => {
-        return usr.id === userId;
-      });
+      let user = this.getCurrentUser(users);
 
       let userLikedRecipes = user.likedRecipes;
 
-      if (likedUsers.find((id) => {
-            return id === userId;
-          })) {
-        likedUsers = likedUsers.filter((id) => {
-          return id !== userId;
-        });
-        userLikedRecipes = userLikedRecipes.filter((id) => {
-          return id !== recipeId;
-        });
+      if (recipe.isLikedByUser(user)) {
+        user.removeRecipeFromLikedList(recipe);
+        recipe.removeLikedUser(user);
       } else {
-        likedUsers.push(userId);
-        userLikedRecipes.push(recipeId);
+        user.addRecipeToLikedList(recipe);
+        recipe.addLikedUser(user);
       }
 
-      this.updateLikedUsers(recipeId, likedUsers);
-      this.updateUserLikedRecipes(user.$key, userLikedRecipes);
+      this.updateLikedUsers(recipe);
+      this.updateUserLikedRecipes(user);
 
     }, (err) => this.errorReportService.send(err));
   }
@@ -127,16 +117,10 @@ export class ApiService {
     return Rx.Observable.combineLatest(
         this.recipeListMappedObservable, this.userListMappedObservable,
         (recipeList: Recipe[], userList: User[]) => {
-          let user: User = userList.find((usr) => {
-            return usr.id === this.authState.uid;
-          });
+          let user = this.getCurrentUser(userList);
 
           return recipeList.filter((recipe: Recipe) => {
-            let found = user.likedRecipes.find((recipeId) => {
-              return recipeId === recipe.$key;
-            });
-
-            return !!found;
+            return user.isInLikedRecipes(recipe);
           });
         });
   }
@@ -146,7 +130,7 @@ export class ApiService {
 
     return this.recipeListMappedObservable.map((recipes: Recipe[]) => {
       return recipes.filter((recipe) => {
-        return recipe.authorId === this.authState.uid;
+        return this.ownsRecipe(recipe);
       });
     });
   }
@@ -161,10 +145,6 @@ export class ApiService {
     this.checkAuthState();
 
     let likedUsers = recipe.likedUsers;
-
-    if (!likedUsers) {
-      return false;
-    }
 
     let found = likedUsers.find((userId) => {
       return userId === this.authState.uid;
@@ -296,14 +276,14 @@ export class ApiService {
         .then((_) => console.log('200: OK'), (err) => this.errorReportService.send(err.message));
   }
 
-  private updateLikedUsers($key: string, newList: string[]): void {
+  private updateLikedUsers(recipe: Recipe): void {
     this.af.database.list(PUBLIC_RECIPES_URL)
-        .update($key, {likedUsers: newList})
+        .update(recipe.$key, {likedUsers: recipe.likedUsers})
         .then((_) => console.log('200: OK'), (err) => this.errorReportService.send(err.message));
   }
 
-  private updateUserLikedRecipes($key: string, newList: string[]): void {
-    this.userListObservable.update($key, {likedRecipes: newList})
+  private updateUserLikedRecipes(user: User): void {
+    this.userListObservable.update(user.$key, {likedRecipes: user.likedRecipes})
         .then((_) => console.log('200: OK'), (err) => this.errorReportService.send(err.message));
   }
 
@@ -311,5 +291,11 @@ export class ApiService {
     if (!this.isLoggedIn()) {
       throw new Error('Not signed in!!!');
     }
+  }
+
+  private getCurrentUser(users: User[]): User {
+    return users.find((user) => {
+      return user.$key === this.authState.uid;
+    });
   }
 }

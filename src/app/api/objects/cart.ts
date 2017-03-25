@@ -6,7 +6,7 @@ import {ReceiveScheme} from './receive-scheme';
 
 export interface CartEntrySchema extends DatabaseSchema {
   recipeId: string;
-  ingredients: IngredientSchema[]
+  ingredients: IngredientSchema[];
 }
 
 export class CartEntry extends FrontendObject {
@@ -15,6 +15,7 @@ export class CartEntry extends FrontendObject {
   }
 }
 
+// tslint:disable-next-line:max-classes-per-file
 class CartEntryReceiveScheme implements ReceiveScheme {
   public receive(cartEntrySchema: CartEntrySchema): CartEntry {
     let recipeId = DefaultTransferActions.stringAction(cartEntrySchema.recipeId);

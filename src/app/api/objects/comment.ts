@@ -14,6 +14,7 @@ export class Comment extends FrontendObject {
   }
 }
 
+// tslint:disable-next-line:max-classes-per-file
 class CommentReceiveScheme implements ReceiveScheme {
   public receive(commentSchema: CommentSchema): Comment {
     let content = DefaultTransferActions.stringAction(commentSchema.content);

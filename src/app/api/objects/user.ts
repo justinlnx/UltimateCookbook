@@ -3,6 +3,7 @@ import {DatabaseSchema} from './database-schema';
 import {DefaultTransferActions} from './default-transfer-actions';
 import {FrontendObject} from './frontend-object';
 import {ReceiveScheme} from './receive-scheme';
+import {Recipe} from './recipe';
 
 export interface PushUserSchema extends DatabaseSchema {
   id: string;
@@ -20,8 +21,25 @@ export class User extends FrontendObject {
       public likedRecipes: string[], public cart: CartEntry[]) {
     super();
   }
+
+  public isInLikedRecipes(recipe: Recipe): boolean {
+    return !!this.likedRecipes.find((likedRecipeId) => {
+      return likedRecipeId === recipe.$key;
+    });
+  }
+
+  public removeRecipeFromLikedList(recipe: Recipe): void {
+    this.likedRecipes = this.likedRecipes.filter((recipeId) => {
+      return recipeId !== recipe.$key;
+    });
+  }
+
+  public addRecipeToLikedList(recipe: Recipe): void {
+    this.likedRecipes.push(recipe.$key);
+  }
 }
 
+// tslint:disable-next-line:max-classes-per-file
 class UserReceiveScheme implements ReceiveScheme {
   public receive(userSchema: UserSchema): User {
     let $key = userSchema.$key;

@@ -14,6 +14,7 @@ export class CookStep extends FrontendObject {
   }
 }
 
+// tslint:disable-next-line:max-classes-per-file
 class CookStepReceiveScheme implements ReceiveScheme {
   public receive(cookStepSchema: CookStepSchema): CookStep {
     let content = DefaultTransferActions.stringAction(cookStepSchema.content);

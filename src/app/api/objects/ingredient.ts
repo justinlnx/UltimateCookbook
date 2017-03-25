@@ -14,6 +14,7 @@ export class Ingredient extends FrontendObject {
   }
 }
 
+// tslint:disable-next-line:max-classes-per-file
 class IngredientReceiveScheme implements ReceiveScheme {
   public receive(ingredientSchema: IngredientSchema): Ingredient {
     let content = DefaultTransferActions.stringAction(ingredientSchema.content);
