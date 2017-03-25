@@ -1,14 +1,14 @@
-import {DatabaseSchema} from './database-schema';
+import {DatabaseSchema, PushDatabaseSchema} from './database-schema';
 import {DefaultTransferActions} from './default-transfer-actions';
 import {FrontendObject} from './frontend-object';
 import {ReceiveScheme} from './receive-scheme';
 
-export interface PushIngredientSchema extends DatabaseSchema {
+export interface PushIngredientSchema extends PushDatabaseSchema {
   content: string;
   bought: boolean;
 }
 
-export interface IngredientSchema extends PushIngredientSchema { $key: string; }
+export interface IngredientSchema extends PushIngredientSchema, DatabaseSchema {}
 
 export class Ingredient extends FrontendObject {
   constructor(public $key: string, public content: string, public bought: boolean) {

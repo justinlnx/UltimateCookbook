@@ -1,14 +1,14 @@
-import {DatabaseSchema} from './database-schema';
+import {DatabaseSchema, PushDatabaseSchema} from './database-schema';
 import {DefaultTransferActions} from './default-transfer-actions';
 import {FrontendObject} from './frontend-object';
 import {ReceiveScheme} from './receive-scheme';
 
-export interface PushCookStepSchema extends DatabaseSchema {
+export interface PushCookStepSchema extends PushDatabaseSchema {
   content: string;
   imageSource: string;
 }
 
-export interface CookStepSchema extends PushCookStepSchema { $key: string; }
+export interface CookStepSchema extends PushCookStepSchema, DatabaseSchema {}
 
 export class CookStep extends FrontendObject {
   constructor(public $key: string, public content: string, public imageSource: string) {

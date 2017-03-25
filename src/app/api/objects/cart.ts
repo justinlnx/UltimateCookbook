@@ -1,15 +1,15 @@
-import {DatabaseSchema} from './database-schema';
+import {DatabaseSchema, PushDatabaseSchema} from './database-schema';
 import {DefaultTransferActions} from './default-transfer-actions';
 import {FrontendObject} from './frontend-object';
 import {Ingredient, ingredientReceiveScheme, IngredientSchema} from './ingredient';
 import {ReceiveScheme} from './receive-scheme';
 
-export interface PushCartEntrySchema extends DatabaseSchema {
+export interface PushCartEntrySchema extends PushDatabaseSchema {
   recipeId: string;
   ingredients: IngredientSchema[];
 }
 
-export interface CartEntrySchema extends PushCartEntrySchema { $key: string; }
+export interface CartEntrySchema extends PushCartEntrySchema, DatabaseSchema {}
 
 export class CartEntry extends FrontendObject {
   constructor(public $key: string, public recipeId: string, public ingredients: Ingredient[]) {

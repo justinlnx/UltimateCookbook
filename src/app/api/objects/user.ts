@@ -1,11 +1,11 @@
 import {CartEntry, cartEntryReceiveScheme, CartEntrySchema} from './cart';
-import {DatabaseSchema} from './database-schema';
+import {DatabaseSchema, PushDatabaseSchema} from './database-schema';
 import {DefaultTransferActions} from './default-transfer-actions';
 import {FrontendObject} from './frontend-object';
 import {ReceiveScheme} from './receive-scheme';
 import {Recipe, RecipeSchema} from './recipe';
 
-export interface PushUserSchema extends DatabaseSchema {
+export interface PushUserSchema extends PushDatabaseSchema {
   id: string;
   name: string;
   recipes: string[];
@@ -13,7 +13,7 @@ export interface PushUserSchema extends DatabaseSchema {
   cart: CartEntrySchema[];
 }
 
-export interface UserSchema extends PushUserSchema { $key: string; }
+export interface UserSchema extends PushUserSchema, DatabaseSchema {}
 
 export class User extends FrontendObject {
   constructor(

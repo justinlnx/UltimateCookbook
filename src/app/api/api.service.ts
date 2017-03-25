@@ -189,14 +189,11 @@ export class ApiService {
   }
 
   public deleteRecipe(recipe: Recipe): void {
-    let $key = recipe.$key;
-    if ($key === undefined || $key === null || $key.length === 0) {
-      throw new Error('Empty Key');
-    } else if (this.authState.uid !== recipe.authorId) {
+    if (this.authState.uid !== recipe.authorId) {
       throw new Error('Action not permitted by current user.');
     } else {
       this.af.database.list(PUBLIC_RECIPES_URL)
-          .remove($key)
+          .remove(recipe.$key)
           .then((_) => console.log('200: OK'), (err) => this.errorReportService.send(err.message));
     }
   }
@@ -204,13 +201,10 @@ export class ApiService {
   public updateRecipe(updateRecipe: Recipe): void {
     let $key = updateRecipe.$key;
 
-    if ($key === undefined || $key === null || $key.length === 0) {
-      let exception = 'Invalid Key';
-      this.errorReportService.send(exception);
-    } else if (this.authState.uid !== updateRecipe.authorId) {
+    if (this.authState.uid !== updateRecipe.authorId) {
       throw new Error('Action not permitted by current user.');
     } else {
-      this.getRecipe($key).subscribe((currentRecipe) => {
+      this.getRecipe($key).first().subscribe((currentRecipe) => {
 
         if (currentRecipe.authorId !== updateRecipe.authorId) {
           throw new Error('Author id cannot be modified.');

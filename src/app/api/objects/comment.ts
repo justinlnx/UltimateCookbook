@@ -1,14 +1,14 @@
-import {DatabaseSchema} from './database-schema';
+import {DatabaseSchema, PushDatabaseSchema} from './database-schema';
 import {DefaultTransferActions} from './default-transfer-actions';
 import {FrontendObject} from './frontend-object';
 import {ReceiveScheme} from './receive-scheme';
 
-export interface PushCommentSchema extends DatabaseSchema {
+export interface PushCommentSchema extends PushDatabaseSchema {
   content: string;
   userId: string;
 }
 
-export interface CommentSchema extends PushCommentSchema { $key: string; }
+export interface CommentSchema extends PushCommentSchema, DatabaseSchema {}
 
 export class Comment extends FrontendObject {
   constructor(public $key: string, public content: string, public userId: string) {

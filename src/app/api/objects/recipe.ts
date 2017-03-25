@@ -1,13 +1,13 @@
 import {Comment, commentReceiveScheme, CommentSchema} from './comment';
 import {CookStep, cookStepReceiveScheme, CookStepSchema} from './cook-step';
-import {DatabaseSchema} from './database-schema';
+import {DatabaseSchema, PushDatabaseSchema} from './database-schema';
 import {DefaultTransferActions} from './default-transfer-actions';
 import {FrontendObject} from './frontend-object';
 import {Ingredient, ingredientReceiveScheme, IngredientSchema} from './ingredient';
 import {ReceiveScheme} from './receive-scheme';
 import {User} from './user';
 
-export interface PushRecipeSchema extends DatabaseSchema {
+export interface PushRecipeSchema extends PushDatabaseSchema {
   avatar: string;
   name: string;
   authorId: string;
@@ -18,7 +18,7 @@ export interface PushRecipeSchema extends DatabaseSchema {
   comments: CommentSchema[];
 }
 
-export interface RecipeSchema extends PushRecipeSchema { $key: string; }
+export interface RecipeSchema extends PushRecipeSchema, DatabaseSchema {}
 
 export class Recipe extends FrontendObject {
   constructor(
