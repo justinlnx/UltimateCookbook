@@ -11,7 +11,7 @@ import {ApiService, Recipe} from '../api';
     <img md-list-avatar [src]="safeImageUrl" alt="showcase">
       <div class="mat-list-text">
      <h4 md-line class="recipe-name">{{recipe?.name}}</h4>
-      <p md-line class="recipe-rating">{{numberOfLikes(recipe)}} likes</p>
+      <p md-line class="recipe-rating">{{recipe.numberOfLikes()}} likes</p>
       </div>
     <div *ngIf="isLoggedIn()">
       <button md-icon-button *ngIf="!isOwner(recipe)"
@@ -48,10 +48,6 @@ export class RecipeListItemComponent implements OnInit {
 
   public likeRecipe(recipe: Recipe) {
     this.apiService.toggleLike(recipe);
-  }
-
-  public numberOfLikes(recipe: Recipe): number {
-    return recipe.likedUsers ? recipe.likedUsers.length : 0;
   }
 
   public isLiked(recipe: Recipe): boolean {

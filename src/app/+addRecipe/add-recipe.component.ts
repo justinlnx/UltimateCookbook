@@ -4,7 +4,7 @@ import {Router} from '@angular/router';
 import {AngularFire, FirebaseAuthState} from 'angularfire2';
 import {Subscription} from 'rxjs/Subscription';
 
-import {ApiService, PushRecipe, Recipe} from '../api';
+import {ApiService, PushRecipeSchema, Recipe} from '../api';
 import {ErrorReportService} from '../error-report';
 
 @Component({
@@ -76,7 +76,7 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
     let ingredients = [];
     let comments = [];
     let likedUsers = [];
-    let newRecipe: PushRecipe;
+    let newRecipe: PushRecipeSchema;
     newRecipe = {avatar, name, authorId, description, steps, ingredients, comments, likedUsers};
 
     this.apiService.addRecipe(newRecipe);

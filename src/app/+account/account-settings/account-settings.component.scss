@@ -1,0 +1,30 @@
+@import '~@angular/material/core/theming/theming';
+#profile-image {
+    width: 30%;
+    height: 100px;
+    border-radius: 50%;
+    position: relative;
+    left: 35%;
+}
+
+#full-name {
+    text-align:center;
+    font-size: 20px;
+    color: map-get($mat-indigo, 800);
+}
+
+.personal-information{
+    position:relative;
+    left:20%;
+    font-size:20px;
+}
+
+ md-icon{
+    font-size:20px;
+    color:purple;
+ }
+ 
+.tag{
+    color:#333300;
+}
+
