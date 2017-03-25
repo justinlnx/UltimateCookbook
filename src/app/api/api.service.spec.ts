@@ -20,17 +20,4 @@ describe('delete api', () => {
     apiService = new ApiService(afStub as AngularFire, new ErrorReportService());
   });
 
-  it('Delete recipe with empty key throws', () => {
-    let errorMessage = 'Empty Key';
-
-    expect(() => {
-      apiService.deleteRecipe('');
-    }).toThrowError(errorMessage);
-    expect(() => {
-      apiService.deleteRecipe(undefined);
-    }).toThrowError(errorMessage);
-    expect(() => {
-      apiService.deleteRecipe(null);
-    }).toThrowError(errorMessage);
-  });
 });
