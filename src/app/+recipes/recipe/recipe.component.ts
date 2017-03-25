@@ -13,47 +13,40 @@ import {Rating} from './rating.component';
   selector: 'recipe',
   template: `
   <md-toolbar class="top-toolbar" color="primary">
-    <span class = "recipeName">
+    <span class = "topBar">
       <button md-icon-button class="back-button" (click)="onNavigatingBack()">
         <md-icon>arrow_back</md-icon>
       </button>
-      {{recipe?.name}}
     </span>
-    <button md-icon-button>
-      <md-icon (click)="likeRecipe(recipe); $event.stopPropagation()">
-        <span md-icon [class.fav-button]="recipe?.rating == '1'">favorite</span>
-      </md-icon>
-    </button>
   </md-toolbar>
 
   <div class="page-content">
 
     <md-card>
-      <md-card-title>AUTHOR</md-card-title>
-      <md-card-content>  
+      <md-card-title>{{recipe.name}}</md-card-title>
+      <md-card-content>
       <md-list>
       <md-list-item class="md-2-line">
-        <img md-card-avatar class = "avatar" [src]="recipe.avatar">
+         <img md-card-avatar class = "avatar" [src]="recipe.avatar">
          <div class="mat-list-text">
             <p md-line class = "name"> Shiba Inu </p>
           </div>
-          <button md-icon-button>
-            <md-icon>message</md-icon>
-          </button>
       </md-list-item>
+      <p class = "description">{{recipe?.description}}</p>
       </md-list>
+      <button md-icon-button>
+        <md-icon (click)="likeRecipe(recipe); $event.stopPropagation()">
+          <span md-icon [class.fav-button]="recipe?.rating == '1'">favorite</span>
+        </md-icon>
+      </button>
+      <button md-icon-button>
+        <md-icon>chat_bubble_outline</md-icon>
+      </button>
       </md-card-content>
     </md-card>
 
     <md-card>
-        <md-card-title>DESCRIPTION</md-card-title>
-        <md-card-content>
-          <p class = "description">{{recipe?.description}}</p>
-        </md-card-content>
-    </md-card>
-
-    <md-card>
-      <md-card-title>INGREDIENTS</md-card-title>
+      <md-card-title>Ingredients</md-card-title>
       <md-card-content>
         <md-list *ngFor="let ingredient of recipe?.ingredients">
           <p>{{ingredient}}</p>
@@ -61,18 +54,16 @@ import {Rating} from './rating.component';
       </md-card-content>
     </md-card>
 
-    <md-card>
-      <md-card-title>STEPS</md-card-title>
+    <md-card *ngFor="let step of recipe?.steps; let i = index">
+    <md-card-title>Steps {{i+1}}</md-card-title>
       <md-card-content>
-        <md-list *ngFor="let step of recipe?.steps; let i = index">
-            <p>{{i+1}} {{step.content}}</p>
-            <img [src]="step.imageSource" alt="recipe image" style="width: 100%;max-height: 100%">
-        </md-list>
+        <p>{{step.content}}</p>
+        <img [src]="step.imageSource" alt="recipe image" style="width: 100%;max-height: 100%">
       </md-card-content>
     </md-card>
 
     <md-card>
-    <md-card-title>COMMENTS</md-card-title>
+    <md-card-title>Comments</md-card-title>
     <md-card-content>
       <div *ngFor="let comment of recipe?.comments">
           <md-card-content>
@@ -81,9 +72,9 @@ import {Rating} from './rating.component';
                 <img md-card-avatar class = "avatar" [src]="recipe.avatar">
                 <div class="mat-list-text">
                 <p md-line class = "name"> Shiba Inu </p>
+                <p class = "comment">{{comment.content}}</p>
                 </div>
               </md-list-item>
-              <p>{{comment.content}}</p>
             </md-list>
             <md-divider></md-divider>
           </md-card-content>
@@ -91,10 +82,12 @@ import {Rating} from './rating.component';
 
       <md-card-content>
         <div>
-            <textarea cols="40" rows="5"></textarea>
+          <md-input-container>
+            <input mdInput placeholder="Add comment...">
+          </md-input-container>
         </div>
         <md-card-actions>
-          <button md-button>ADD COMMENT</button>
+          <button md-raised-button>Add</button>
           </md-card-actions>
       </md-card-content>
     </md-card-content>
