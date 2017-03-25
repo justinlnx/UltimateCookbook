@@ -9,8 +9,8 @@ import {ErrorReportService} from '../error-report';
 import {commentsUrl, PUBLIC_RECIPES_URL, USERS_URL} from './api-urls';
 import {generateGuid} from './guid';
 import {Mapper} from './objects';
-import {Comment, PushRecipe, Recipe, recipeReceiveScheme, RecipeSchema} from './objects';
-import {PushUser, User, userReceiveScheme, UserSchema} from './objects';
+import {Comment, PushRecipeSchema, Recipe, recipeReceiveScheme, RecipeSchema} from './objects';
+import {PushUserSchema, User, userReceiveScheme, UserSchema} from './objects';
 
 @Injectable()
 export class ApiService {
@@ -72,7 +72,7 @@ export class ApiService {
             (state) => {
               let id = state.uid;
 
-              let newUser: PushUser = {id, name, recipes: [], likedRecipes: [], cart: []};
+              let newUser: PushUserSchema = {id, name, recipes: [], likedRecipes: [], cart: []};
 
               this.userListObservable.push(newUser).then(
                   (_) => console.log(`User created: ${email}, ${password}, ${name}`),
@@ -192,7 +192,7 @@ export class ApiService {
         this.af.database.object(`${PUBLIC_RECIPES_URL}/${$key}`), recipeReceiveScheme);
   }
 
-  public addRecipe(recipe: PushRecipe): void {
+  public addRecipe(recipe: PushRecipeSchema): void {
     this.recipeListObservable.push(recipe).then(
         (_) => console.log('success.'), (err) => this.errorReportService.send(err.message));
   }

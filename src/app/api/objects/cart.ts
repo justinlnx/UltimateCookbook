@@ -3,7 +3,6 @@ import {DefaultTransferActions} from './default-transfer-actions';
 import {FrontendObject} from './frontend-object';
 import {Ingredient, ingredientReceiveScheme, IngredientSchema} from './ingredient';
 import {ReceiveScheme} from './receive-scheme';
-import {RecipeId} from './types';
 
 export interface CartEntrySchema extends DatabaseSchema {
   recipeId: string;
@@ -11,7 +10,7 @@ export interface CartEntrySchema extends DatabaseSchema {
 }
 
 export class CartEntry extends FrontendObject {
-  constructor(public recipeId: RecipeId, public ingredients: Ingredient[]) {
+  constructor(public recipeId: string, public ingredients: Ingredient[]) {
     super();
   }
 }

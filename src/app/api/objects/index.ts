@@ -5,5 +5,5 @@ export {Mapper} from './data-transfer';
 export {DatabaseSchema} from './database-schema';
 export {FrontendObject} from './frontend-object';
 export {Ingredient, ingredientReceiveScheme, IngredientSchema} from './ingredient';
-export {Recipe, recipeReceiveScheme, RecipeSchema} from './recipe';
-export {User, userReceiveScheme, UserSchema} from './user';
+export {PushRecipeSchema, Recipe, recipeReceiveScheme, RecipeSchema} from './recipe';
+export {PushUserSchema, User, userReceiveScheme, UserSchema} from './user';

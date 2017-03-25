@@ -2,7 +2,6 @@ import {DatabaseSchema} from './database-schema';
 import {DefaultTransferActions} from './default-transfer-actions';
 import {FrontendObject} from './frontend-object';
 import {ReceiveScheme} from './receive-scheme';
-import {RecipeId} from './types';
 
 export interface IngredientSchema extends DatabaseSchema {
   content: string;

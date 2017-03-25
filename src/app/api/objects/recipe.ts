@@ -6,8 +6,7 @@ import {FrontendObject} from './frontend-object';
 import {Ingredient, ingredientReceiveScheme, IngredientSchema} from './ingredient';
 import {ReceiveScheme} from './receive-scheme';
 
-export interface RecipeSchema extends DatabaseSchema {
-  $key: string;
+export interface PushRecipeSchema extends DatabaseSchema {
   avatar: string;
   name: string;
   authorId: string;
@@ -17,6 +16,8 @@ export interface RecipeSchema extends DatabaseSchema {
   steps: CookStepSchema[];
   comments: CommentSchema[];
 }
+
+export interface RecipeSchema extends PushRecipeSchema { $key: string; }
 
 export class Recipe extends FrontendObject {
   constructor(

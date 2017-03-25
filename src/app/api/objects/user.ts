@@ -4,14 +4,15 @@ import {DefaultTransferActions} from './default-transfer-actions';
 import {FrontendObject} from './frontend-object';
 import {ReceiveScheme} from './receive-scheme';
 
-export interface UserSchema extends DatabaseSchema {
-  $key: string;
+export interface PushUserSchema extends DatabaseSchema {
   id: string;
   name: string;
   recipes: string[];
   likedRecipes: string[];
   cart: CartEntrySchema[];
 }
+
+export interface UserSchema extends PushUserSchema { $key: string; }
 
 export class User extends FrontendObject {
   constructor(
