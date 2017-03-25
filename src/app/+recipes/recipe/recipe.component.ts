@@ -15,15 +15,15 @@ import {Rating} from './rating.component';
   <md-toolbar class="top-toolbar" color="primary">
     <span class = "recipeName">
       <button md-button class="back-button" (click)="onNavigatingBack()">
-        <md-icon>
-          arrow_back
-        </md-icon>
+        <md-icon>arrow_back</md-icon>
       </button>
       {{recipe?.name}}
     </span>
-    <md-icon (click)="likeRecipe(recipe); $event.stopPropagation()">
-      <span md-icon [class.fav-button]="recipe?.rating == '1'">favorite</span>
-    </md-icon>
+    <button md-icon-button>
+      <md-icon (click)="likeRecipe(recipe); $event.stopPropagation()">
+        <span md-icon [class.fav-button]="recipe?.rating == '1'">favorite</span>
+      </md-icon>
+    </button>
   </md-toolbar>
 
   <div class="page-content">
@@ -37,9 +37,9 @@ import {Rating} from './rating.component';
          <div class="mat-list-text">
             <p md-line class = "name"> Shiba Inu </p>
           </div>
-          <md-icon>
-            message
-          </md-icon>
+          <button md-icon-button>
+            <md-icon>message</md-icon>
+          </button>
       </md-list-item>
       </md-list>
       </md-card-content>
@@ -66,8 +66,7 @@ import {Rating} from './rating.component';
       <md-card-content>
         <md-list *ngFor="let step of recipe?.steps; let i = index">
             <p>{{i+1}} {{step.content}}</p>
-            <img [src]="step.imageSource" style="width: 100%;max-height: 100%"
-                    alt="recipe image" style="width: 100%;max-height: 100%">
+            <img [src]="step.imageSource" alt="recipe image" style="width: 100%;max-height: 100%">
         </md-list>
       </md-card-content>
     </md-card>
@@ -98,7 +97,6 @@ import {Rating} from './rating.component';
           <button md-button>ADD COMMENT</button>
           </md-card-actions>
       </md-card-content>
-
     </md-card-content>
     </md-card>
 
