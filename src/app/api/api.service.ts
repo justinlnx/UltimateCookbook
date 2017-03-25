@@ -6,21 +6,32 @@ import * as Rx from 'rxjs/Rx';
 
 import {ErrorReportService} from '../error-report';
 
-import {commentsUrl, PUBLIC_RECIPES_URL, USERS_URL} from './api-urls';
+import {commentsUrl, PUBLIC_RECIPES_URL, userCartUrl, USERS_URL} from './api-urls';
 import {generateGuid} from './guid';
-import {Comment, PushRecipe, Recipe} from './recipe';
-import {RecipeId, UserId} from './types';
-import {PushUser, User} from './user';
+import {Mapper} from './objects';
+import {PushRecipeSchema, Recipe, recipeReceiveScheme, RecipeSchema} from './objects';
+import {PushCommentSchema} from './objects';
+import {PushUserSchema, User, userReceiveScheme, UserSchema} from './objects';
+import {CartEntry} from './objects';
 
 @Injectable()
 export class ApiService {
   private authState: FirebaseAuthState = null;
-  private recipeListObservable: FirebaseListObservable<Recipe[]>;
-  private userListObservable: FirebaseListObservable<User[]>;
+  private recipeListObservable: FirebaseListObservable<RecipeSchema[]>;
+  private userListObservable: FirebaseListObservable<UserSchema[]>;
+
+  private recipeListMappedObservable: Observable<Recipe[]>;
+  private userListMappedObservable: Observable<User[]>;
 
   constructor(private af: AngularFire, public errorReportService: ErrorReportService) {
     this.recipeListObservable = this.af.database.list(PUBLIC_RECIPES_URL);
     this.userListObservable = this.af.database.list(USERS_URL);
+
+    this.recipeListMappedObservable =
+        Mapper.mapListObservable(this.recipeListObservable, recipeReceiveScheme);
+
+    this.userListMappedObservable =
+        Mapper.mapListObservable(this.userListObservable, userReceiveScheme);
 
     this.getAuth().subscribe(
         (newState) => {
@@ -45,7 +56,7 @@ export class ApiService {
   }
 
   public login(email: string, password: string): void {
-    this.af.auth
+    this.getAuth()
         .login({email, password}, {provider: AuthProviders.Password, method: AuthMethods.Password})
         .then(
             (state) => {
@@ -57,12 +68,13 @@ export class ApiService {
   }
 
   public createUser(email: string, password: string, name: string): void {
-    this.af.auth.createUser({email, password})
+    this.getAuth()
+        .createUser({email, password})
         .then(
             (state) => {
               let id = state.uid;
 
-              let newUser: PushUser = {id, name, recipes: [], likedRecipes: []};
+              let newUser: PushUserSchema = {id, name, recipes: [], likedRecipes: [], cart: []};
 
               this.userListObservable.push(newUser).then(
                   (_) => console.log(`User created: ${email}, ${password}, ${name}`),
@@ -82,55 +94,35 @@ export class ApiService {
       return;
     }
 
-    this.userListObservable.first().subscribe((users) => {
-      let likedUsers = this.createEmptyOnNull<UserId>(recipe.likedUsers);
-      let userId = this.authState.uid;
-      let recipeId = recipe.$key;
+    this.userListMappedObservable.first().subscribe((users) => {
+      let likedUsers = recipe.likedUsers;
 
-      let user = users.find((usr) => {
-        return usr.id === userId;
-      });
+      let user = this.getCurrentUser(users);
 
-      let userLikedRecipes = this.createEmptyOnNull<RecipeId>(user.likedRecipes);
+      let userLikedRecipes = user.likedRecipes;
 
-      if (likedUsers.find((id) => {
-            return id === userId;
-          })) {
-        likedUsers = likedUsers.filter((id) => {
-          return id !== userId;
-        });
-        userLikedRecipes = userLikedRecipes.filter((id) => {
-          return id !== recipeId;
-        });
+      if (recipe.isLikedByUser(user)) {
+        user.removeRecipeFromLikedList(recipe);
+        recipe.removeLikedUser(user);
       } else {
-        likedUsers.push(userId);
-        userLikedRecipes.push(recipeId);
+        user.addRecipeToLikedList(recipe);
+        recipe.addLikedUser(user);
       }
 
-      this.updateLikedUsers(recipeId, likedUsers);
-      this.updateUserLikedRecipes(user.$key, userLikedRecipes);
+      this.updateLikedUsers(recipe);
+      this.updateUserLikedRecipes(user);
 
     }, (err) => this.errorReportService.send(err));
   }
 
   public getLikedRecipes(): Observable<Recipe[]> {
     return Rx.Observable.combineLatest(
-        this.recipeListObservable, this.userListObservable,
+        this.recipeListMappedObservable, this.userListMappedObservable,
         (recipeList: Recipe[], userList: User[]) => {
-          let user: User = userList.find((usr) => {
-            return usr.id === this.authState.uid;
-          });
-
-          if (!user.likedRecipes) {
-            return [];
-          }
+          let user = this.getCurrentUser(userList);
 
           return recipeList.filter((recipe: Recipe) => {
-            let found = user.likedRecipes.find((recipeId) => {
-              return recipeId === recipe.$key;
-            });
-
-            return !!found;
+            return user.isInLikedRecipes(recipe);
           });
         });
   }
@@ -138,9 +130,9 @@ export class ApiService {
   public getOwnedRecipes(): Observable<Recipe[]> {
     this.checkAuthState();
 
-    return this.recipeListObservable.map((recipes: Recipe[]) => {
+    return this.recipeListMappedObservable.map((recipes: Recipe[]) => {
       return recipes.filter((recipe) => {
-        return recipe.authorId === this.authState.uid;
+        return this.ownsRecipe(recipe);
       });
     });
   }
@@ -156,10 +148,6 @@ export class ApiService {
 
     let likedUsers = recipe.likedUsers;
 
-    if (!likedUsers) {
-      return false;
-    }
-
     let found = likedUsers.find((userId) => {
       return userId === this.authState.uid;
     });
@@ -167,7 +155,16 @@ export class ApiService {
     return !!found;
   }
 
-  public commentOnRecipe(recipe: Recipe, comment: Comment): void {
+  public updateUserCart(user: User, cartEntry: CartEntry): void {
+    this.checkAuthState();
+
+    this.af.database.list(userCartUrl(user.$key))
+        .update(cartEntry.$key, cartEntry.asPushSchema())
+        .then((_) => console.log('success.'), (err) => this.errorReportService.send(err.message));
+    ;
+  }
+
+  public commentOnRecipe(recipe: Recipe, comment: PushCommentSchema): void {
     this.checkAuthState();
 
     let recipeId = recipe.$key;
@@ -177,28 +174,26 @@ export class ApiService {
         .then((_) => console.log('success.'), (err) => this.errorReportService.send(err.message));
   }
 
-  public getAllRecipes(): FirebaseListObservable<Recipe[]> {
-    return this.recipeListObservable;
+  public getAllRecipes(): Observable<Recipe[]> {
+    return this.recipeListMappedObservable;
   }
 
-  public getRecipe($key: string): FirebaseObjectObservable<Recipe> {
-    return this.af.database.object(`${PUBLIC_RECIPES_URL}/${$key}`);
+  public getRecipe($key: string): Observable<Recipe> {
+    return Mapper.mapObservable(
+        this.af.database.object(`${PUBLIC_RECIPES_URL}/${$key}`), recipeReceiveScheme);
   }
 
-  public addRecipe(recipe: PushRecipe): void {
+  public addRecipe(recipe: PushRecipeSchema): void {
     this.recipeListObservable.push(recipe).then(
         (_) => console.log('success.'), (err) => this.errorReportService.send(err.message));
   }
 
   public deleteRecipe(recipe: Recipe): void {
-    let $key = recipe.$key;
-    if ($key === undefined || $key === null || $key.length === 0) {
-      throw new Error('Empty Key');
-    } else if (this.authState.uid !== recipe.authorId) {
+    if (this.authState.uid !== recipe.authorId) {
       throw new Error('Action not permitted by current user.');
     } else {
       this.af.database.list(PUBLIC_RECIPES_URL)
-          .remove($key)
+          .remove(recipe.$key)
           .then((_) => console.log('200: OK'), (err) => this.errorReportService.send(err.message));
     }
   }
@@ -206,13 +201,10 @@ export class ApiService {
   public updateRecipe(updateRecipe: Recipe): void {
     let $key = updateRecipe.$key;
 
-    if ($key === undefined || $key === null || $key.length === 0) {
-      let exception = 'Invalid Key';
-      this.errorReportService.send(exception);
-    } else if (this.authState.uid !== updateRecipe.authorId) {
+    if (this.authState.uid !== updateRecipe.authorId) {
       throw new Error('Action not permitted by current user.');
     } else {
-      this.getRecipe($key).subscribe((currentRecipe) => {
+      this.getRecipe($key).first().subscribe((currentRecipe) => {
 
         if (currentRecipe.authorId !== updateRecipe.authorId) {
           throw new Error('Author id cannot be modified.');
@@ -227,9 +219,9 @@ export class ApiService {
         if (currentRecipe.description !== updateRecipe.description) {
           this.updateDescription($key, updateRecipe.description);
         }
-        if (!this.checkArrayEqual(currentRecipe.ingredients, updateRecipe.ingredients)) {
-          this.updateIngredients($key, updateRecipe.ingredients);
-        }
+        // if (!this.checkArrayEqual(currentRecipe.ingredients, updateRecipe.ingredients)) {
+        //   this.updateIngredients($key, updateRecipe.ingredients);
+        // }
         if (currentRecipe.name !== updateRecipe.name) {
           this.updateName($key, updateRecipe.avatar);
         }
@@ -289,14 +281,14 @@ export class ApiService {
         .then((_) => console.log('200: OK'), (err) => this.errorReportService.send(err.message));
   }
 
-  private updateLikedUsers($key: RecipeId, newList: UserId[]): void {
+  private updateLikedUsers(recipe: Recipe): void {
     this.af.database.list(PUBLIC_RECIPES_URL)
-        .update($key, {likedUsers: newList})
+        .update(recipe.$key, {likedUsers: recipe.likedUsers})
         .then((_) => console.log('200: OK'), (err) => this.errorReportService.send(err.message));
   }
 
-  private updateUserLikedRecipes($key: UserId, newList: RecipeId[]): void {
-    this.userListObservable.update($key, {likedRecipes: newList})
+  private updateUserLikedRecipes(user: User): void {
+    this.userListObservable.update(user.$key, {likedRecipes: user.likedRecipes})
         .then((_) => console.log('200: OK'), (err) => this.errorReportService.send(err.message));
   }
 
@@ -306,11 +298,9 @@ export class ApiService {
     }
   }
 
-  private createEmptyOnNull<T>(arrayLike: T[]): T[] {
-    if (!arrayLike) {
-      return [];
-    } else {
-      return arrayLike;
-    }
+  private getCurrentUser(users: User[]): User {
+    return users.find((user) => {
+      return user.$key === this.authState.uid;
+    });
   }
 }
