@@ -6,11 +6,13 @@ import * as Rx from 'rxjs/Rx';
 
 import {ErrorReportService} from '../error-report';
 
-import {commentsUrl, PUBLIC_RECIPES_URL, USERS_URL} from './api-urls';
+import {commentsUrl, PUBLIC_RECIPES_URL, userCartUrl, USERS_URL} from './api-urls';
 import {generateGuid} from './guid';
 import {Mapper} from './objects';
-import {Comment, PushRecipeSchema, Recipe, recipeReceiveScheme, RecipeSchema} from './objects';
+import {PushRecipeSchema, Recipe, recipeReceiveScheme, RecipeSchema} from './objects';
+import {PushCommentSchema} from './objects';
 import {PushUserSchema, User, userReceiveScheme, UserSchema} from './objects';
+import {CartEntry} from './objects';
 
 @Injectable()
 export class ApiService {
@@ -153,7 +155,16 @@ export class ApiService {
     return !!found;
   }
 
-  public commentOnRecipe(recipe: Recipe, comment: Comment): void {
+  public updateUserCart(user: User, cartEntry: CartEntry): void {
+    this.checkAuthState();
+
+    this.af.database.list(userCartUrl(user.$key))
+        .update(cartEntry.$key, cartEntry.asPushSchema())
+        .then((_) => console.log('success.'), (err) => this.errorReportService.send(err.message));
+    ;
+  }
+
+  public commentOnRecipe(recipe: Recipe, comment: PushCommentSchema): void {
     this.checkAuthState();
 
     let recipeId = recipe.$key;

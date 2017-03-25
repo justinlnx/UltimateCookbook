@@ -3,7 +3,7 @@ import {DatabaseSchema} from './database-schema';
 import {DefaultTransferActions} from './default-transfer-actions';
 import {FrontendObject} from './frontend-object';
 import {ReceiveScheme} from './receive-scheme';
-import {Recipe} from './recipe';
+import {Recipe, RecipeSchema} from './recipe';
 
 export interface PushUserSchema extends DatabaseSchema {
   id: string;
@@ -22,6 +22,22 @@ export class User extends FrontendObject {
     super();
   }
 
+  public asPushSchema(): PushUserSchema {
+    return {
+      id: this.id,
+      name: this.name,
+      recipes: this.recipes,
+      likedRecipes: this.likedRecipes,
+      cart: this.cartSchema()
+    };
+  }
+
+  public asSchema(): UserSchema {
+    let schema: any = this.asPushSchema();
+    schema.$key = this.$key;
+    return schema;
+  }
+
   public isInLikedRecipes(recipe: Recipe): boolean {
     return !!this.likedRecipes.find((likedRecipeId) => {
       return likedRecipeId === recipe.$key;
@@ -37,6 +53,12 @@ export class User extends FrontendObject {
   public addRecipeToLikedList(recipe: Recipe): void {
     this.likedRecipes.push(recipe.$key);
   }
+
+  private cartSchema(): CartEntrySchema[] {
+    return this.cart.map((cartEntry) => {
+      return cartEntry.asSchema();
+    });
+  }
 }
 
 // tslint:disable-next-line:max-classes-per-file
@@ -48,11 +70,11 @@ class UserReceiveScheme implements ReceiveScheme {
     let recipes = DefaultTransferActions.arrayAction(userSchema.recipes);
     let likedRecipes = DefaultTransferActions.arrayAction(userSchema.likedRecipes);
     let cart = DefaultTransferActions.arrayAction(userSchema.cart);
-    cart = cart.map((cartEntrySchema) => {
+    let transferredCart = cart.map((cartEntrySchema) => {
       return cartEntryReceiveScheme.receive(cartEntrySchema);
     });
 
-    return new User($key, id, name, recipes, likedRecipes, cart);
+    return new User($key, id, name, recipes, likedRecipes, transferredCart);
   }
 }
 

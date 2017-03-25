@@ -1,5 +1,5 @@
-export {CartEntry, cartEntryReceiveScheme, CartEntrySchema} from './cart';
-export {Comment, commentReceiveScheme, CommentSchema} from './comment';
+export {CartEntry, cartEntryReceiveScheme, CartEntrySchema, PushCartEntrySchema} from './cart';
+export {Comment, commentReceiveScheme, CommentSchema, PushCommentSchema} from './comment';
 export {CookStep, cookStepReceiveScheme, CookStepSchema} from './cook-step';
 export {Mapper} from './data-transfer';
 export {DatabaseSchema} from './database-schema';

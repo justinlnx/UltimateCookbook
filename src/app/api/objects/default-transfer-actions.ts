@@ -21,4 +21,11 @@ export class DefaultTransferActions {
     }
     return state;
   }
+
+  public static requiredStringAction(value: string): string|never {
+    if (!value || value.length === 0) {
+      throw new Error('String value is missing!!!');
+    }
+    return value;
+  }
 }

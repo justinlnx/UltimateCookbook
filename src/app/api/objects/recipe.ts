@@ -28,6 +28,25 @@ export class Recipe extends FrontendObject {
     super();
   }
 
+  public asPushSchema(): PushRecipeSchema {
+    return {
+      avatar: this.avatar,
+      name: this.name,
+      authorId: this.authorId,
+      description: this.description,
+      ingredients: this.ingredientsSchema(),
+      likedUsers: this.likedUsers,
+      steps: this.cookStepsSchema(),
+      comments: this.commentsSchema()
+    };
+  }
+
+  public asSchema(): RecipeSchema {
+    let schema: any = this.asPushSchema();
+    schema.$key = this.$key;
+    return schema;
+  }
+
   public numberOfLikes(): number {
     return this.likedUsers.length;
   }
@@ -47,6 +66,24 @@ export class Recipe extends FrontendObject {
   public addLikedUser(user: User): void {
     this.likedUsers.push(user.$key);
   }
+
+  private ingredientsSchema(): IngredientSchema[] {
+    return this.ingredients.map((ingredient) => {
+      return ingredient.asSchema();
+    });
+  }
+
+  private cookStepsSchema(): CookStepSchema[] {
+    return this.steps.map((step) => {
+      return step.asSchema();
+    });
+  }
+
+  private commentsSchema(): CommentSchema[] {
+    return this.comments.map((comment) => {
+      return comment.asSchema();
+    });
+  }
 }
 
 // tslint:disable-next-line:max-classes-per-file
@@ -60,22 +97,23 @@ class RecipeReceiveScheme implements ReceiveScheme {
     let likedUsers = DefaultTransferActions.arrayAction(recipeSchema.likedUsers);
 
     let ingredients = DefaultTransferActions.arrayAction(recipeSchema.ingredients);
-    ingredients = ingredients.map((ingredient) => {
+    let transferredIngredients = ingredients.map((ingredient) => {
       return ingredientReceiveScheme.receive(ingredient);
     });
 
     let steps = DefaultTransferActions.arrayAction(recipeSchema.steps);
-    steps = steps.map((step) => {
+    let transferredSteps = steps.map((step) => {
       return cookStepReceiveScheme.receive(step);
     });
 
     let comments = DefaultTransferActions.arrayAction(recipeSchema.comments);
-    comments = comments.map((comment) => {
+    let transferredComments = comments.map((comment) => {
       return commentReceiveScheme.receive(comment);
     });
 
     return new Recipe(
-        $key, avatar, name, authorId, description, ingredients, likedUsers, steps, comments);
+        $key, avatar, name, authorId, description, transferredIngredients, likedUsers,
+        transferredSteps, transferredComments);
   }
 }
 
