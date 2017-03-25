@@ -14,7 +14,7 @@ import {Rating} from './rating.component';
   template: `
   <md-toolbar class="top-toolbar" color="primary">
     <span class = "recipeName">
-      <button md-button class="back-button" (click)="onNavigatingBack()">
+      <button md-icon-button class="back-button" (click)="onNavigatingBack()">
         <md-icon>arrow_back</md-icon>
       </button>
       {{recipe?.name}}
