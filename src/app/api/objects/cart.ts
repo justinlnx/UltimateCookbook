@@ -13,7 +13,7 @@ export interface CartEntrySchema extends PushCartEntrySchema, DatabaseSchema {}
 
 export class CartEntry extends FrontendObject {
   constructor(public $key: string, public recipeId: string, public ingredients: Ingredient[]) {
-    super();
+    super($key);
   }
 
   public asPushSchema(): PushCartEntrySchema {
@@ -21,9 +21,7 @@ export class CartEntry extends FrontendObject {
   }
 
   public asSchema(): CartEntrySchema {
-    let schema: any = this.asPushSchema();
-    schema.$key = this.$key;
-    return schema;
+    return this.pushSchemaToSchema();
   }
 
   private ingredientsSchema(): IngredientSchema[] {

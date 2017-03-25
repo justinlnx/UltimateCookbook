@@ -25,7 +25,7 @@ export class Recipe extends FrontendObject {
       public $key: string, public avatar: string, public name: string, public authorId: string,
       public description: string, public ingredients: Ingredient[], public likedUsers: string[],
       public steps: CookStep[], public comments: Comment[]) {
-    super();
+    super($key);
   }
 
   public asPushSchema(): PushRecipeSchema {
@@ -42,9 +42,7 @@ export class Recipe extends FrontendObject {
   }
 
   public asSchema(): RecipeSchema {
-    let schema: any = this.asPushSchema();
-    schema.$key = this.$key;
-    return schema;
+    return this.pushSchemaToSchema();
   }
 
   public numberOfLikes(): number {

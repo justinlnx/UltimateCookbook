@@ -12,7 +12,7 @@ export interface CookStepSchema extends PushCookStepSchema, DatabaseSchema {}
 
 export class CookStep extends FrontendObject {
   constructor(public $key: string, public content: string, public imageSource: string) {
-    super();
+    super($key);
   }
 
   public asPushSchema(): PushCookStepSchema {
@@ -20,9 +20,7 @@ export class CookStep extends FrontendObject {
   }
 
   public asSchema(): CookStepSchema {
-    let schema: any = this.asPushSchema();
-    schema.$key = this.$key;
-    return schema;
+    return this.pushSchemaToSchema();
   }
 }
 

@@ -12,7 +12,7 @@ export interface IngredientSchema extends PushIngredientSchema, DatabaseSchema {
 
 export class Ingredient extends FrontendObject {
   constructor(public $key: string, public content: string, public bought: boolean) {
-    super();
+    super($key);
   }
 
   public asPushSchema(): PushIngredientSchema {
@@ -20,9 +20,7 @@ export class Ingredient extends FrontendObject {
   }
 
   public asSchema(): IngredientSchema {
-    let schema: any = this.asPushSchema();
-    schema.$key = this.$key;
-    return schema;
+    return this.pushSchemaToSchema();
   }
 }
 

@@ -12,7 +12,7 @@ export interface CommentSchema extends PushCommentSchema, DatabaseSchema {}
 
 export class Comment extends FrontendObject {
   constructor(public $key: string, public content: string, public userId: string) {
-    super();
+    super($key);
   }
 
   public asPushSchema(): PushCommentSchema {
@@ -20,9 +20,7 @@ export class Comment extends FrontendObject {
   }
 
   public asSchema(): CommentSchema {
-    let schema: any = this.asPushSchema();
-    schema.$key = this.$key;
-    return schema;
+    return this.pushSchemaToSchema();
   }
 }
 

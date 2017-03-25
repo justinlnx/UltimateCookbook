@@ -19,7 +19,7 @@ export class User extends FrontendObject {
   constructor(
       public $key: string, public id: string, public name: string, public recipes: string[],
       public likedRecipes: string[], public cart: CartEntry[]) {
-    super();
+    super($key);
   }
 
   public asPushSchema(): PushUserSchema {
@@ -33,9 +33,7 @@ export class User extends FrontendObject {
   }
 
   public asSchema(): UserSchema {
-    let schema: any = this.asPushSchema();
-    schema.$key = this.$key;
-    return schema;
+    return this.pushSchemaToSchema();
   }
 
   public isInLikedRecipes(recipe: Recipe): boolean {
