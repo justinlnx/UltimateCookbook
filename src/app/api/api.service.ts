@@ -300,7 +300,7 @@ export class ApiService {
 
   private getCurrentUser(users: User[]): User {
     return users.find((user) => {
-      return user.$key === this.authState.uid;
+      return user.id === this.authState.uid;
     });
   }
 }
