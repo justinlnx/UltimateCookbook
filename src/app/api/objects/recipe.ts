@@ -3,7 +3,6 @@ import {CookStep, cookStepReceiveScheme, PushCookStepSchema} from './cook-step';
 import {DatabaseSchema, PushDatabaseSchema} from './database-schema';
 import {DefaultTransferActions} from './default-transfer-actions';
 import {FrontendObject} from './frontend-object';
-import {Ingredient, ingredientReceiveScheme, PushIngredientSchema} from './ingredient';
 import {ReceiveScheme} from './receive-scheme';
 import {User} from './user';
 
@@ -12,7 +11,7 @@ export interface PushRecipeSchema extends PushDatabaseSchema {
   name: string;
   authorId: string;
   description: string;
-  ingredients: PushIngredientSchema[];
+  ingredients: string[];
   likedUsers: string[];
   steps: PushCookStepSchema[];
   comments: PushCommentSchema[];
@@ -23,7 +22,7 @@ export interface RecipeSchema extends PushRecipeSchema, DatabaseSchema {}
 export class Recipe extends FrontendObject {
   constructor(
       public $key: string, public avatar: string, public name: string, public authorId: string,
-      public description: string, public ingredients: Ingredient[], public likedUsers: string[],
+      public description: string, public ingredients: string[], public likedUsers: string[],
       public steps: CookStep[], public comments: Comment[]) {
     super($key);
   }
@@ -34,7 +33,7 @@ export class Recipe extends FrontendObject {
       name: this.name,
       authorId: this.authorId,
       description: this.description,
-      ingredients: this.pushIngredientsSchema(),
+      ingredients: this.ingredients,
       likedUsers: this.likedUsers,
       steps: this.pushCookStepsSchema(),
       comments: this.pushCommentsSchema()
@@ -65,12 +64,6 @@ export class Recipe extends FrontendObject {
     this.likedUsers.push(user.$key);
   }
 
-  private pushIngredientsSchema(): PushIngredientSchema[] {
-    return this.ingredients.map((ingredient) => {
-      return ingredient.asPushSchema();
-    });
-  }
-
   private pushCookStepsSchema(): PushCookStepSchema[] {
     return this.steps.map((step) => {
       return step.asPushSchema();
@@ -93,11 +86,7 @@ class RecipeReceiveScheme extends ReceiveScheme {
     let authorId = DefaultTransferActions.stringAction(recipeSchema.authorId);
     let description = DefaultTransferActions.stringAction(recipeSchema.description);
     let likedUsers = DefaultTransferActions.arrayAction(recipeSchema.likedUsers);
-
     let ingredients = DefaultTransferActions.arrayAction(recipeSchema.ingredients);
-    let transferredIngredients = ingredients.map((ingredient, ingredientIndex) => {
-      return ingredientReceiveScheme.receiveAsDescendant(ingredient, `${ingredientIndex}`);
-    });
 
     let steps = DefaultTransferActions.arrayAction(recipeSchema.steps);
     let transferredSteps = steps.map((step, stepIndex) => {
@@ -110,8 +99,8 @@ class RecipeReceiveScheme extends ReceiveScheme {
     });
 
     return new Recipe(
-        $key, avatar, name, authorId, description, transferredIngredients, likedUsers,
-        transferredSteps, transferredComments);
+        $key, avatar, name, authorId, description, ingredients, likedUsers, transferredSteps,
+        transferredComments);
   }
 }
 
