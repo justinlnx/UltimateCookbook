@@ -1,9 +1,9 @@
-import {Comment, commentReceiveScheme, CommentSchema} from './comment';
-import {CookStep, cookStepReceiveScheme, CookStepSchema} from './cook-step';
+import {Comment, commentReceiveScheme, PushCommentSchema} from './comment';
+import {CookStep, cookStepReceiveScheme, PushCookStepSchema} from './cook-step';
 import {DatabaseSchema, PushDatabaseSchema} from './database-schema';
 import {DefaultTransferActions} from './default-transfer-actions';
 import {FrontendObject} from './frontend-object';
-import {Ingredient, ingredientReceiveScheme, IngredientSchema} from './ingredient';
+import {Ingredient, ingredientReceiveScheme, PushIngredientSchema} from './ingredient';
 import {ReceiveScheme} from './receive-scheme';
 import {User} from './user';
 
@@ -12,10 +12,10 @@ export interface PushRecipeSchema extends PushDatabaseSchema {
   name: string;
   authorId: string;
   description: string;
-  ingredients: IngredientSchema[];
+  ingredients: PushIngredientSchema[];
   likedUsers: string[];
-  steps: CookStepSchema[];
-  comments: CommentSchema[];
+  steps: PushCookStepSchema[];
+  comments: PushCommentSchema[];
 }
 
 export interface RecipeSchema extends PushRecipeSchema, DatabaseSchema {}
@@ -34,10 +34,10 @@ export class Recipe extends FrontendObject {
       name: this.name,
       authorId: this.authorId,
       description: this.description,
-      ingredients: this.ingredientsSchema(),
+      ingredients: this.pushIngredientsSchema(),
       likedUsers: this.likedUsers,
-      steps: this.cookStepsSchema(),
-      comments: this.commentsSchema()
+      steps: this.pushCookStepsSchema(),
+      comments: this.pushCommentsSchema()
     };
   }
 
@@ -65,29 +65,29 @@ export class Recipe extends FrontendObject {
     this.likedUsers.push(user.$key);
   }
 
-  private ingredientsSchema(): IngredientSchema[] {
+  private pushIngredientsSchema(): PushIngredientSchema[] {
     return this.ingredients.map((ingredient) => {
-      return ingredient.asSchema();
+      return ingredient.asPushSchema();
     });
   }
 
-  private cookStepsSchema(): CookStepSchema[] {
+  private pushCookStepsSchema(): PushCookStepSchema[] {
     return this.steps.map((step) => {
-      return step.asSchema();
+      return step.asPushSchema();
     });
   }
 
-  private commentsSchema(): CommentSchema[] {
+  private pushCommentsSchema(): PushCommentSchema[] {
     return this.comments.map((comment) => {
-      return comment.asSchema();
+      return comment.asPushSchema();
     });
   }
 }
 
 // tslint:disable-next-line:max-classes-per-file
-class RecipeReceiveScheme implements ReceiveScheme {
-  public receive(recipeSchema: RecipeSchema): Recipe {
-    let $key = recipeSchema.$key;
+class RecipeReceiveScheme extends ReceiveScheme {
+  public receiveAsDescendant(recipeSchema: PushRecipeSchema, index: string): Recipe {
+    let $key = DefaultTransferActions.requiredStringAction(index);
     let avatar = DefaultTransferActions.stringAction(recipeSchema.avatar);
     let name = DefaultTransferActions.stringAction(recipeSchema.name);
     let authorId = DefaultTransferActions.stringAction(recipeSchema.authorId);
@@ -95,18 +95,18 @@ class RecipeReceiveScheme implements ReceiveScheme {
     let likedUsers = DefaultTransferActions.arrayAction(recipeSchema.likedUsers);
 
     let ingredients = DefaultTransferActions.arrayAction(recipeSchema.ingredients);
-    let transferredIngredients = ingredients.map((ingredient) => {
-      return ingredientReceiveScheme.receive(ingredient);
+    let transferredIngredients = ingredients.map((ingredient, ingredientIndex) => {
+      return ingredientReceiveScheme.receiveAsDescendant(ingredient, `${ingredientIndex}`);
     });
 
     let steps = DefaultTransferActions.arrayAction(recipeSchema.steps);
-    let transferredSteps = steps.map((step) => {
-      return cookStepReceiveScheme.receive(step);
+    let transferredSteps = steps.map((step, stepIndex) => {
+      return cookStepReceiveScheme.receiveAsDescendant(step, `${stepIndex}`);
     });
 
     let comments = DefaultTransferActions.arrayAction(recipeSchema.comments);
-    let transferredComments = comments.map((comment) => {
-      return commentReceiveScheme.receive(comment);
+    let transferredComments = comments.map((comment, commentIndex) => {
+      return commentReceiveScheme.receiveAsDescendant(comment, `${commentIndex}`);
     });
 
     return new Recipe(
