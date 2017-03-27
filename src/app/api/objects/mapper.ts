@@ -9,7 +9,7 @@ export class Mapper {
   public static mapObservable(observable: Observable<DatabaseSchema>, receiveScheme: ReceiveScheme):
       Observable<FrontendObject> {
     return observable.map((value) => {
-      return receiveScheme.receive(value);
+      return receiveScheme.receiveAsRoot(value);
     });
   }
 
@@ -18,7 +18,7 @@ export class Mapper {
       receiveScheme: ReceiveScheme): Observable<FrontendObject[]> {
     return observable.map((list) => {
       return list.map((value) => {
-        return receiveScheme.receive(value);
+        return receiveScheme.receiveAsRoot(value);
       });
     });
   }

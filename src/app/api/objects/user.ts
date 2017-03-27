@@ -1,4 +1,4 @@
-import {CartEntry, cartEntryReceiveScheme, CartEntrySchema} from './cart';
+import {CartEntry, cartEntryReceiveScheme, CartEntrySchema, PushCartEntrySchema} from './cart';
 import {DatabaseSchema, PushDatabaseSchema} from './database-schema';
 import {DefaultTransferActions} from './default-transfer-actions';
 import {FrontendObject} from './frontend-object';
@@ -10,7 +10,7 @@ export interface PushUserSchema extends PushDatabaseSchema {
   name: string;
   recipes: string[];
   likedRecipes: string[];
-  cart: CartEntrySchema[];
+  cart: PushCartEntrySchema[];
 }
 
 export interface UserSchema extends PushUserSchema, DatabaseSchema {}
@@ -28,7 +28,7 @@ export class User extends FrontendObject {
       name: this.name,
       recipes: this.recipes,
       likedRecipes: this.likedRecipes,
-      cart: this.cartSchema()
+      cart: this.pushcCartSchema()
     };
   }
 
@@ -52,24 +52,24 @@ export class User extends FrontendObject {
     this.likedRecipes.push(recipe.$key);
   }
 
-  private cartSchema(): CartEntrySchema[] {
+  private pushcCartSchema(): PushCartEntrySchema[] {
     return this.cart.map((cartEntry) => {
-      return cartEntry.asSchema();
+      return cartEntry.asPushSchema();
     });
   }
 }
 
 // tslint:disable-next-line:max-classes-per-file
-class UserReceiveScheme implements ReceiveScheme {
-  public receive(userSchema: UserSchema): User {
-    let $key = userSchema.$key;
+class UserReceiveScheme extends ReceiveScheme {
+  public receiveAsDescendant(userSchema: PushUserSchema, index: string): User {
+    let $key = DefaultTransferActions.requiredStringAction(index);
     let id = DefaultTransferActions.stringAction(userSchema.id);
-    let name = DefaultTransferActions.stringAction(userSchema.id);
+    let name = DefaultTransferActions.stringAction(userSchema.name);
     let recipes = DefaultTransferActions.arrayAction(userSchema.recipes);
     let likedRecipes = DefaultTransferActions.arrayAction(userSchema.likedRecipes);
     let cart = DefaultTransferActions.arrayAction(userSchema.cart);
-    let transferredCart = cart.map((cartEntrySchema) => {
-      return cartEntryReceiveScheme.receive(cartEntrySchema);
+    let transferredCart = cart.map((pushCartEntrySchema, cartEntryIndex) => {
+      return cartEntryReceiveScheme.receiveAsDescendant(pushCartEntrySchema, `${cartEntryIndex}`);
     });
 
     return new User($key, id, name, recipes, likedRecipes, transferredCart);

@@ -1,18 +1,50 @@
 @import '~@angular/material/core/theming/theming';
 
 md-card-title {
-    color: map-get($mat-indigo, 800);;
-    margin-bottom: 0px; 
+    color: map-get($mat-indigo, 500);
+    margin-bottom: 0px;
 }
 
 md-card {
-    margin-bottom: 10px; 
+    padding-bottom: 24px;
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-bottom: 10px;
 }
 
 md-list {
     padding-top: 0px;
 }
 
-.like {
-    color: map-get($mat-indigo, 800);
+.description {
+  line-height: 200%;
+}
+
+.fav-button {
+    color: map-get($mat-red, 600);
+}
+
+.topBar {
+    width:90%;
+}
+
+.avatar {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.name {
+  white-space: normal !important;
+  font-size: 16px !important;
+}
+
+.comment {
+  color: #616161;
+  font-size: 14px !important;
+}
+
+.textarea {
+  width: 100%;
 }

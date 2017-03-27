@@ -12,7 +12,7 @@ import {Mapper} from './objects';
 import {PushRecipeSchema, Recipe, recipeReceiveScheme, RecipeSchema} from './objects';
 import {PushCommentSchema} from './objects';
 import {PushUserSchema, User, userReceiveScheme, UserSchema} from './objects';
-import {CartEntry} from './objects';
+import {CartEntry, PushCartEntrySchema} from './objects';
 
 @Injectable()
 export class ApiService {
@@ -22,6 +22,7 @@ export class ApiService {
 
   private recipeListMappedObservable: Observable<Recipe[]>;
   private userListMappedObservable: Observable<User[]>;
+  private currentUserMappedObservable: Observable<User>;
 
   constructor(private af: AngularFire, public errorReportService: ErrorReportService) {
     this.recipeListObservable = this.af.database.list(PUBLIC_RECIPES_URL);
@@ -32,6 +33,16 @@ export class ApiService {
 
     this.userListMappedObservable =
         Mapper.mapListObservable(this.userListObservable, userReceiveScheme);
+
+    this.currentUserMappedObservable = this.userListMappedObservable.map((userList: User[]) => {
+      if (!this.authState) {
+        return null;
+      }
+
+      return userList.find((user) => {
+        return user.id === this.authState.uid;
+      });
+    });
 
     this.getAuth().subscribe(
         (newState) => {
@@ -84,6 +95,10 @@ export class ApiService {
             (err) => {
               this.errorReportService.send(err.message);
             });
+  }
+
+  public getCurrentUserObservable(): Observable<User> {
+    return this.currentUserMappedObservable;
   }
 
   public toggleLike(recipe: Recipe): void {
@@ -155,13 +170,39 @@ export class ApiService {
     return !!found;
   }
 
-  public updateUserCart(user: User, cartEntry: CartEntry): void {
+  public getCartObservableOfCurrentUser(): Observable<CartEntry[]> {
+    return this.currentUserMappedObservable.map((user) => {
+      if (!user) {
+        return [];
+      }
+      return user.cart;
+    });
+  }
+
+  public pushNewCartEntryForCurrentUser(pushCartEntrySchema: PushCartEntrySchema): void {
     this.checkAuthState();
 
-    this.af.database.list(userCartUrl(user.$key))
-        .update(cartEntry.$key, cartEntry.asPushSchema())
-        .then((_) => console.log('success.'), (err) => this.errorReportService.send(err.message));
-    ;
+    this.getCurrentUserObservable().first().subscribe((user: User) => {
+      let cartEntryLength = user.cart.length;
+
+      this.af.database.list(userCartUrl(user.$key))
+          .update(`${cartEntryLength}`, pushCartEntrySchema)
+          .then((_) => console.log('success.'), (err) => this.errorReportService.send(err.message));
+      ;
+    });
+  }
+
+  public updateCartEntryForCurrentUser(cartEntry: CartEntry): void {
+    this.checkAuthState();
+
+    this.getCurrentUserObservable().first().subscribe((user: User) => {
+      let cartEntryLength = user.cart.length;
+
+      this.af.database.list(userCartUrl(user.$key))
+          .update(cartEntry.$key, cartEntry.asPushSchema())
+          .then((_) => console.log('success.'), (err) => this.errorReportService.send(err.message));
+      ;
+    });
   }
 
   public commentOnRecipe(recipe: Recipe, comment: PushCommentSchema): void {
@@ -181,6 +222,21 @@ export class ApiService {
   public getRecipe($key: string): Observable<Recipe> {
     return Mapper.mapObservable(
         this.af.database.object(`${PUBLIC_RECIPES_URL}/${$key}`), recipeReceiveScheme);
+  }
+
+  public getRecipeOwner($key: string): Observable<User> {
+    return Rx.Observable.combineLatest(
+        this.getRecipe($key), this.userListMappedObservable, (recipe: Recipe, userList: User[]) => {
+          return userList.find((user) => {
+            return user.id === recipe.authorId;
+          });
+        });
+  }
+
+  public getRecipeAuthorName($key: string): Observable<string> {
+    return this.getRecipeOwner($key).map((user: User) => {
+      return user.name;
+    });
   }
 
   public addRecipe(recipe: PushRecipeSchema): void {
@@ -300,7 +356,7 @@ export class ApiService {
 
   private getCurrentUser(users: User[]): User {
     return users.find((user) => {
-      return user.$key === this.authState.uid;
+      return user.id === this.authState.uid;
     });
   }
 }
