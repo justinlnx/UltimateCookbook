@@ -64,7 +64,7 @@ class UserReceiveScheme extends ReceiveScheme {
   public receiveAsDescendant(userSchema: PushUserSchema, index: string): User {
     let $key = DefaultTransferActions.requiredStringAction(index);
     let id = DefaultTransferActions.stringAction(userSchema.id);
-    let name = DefaultTransferActions.stringAction(userSchema.id);
+    let name = DefaultTransferActions.stringAction(userSchema.name);
     let recipes = DefaultTransferActions.arrayAction(userSchema.recipes);
     let likedRecipes = DefaultTransferActions.arrayAction(userSchema.likedRecipes);
     let cart = DefaultTransferActions.arrayAction(userSchema.cart);

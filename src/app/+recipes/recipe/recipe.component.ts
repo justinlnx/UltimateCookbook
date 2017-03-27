@@ -4,7 +4,7 @@ import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 
-import {ApiService, Recipe} from '../../api';
+import {ApiService, PushCartEntrySchema, Recipe} from '../../api';
 import {ErrorReportService} from '../../error-report';
 
 import {Rating} from './rating.component';
@@ -52,6 +52,11 @@ import {Rating} from './rating.component';
           <p>{{ingredient}}</p>
         </md-list>
       </md-card-content>
+      <md-card-actions>
+        <button md-icon-button (click)="addNewCartEntry()">
+          <md-icon>add_shopping_cart</md-icon>
+        </button>
+      </md-card-actions>
     </md-card>
 
     <md-card *ngFor="let step of recipe?.steps; let i = index">
@@ -88,7 +93,7 @@ import {Rating} from './rating.component';
         </div>
         <md-card-actions>
           <button md-raised-button>Add</button>
-          </md-card-actions>
+        </md-card-actions>
       </md-card-content>
     </md-card-content>
     </md-card>
@@ -128,5 +133,16 @@ export class RecipeComponent implements OnInit, OnDestroy {
 
   public likeRecipe(recipe: Recipe) {
     this.apiService.toggleLike(recipe);
+  }
+
+  public addNewCartEntry() {
+    let newCartEntry: PushCartEntrySchema = {
+      recipeId: this.recipe.$key,
+      ingredients: this.recipe.ingredients.map((ingredient) => {
+        return {content: ingredient, bought: false};
+      })
+    };
+
+    this.apiService.pushNewCartEntryForCurrentUser(newCartEntry);
   }
 }
