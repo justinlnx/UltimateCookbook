@@ -31,6 +31,10 @@ import {ApiService, CartEntry, Recipe} from '../api';
 })
 
 export class CartComponent implements OnInit {
+  public title: string = 'Google Map to find stores location';
+  public lat: number = 51.678418;
+  public lng: number = 7.809007;
+
   public cartObservable: Observable<CartEntry[]>;
 
   constructor(public apiService: ApiService) {}
@@ -38,7 +42,4 @@ export class CartComponent implements OnInit {
   public ngOnInit() {
     this.cartObservable = this.apiService.getCartObservableOfCurrentUser().first();
   }
-  public title: string = 'Google Map to find stores location';
-  public lat: number = 51.678418;
-  public lng: number = 7.809007;
 }

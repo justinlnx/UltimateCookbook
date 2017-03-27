@@ -1,5 +1,6 @@
-import {NgModule} from '@angular/core';
-
+import {CommonModule} from '@angular/common';
+import {ApplicationRef, NgModule} from '@angular/core';
+import {FormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 import {AgmCoreModule} from 'angular2-google-maps/core';
 
@@ -11,11 +12,12 @@ import {routes} from './cart.routes';
 
 @NgModule({
   imports: [
-    SharedModule, RouterModule.forChild(routes),
+    CommonModule, FormsModule, SharedModule, RouterModule.forChild(routes),
     AgmCoreModule.forRoot({apiKey: 'AIzaSyDrxvSMaiyZkfUZFZMDiRg_alqhYaOOIBk'})
   ],
   providers: [],
-  declarations: [CartComponent, CartItemComponent]
+  declarations: [CartComponent, CartItemComponent],
+  bootstrap: [CartComponent]
 })
 export class CartModule {
 }
