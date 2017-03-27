@@ -56,12 +56,12 @@ export class Recipe extends FrontendObject {
 
   public removeLikedUser(user: User): void {
     this.likedUsers = this.likedUsers.filter((userId) => {
-      return userId !== user.$key;
+      return userId !== user.id;
     });
   }
 
   public addLikedUser(user: User): void {
-    this.likedUsers.push(user.$key);
+    this.likedUsers.push(user.id);
   }
 
   private pushCookStepsSchema(): PushCookStepSchema[] {
