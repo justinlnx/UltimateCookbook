@@ -5,6 +5,9 @@ md-card {
     padding: 0 !important;
     margin: 5px;
     // background: map-get($mat-yellow, 300) !important;
+  &.contracted {
+   max-height: 200px;
+  }
 }
 
 md-card-title {
@@ -13,10 +16,22 @@ md-card-title {
 }
 
 md-card-subtitle {
-    padding: 10px 0px 5px 10px;
+    padding: 5px 0px 0px 5px;
     margin-bottom: 0px !important;
 }
 
+.mat-card-title {
+    font-size: 18px !important;
+    font-weight: 200 !important;
+}
+
+.cart-ingredient-item {
+  height: 30px;
+}
+
+.cart-ingredient-list {
+  padding-top: 0px;
+}
 // md-card-actions {
 //     padding: 10px 0px 5px 10px;
 
