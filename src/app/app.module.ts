@@ -9,6 +9,7 @@ import {MaterialModule} from '@angular/material';
 import {BrowserModule} from '@angular/platform-browser';
 import {PreloadAllModules, RouterModule} from '@angular/router';
 import {createInputTransfer, createNewHosts, removeNgStyles} from '@angularclass/hmr';
+import {AgmCoreModule} from 'angular2-google-maps/core';
 import {AngularFireModule} from 'angularfire2';
 
 import {ApiService} from './api';
@@ -59,6 +60,7 @@ export const firebaseConfig = {
     HttpModule,
     RouterModule.forRoot(ROUTES, { useHash: true, preloadingStrategy: PreloadAllModules }),
     MaterialModule,
+    AgmCoreModule.forRoot({apiKey: 'AIzaSyDrxvSMaiyZkfUZFZMDiRg_alqhYaOOIBk'}),
     AngularFireModule.initializeApp(firebaseConfig)
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection

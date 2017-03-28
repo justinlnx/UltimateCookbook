@@ -55,6 +55,7 @@ export class CartComponent implements OnInit {
         this.lat = position.coords.latitude;
         this.lng = position.coords.longitude;
         this.zoom = 12;
+        console.log('you are at');
         console.log(this.lat);
         console.log(this.lng);
       });
