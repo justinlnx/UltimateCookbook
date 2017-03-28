@@ -46,15 +46,15 @@ export class AccountPage {
     return element.getAttribute(attribute);
   }
 
-  public getEmailInputWarningElement(): ElementFinder {
-    return element(by.id('email-input-warning'));
+  public getEmailInputWarningMessage(): webdriver.promise.Promise<string> {
+    return element(by.id('email-input-warning')).getText();
   }
 
-  public getPasswordInputWarningElement(): ElementFinder {
-    return element(by.id('password-input-warning'));
+  public getPasswordInputWarningMessage(): webdriver.promise.Promise<string> {
+    return element(by.id('password-input-warning')).getText();
   }
 
-  public getUsernameInputWarningElement(): ElementFinder {
-    return element(by.id('username-input-warning'));
+  public getUsernameInputWarningMessage(): webdriver.promise.Promise<string> {
+    return element(by.id('username-input-warning')).getText();
   }
 };
