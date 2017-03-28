@@ -1,4 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, NgZone, OnInit, ViewChild} from '@angular/core';
+import {FormControl} from '@angular/forms'
 import {Observable} from 'rxjs/Observable';
 
 import {ApiService, CartEntry, Recipe} from '../api';
@@ -19,9 +20,12 @@ import {ApiService, CartEntry, Recipe} from '../api';
             </md-tab>
             <md-tab class="location-label" label="LOCATION">
                 <h1>{{title}}</h1>
-                <sebm-google-map [latitude]="lat" [longitude]="lng">
+                <sebm-google-map [latitude]="lat" [longitude]="lng" [scrollwheel]="false" [zoom]="zoom">
                     <sebm-google-map-marker [latitude]="lat" [longitude]="lng">
                     </sebm-google-map-marker>
+                    <sebm-google-map-info-window>
+                      <strong>My location</strong>
+                    </sebm-google-map-info-window>
                 </sebm-google-map>
             </md-tab>
         </md-tab-group>
@@ -32,8 +36,9 @@ import {ApiService, CartEntry, Recipe} from '../api';
 
 export class CartComponent implements OnInit {
   public title: string = 'Google Map to find stores location';
-  public lat: number = 51.678418;
-  public lng: number = 7.809007;
+  public lat: number;
+  public lng: number;
+  public zoom: number;
 
   public cartObservable: Observable<CartEntry[]>;
 
@@ -41,5 +46,18 @@ export class CartComponent implements OnInit {
 
   public ngOnInit() {
     this.cartObservable = this.apiService.getCartObservableOfCurrentUser().first();
+    // set current position
+    this.setCurrentPosition();
+  }
+  private setCurrentPosition() {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.lat = position.coords.latitude;
+        this.lng = position.coords.longitude;
+        this.zoom = 12;
+        console.log(this.lat);
+        console.log(this.lng);
+      });
+    }
   }
 }
