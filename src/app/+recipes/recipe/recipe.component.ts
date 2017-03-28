@@ -63,7 +63,9 @@ import {Rating} from './rating.component';
     <md-card-title>Steps {{i+1}}</md-card-title>
       <md-card-content>
         <p>{{step.content}}</p>
+        <div *ngIf="isImage(step.imageSource)">
         <img [src]="step.imageSource" alt="recipe image" style="width: 100%;max-height: 100%">
+        </div>
       </md-card-content>
     </md-card>
 
@@ -104,6 +106,7 @@ import {Rating} from './rating.component';
 })
 export class RecipeComponent implements OnInit, OnDestroy {
   public recipe: Recipe;
+  public images: string;
 
   private recipeSubscription: Subscription;
 
@@ -133,6 +136,13 @@ export class RecipeComponent implements OnInit, OnDestroy {
 
   public likeRecipe(recipe: Recipe) {
     this.apiService.toggleLike(recipe);
+  }
+
+  public isImage(input: string): boolean {
+    if (input === '') {
+      return false;
+    }
+    return true;
   }
 
   public addNewCartEntry() {
