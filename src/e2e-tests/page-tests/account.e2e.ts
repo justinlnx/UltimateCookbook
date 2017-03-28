@@ -37,6 +37,14 @@ describe('account page', () => {
       expect(accountPage.getElementAttributePlaceholder(emailInput)).toEqual('Email');
       expect(accountPage.getElementAttributePlaceholder(passwordInput)).toEqual('Password');
       expect(accountPage.getElementAttributePlaceholder(usernameInput)).toEqual('User name');
+
+      let emailInputWarning = accountPage.getEmailInputWarningElement();
+      let passwordInputWarning = accountPage.getPasswordInputWarningElement();
+      let usernameInputWarning = accountPage.getUsernameInputWarningElement();
+
+      expect(emailInputWarning.getText()).toEqual('Incorrect email format');
+      expect(passwordInputWarning.getText()).toEqual('Incorrect password format');
+      expect(usernameInputWarning.getText()).toEqual('Incorrect user name format');
     });
   });
 });

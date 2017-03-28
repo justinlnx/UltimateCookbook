@@ -6,15 +6,15 @@
   <form [formGroup]="loginForm" novalidate>
     <md-input-container [dividerColor]="emailInputColor()">
       <input mdInput placeholder="Email" type="email" formControlName="email" id="email-input">
-      <md-hint *ngIf="!validEmailInput()">Incorrect email format</md-hint>
+      <md-hint *ngIf="!validEmailInput()" id="email-input-warning">Incorrect email format</md-hint>
     </md-input-container>
     <md-input-container [dividerColor]="passwordInputColor()">
       <input mdInput placeholder="Password" type="password" formControlName="password" id="password-input">
-      <md-hint *ngIf="!validPasswordInput()">Incorrect password format</md-hint>
+      <md-hint *ngIf="!validPasswordInput()" id="password-input-warning">Incorrect password format</md-hint>
     </md-input-container>
     <md-input-container [dividerColor]="userNameInputColor()">
       <input mdInput placeholder="User name" type="text" formControlName="name" id="username-input">
-      <md-hint *ngIf="!validUserNameInput()">Incorrect user name format</md-hint>
+      <md-hint *ngIf="!validUserNameInput()" id="username-input-warning">Incorrect user name format</md-hint>
     </md-input-container>
     <div>
       <button md-raised-button class="sign-in-btn" [disabled]='!validSigninInput()' type="button" (click)="onSignIn()">Sign in</button>

@@ -50,4 +50,16 @@ export class AccountPage {
       webdriver.promise.Promise<string> {
     return element.getAttribute(attribute);
   }
+
+  public getEmailInputWarningElement(): ElementFinder {
+    return element(by.id('email-input-warning'));
+  }
+
+  public getPasswordInputWarningElement(): ElementFinder {
+    return element(by.id('password-input-warning'));
+  }
+
+  public getUsernameInputWarningElement(): ElementFinder {
+    return element(by.id('username-input-warning'));
+  }
 };
