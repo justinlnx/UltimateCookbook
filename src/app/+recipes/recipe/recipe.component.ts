@@ -106,7 +106,6 @@ import {Rating} from './rating.component';
 })
 export class RecipeComponent implements OnInit, OnDestroy {
   public recipe: Recipe;
-  public images: string;
 
   private recipeSubscription: Subscription;
 
