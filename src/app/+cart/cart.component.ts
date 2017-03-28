@@ -28,6 +28,9 @@ import {ApiService, CartEntry, Recipe} from '../api';
                   </sebm-google-map>
               </md-card-content>
               </md-card>
+              <md-card>
+
+              </md-card>
             </md-tab>
         </md-tab-group>
     </div>
