@@ -105,5 +105,25 @@ describe('account page', () => {
         expect(warningMessage.isPresent()).toBeFalsy();
       });
     });
+
+    describe('"Username" validation checking', () => {
+      it('Empty "Username" should display error message', () => {
+        let usernameInput = accountPage.getUsernameInputElement();
+
+        usernameInput.sendKeys('');
+
+        let warningMessage = accountPage.getUsernameInputWarningMessage();
+        expect(warningMessage).toEqual('Incorrect user name format');
+      });
+
+      it('Valid "Username" should display no error message', () => {
+        let usernameInput = accountPage.getUsernameInputElement();
+
+        usernameInput.sendKeys(validUserName);
+
+        let warningMessage = $('username-input-warning');
+        expect(warningMessage.isPresent()).toBeFalsy();
+      });
+    });
   });
 });
