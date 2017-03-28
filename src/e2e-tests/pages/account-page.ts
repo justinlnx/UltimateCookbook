@@ -2,11 +2,6 @@ import {browser, by, element, ElementArrayFinder, ElementFinder} from 'protracto
 import * as webdriver from 'selenium-webdriver';
 
 export class AccountPage {
-  public signInButtonLabel: string;
-  public signInButtonState: boolean;
-  public createAccButtonLabel: string;
-  public createAccButtonState: boolean;
-
   private signInButton = element(by.css('.sign-in-btn'));
   private createAccButton = element(by.css('.create-account-btn'));
 
