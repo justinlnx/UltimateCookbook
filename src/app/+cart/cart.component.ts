@@ -1,5 +1,5 @@
 import {Component, ElementRef, NgZone, OnInit, ViewChild} from '@angular/core';
-import {FormControl} from '@angular/forms'
+import {FormControl} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 
 import {ApiService, CartEntry, Recipe} from '../api';
@@ -19,14 +19,15 @@ import {ApiService, CartEntry, Recipe} from '../api';
               </cart-item>
             </md-tab>
             <md-tab class="location-label" label="LOCATION">
-                <h1>{{title}}</h1>
+              <md-card>
+              <md-card-title>Find a store near you</md-card-title>
+              <md-card-content>
                 <sebm-google-map [latitude]="lat" [longitude]="lng" [scrollwheel]="false" [zoom]="zoom">
-                    <sebm-google-map-marker [latitude]="lat" [longitude]="lng">
-                    </sebm-google-map-marker>
-                    <sebm-google-map-info-window>
-                      <strong>My location</strong>
-                    </sebm-google-map-info-window>
-                </sebm-google-map>
+                      <sebm-google-map-marker [latitude]="lat" [longitude]="lng">
+                      </sebm-google-map-marker>
+                  </sebm-google-map>
+              </md-card-content>
+              </md-card>
             </md-tab>
         </md-tab-group>
     </div>
