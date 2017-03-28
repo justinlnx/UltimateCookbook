@@ -21,27 +21,26 @@ import {Rating} from './rating.component';
   </md-toolbar>
 
   <div class="page-content">
-
     <md-card>
       <md-card-title>{{recipe.name}}</md-card-title>
       <md-card-content>
-      <md-list>
-      <md-list-item class="md-2-line">
-         <img md-card-avatar class = "avatar" [src]="recipe.avatar">
-         <div class="mat-list-text">
-            <p md-line class = "name"> Shiba Inu </p>
-          </div>
-      </md-list-item>
-      <p class = "description">{{recipe?.description}}</p>
-      </md-list>
-      <button md-icon-button>
-        <md-icon (click)="likeRecipe(recipe); $event.stopPropagation()">
-          <span md-icon [class.fav-button]="recipe?.rating == '1'">favorite</span>
-        </md-icon>
-      </button>
-      <button md-icon-button>
-        <md-icon>chat_bubble_outline</md-icon>
-      </button>
+        <md-list>
+          <md-list-item class="md-2-line">
+            <img md-card-avatar class="avatar" [src]="recipe.avatar">
+            <div class="mat-list-text">
+              <p md-line class="name"> Shiba Inu </p>
+            </div>
+          </md-list-item>
+          <p class="description">{{recipe?.description}}</p>
+        </md-list>
+        <button md-icon-button>
+          <md-icon (click)="likeRecipe(recipe); $event.stopPropagation()">
+            <span md-icon [class.fav-button]="recipe?.rating == '1'">favorite</span>
+          </md-icon>
+        </button>
+        <button md-icon-button>
+          <md-icon>chat_bubble_outline</md-icon>
+        </button>
       </md-card-content>
     </md-card>
 
@@ -60,7 +59,7 @@ import {Rating} from './rating.component';
     </md-card>
 
     <md-card *ngFor="let step of recipe?.steps; let i = index">
-    <md-card-title>Steps {{i+1}}</md-card-title>
+      <md-card-title>Steps {{i+1}}</md-card-title>
       <md-card-content>
         <p>{{step.content}}</p>
         <div *ngIf="isImage(step.imageSource)">
@@ -70,36 +69,34 @@ import {Rating} from './rating.component';
     </md-card>
 
     <md-card>
-    <md-card-title>Comments</md-card-title>
-    <md-card-content>
-      <div *ngFor="let comment of recipe?.comments">
-          <md-card-content>
-            <md-list>
-              <md-list-item class="md-2-line">
-                <img md-card-avatar class = "avatar" [src]="recipe.avatar">
-                <div class="mat-list-text">
-                <p md-line class = "name"> Shiba Inu </p>
-                <p class = "comment">{{comment.content}}</p>
-                </div>
-              </md-list-item>
-            </md-list>
-            <md-divider></md-divider>
-          </md-card-content>
-      </div>
-
+      <md-card-title>Comments</md-card-title>
       <md-card-content>
-        <div>
-          <md-input-container>
-            <input mdInput placeholder="Add comment...">
-          </md-input-container>
+        <div *ngFor="let comment of recipe?.comments">
+            <md-card-content>
+              <md-list>
+                <md-list-item class="md-2-line">
+                  <img md-card-avatar class="avatar" [src]="recipe.avatar">
+                  <div class="mat-list-text">
+                    <p md-line class="name"> Shiba Inu </p>
+                    <p class="comment">{{comment.content}}</p>
+                  </div>
+                </md-list-item>
+              </md-list>
+              <md-divider></md-divider>
+            </md-card-content>
         </div>
-        <md-card-actions>
-          <button md-raised-button>Add</button>
-        </md-card-actions>
+        <md-card-content>
+          <div>
+            <md-input-container>
+              <input mdInput placeholder="Write a comment...">
+            </md-input-container>
+          </div>
+          <md-card-actions>
+            <button md-raised-button>Add</button>
+          </md-card-actions>
+        </md-card-content>
       </md-card-content>
-    </md-card-content>
     </md-card>
-
   </div>
   `,
   styleUrls: ['./recipe.component.scss'],
