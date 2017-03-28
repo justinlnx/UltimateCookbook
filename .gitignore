@@ -72,3 +72,5 @@ dll/
 .vscode/.BROWSE.VC.DB-wal
 .vscode/.BROWSE.VC.DB-shm
 .vagrant
+
+uploads/
