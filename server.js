@@ -1,5 +1,5 @@
 var path = require('path');
-
+var fs = require('fs');
 var express = require('express');
 var app = express();
 
@@ -7,20 +7,19 @@ var multer = require('multer');
 
 var upload = multer({dest: './uploads'});
 
-let isDev =
-    () => {
-      let args = process.argv;
+let isDev = () => {
+  let args = process.argv;
 
-      let argLength = args.length;
+  let argLength = args.length;
 
-      if (argLength < 3) {
-        return false;
-      }
-      if (args[2] === 'dev') {
-        return true;
-      }
-      return false;
-    }
+  if (argLength < 3) {
+    return false;
+  }
+  if (args[2] === 'dev') {
+    return true;
+  }
+  return false;
+};
 
 if (isDev()) {
   var webpack = require('webpack');
@@ -30,8 +29,7 @@ if (isDev()) {
   app.use(webpackDevMiddleware(
       webpack(webpackDevConfig()),
       {stats: {colors: true}, watchOptions: {aggregateTimeout: 300, poll: 1000}}));
-}
-else {
+} else {
   app.use(express.static(path.join(__dirname, 'dist')));
 }
 
@@ -50,32 +48,37 @@ var bucket = gcs.bucket('cookbookdemo-6bde5.appspot.com');
 
 var readConfig = {action: 'read', expires: '03-17-2025'};
 
-app.post('/api/upload/avatar', (req, res) => {
+app.post('/api/upload/image/single', (req, res) => {
   let singleUpload = upload.single('file');
   singleUpload(req, res, (err) => {
     if (err) {
       console.log(err);
+      res.send(err).status(500).end();
     }
 
     let file = req.file;
 
-    bucket.upload(file.path, (err, file) => {
+    bucket.upload(file.path, (err, uploadedFile) => {
       if (err) {
         console.log(err);
+        res.send(err).status(500).end();
       }
 
-      console.log(file);
+      fs.unlink(file.path, (err) => {
+        if (err) {
+          console.error(err);
+        }
+      });
 
-      file.getSignedUrl(readConfig, (err, url) => {
+      uploadedFile.getSignedUrl(readConfig, (err, url) => {
         if (err) {
           console.log(err);
+          res.send(err).status(500).end();
         }
         console.log(url);
-        res.status(200).end();
+        res.send(url).end();
       });
     });
-
-
   });
 });
 
