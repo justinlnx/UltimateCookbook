@@ -64,7 +64,7 @@ import {Rating} from './rating.component';
       <md-card-content>
         <p>{{step.content}}</p>
         <div *ngIf="isImage(step.imageSource)">
-        <img [src]="step.imageSource" alt="recipe image" style="width: 100%;max-height: 100%">
+        <img [src]="trustedImageUrl" alt="recipe image" style="width: 100%; max-height: 100%">
         </div>
       </md-card-content>
     </md-card>
@@ -106,6 +106,7 @@ import {Rating} from './rating.component';
 })
 export class RecipeComponent implements OnInit, OnDestroy {
   public recipe: Recipe;
+  public trustedImageUrl: SafeResourceUrl;
 
   private recipeSubscription: Subscription;
 
@@ -137,10 +138,11 @@ export class RecipeComponent implements OnInit, OnDestroy {
     this.apiService.toggleLike(recipe);
   }
 
-  public isImage(input: string): boolean {
-    if (input === '') {
+  public isImage(imageSource: string): boolean {
+    if (imageSource === '') {
       return false;
     }
+    this.trustedImageUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(imageSource);
     return true;
   }
 
