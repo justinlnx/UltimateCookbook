@@ -20,14 +20,14 @@ describe('account page', () => {
       accountPage.get();
 
       expect(accountPage.getSignInButtonLabel()).toEqual('Sign in');
-      expect(accountPage.getSignInButtonEnabledState()).toBe(false);
+      expect(accountPage.getSignInButtonEnabledState()).toBeFalsy();
     });
 
     it('should display "Create Account" Button in proper state', () => {
       accountPage.get();
 
       expect(accountPage.getCreateAccButtonLabel()).toEqual('Create Account');
-      expect(accountPage.getCreateAccButtonEnabledState()).toBe(false);
+      expect(accountPage.getCreateAccButtonEnabledState()).toBeFalsy();
     });
 
     it('"Email" and "Password" should be empty and error messages are shown', () => {
@@ -123,6 +123,33 @@ describe('account page', () => {
 
         let warningMessage = $('username-input-warning');
         expect(warningMessage.isPresent()).toBeFalsy();
+      });
+    });
+
+    describe('Valid inputs should enable "Sign In" and "Create Account" buttons', () => {
+      it('Valid "Email" and "Password" should enable "Sign In" button and disable "Create Account" button',
+         () => {
+           let emailInput = accountPage.getEmailInputElement();
+           let passwordInput = accountPage.getPasswordInputElement();
+
+           emailInput.sendKeys(validEmail);
+           passwordInput.sendKeys(validPassword);
+
+           expect(accountPage.getSignInButtonEnabledState()).toBeTruthy();
+           expect(accountPage.getCreateAccButtonEnabledState()).toBeFalsy();
+         });
+
+      it('Valid "Email", "Password", and "Username" shoud enable both buttons', () => {
+        let emailInput = accountPage.getEmailInputElement();
+        let passwordInput = accountPage.getPasswordInputElement();
+        let usernameInput = accountPage.getUsernameInputElement();
+
+        emailInput.sendKeys(validEmail);
+        passwordInput.sendKeys(validPassword);
+        usernameInput.sendKeys(validUserName);
+
+        expect(accountPage.getSignInButtonEnabledState()).toBeTruthy();
+        expect(accountPage.getCreateAccButtonEnabledState()).toBeTruthy();
       });
     });
   });
