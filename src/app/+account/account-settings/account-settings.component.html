@@ -3,6 +3,9 @@
   <span class="toolbar-spacer"></span>
   <button md-raised-button (click)="onLogout()" class="right-icon" color="warn">Sign out</button>
 </md-toolbar>
+<div class="progress-bar">
+  <md-progress-bar *ngIf="loading" color="accent" mode="indeterminate"></md-progress-bar>
+</div>
 <div class="page-content">
   <md-card id="header-section">
     <md-card-content>
@@ -33,7 +36,15 @@
   <md-card>
     <md-card-title>Change avatar</md-card-title>
     <md-card-content>
-      <input id="avatar-upload" type="file" ng2FileSelect [uploader]="avatarUploader">
+      <div class="upload-line">
+        <button md-mini-fab (click)="onSelectFile()">
+          <md-icon>file_upload</md-icon>
+        </button>
+        <md-input-container class="avatar-file-name">
+          <input mdInput type="text" disabled [value]="avatarUploadFileName">
+        </md-input-container>
+      </div>
+      <input id="avatar-upload" #avatarUploadInput type="file" ng2FileSelect [uploader]="avatarUploader">
       <md-card-actions>
         <button md-raised-button (click)="onUploadAvatar()">Upload</button>
       </md-card-actions>

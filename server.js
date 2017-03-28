@@ -75,7 +75,6 @@ app.post('/api/upload/image/single', (req, res) => {
           console.log(err);
           res.send(err).status(500).end();
         }
-        console.log(url);
         res.send(url).end();
       });
     });
