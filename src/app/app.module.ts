@@ -11,7 +11,7 @@ import {PreloadAllModules, RouterModule} from '@angular/router';
 import {createInputTransfer, createNewHosts, removeNgStyles} from '@angularclass/hmr';
 import {AngularFireModule} from 'angularfire2';
 
-import {ApiService} from './api';
+import {ApiService, ChatroomService} from './api';
 // App is our top level component
 import {AppComponent} from './app.component';
 import {APP_RESOLVER_PROVIDERS} from './app.resolver';
@@ -26,7 +26,8 @@ import {NoContentComponent} from './no-content';
 import {ShiftBottomNavigationComponent} from './shift-bottom-navigation';
 
 // Application wide providers
-const APP_PROVIDERS = [...APP_RESOLVER_PROVIDERS, AppState, ApiService, ErrorReportService];
+const APP_PROVIDERS =
+    [...APP_RESOLVER_PROVIDERS, AppState, ApiService, ChatroomService, ErrorReportService];
 
 type StoreType = {
   state: InternalStateType,

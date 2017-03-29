@@ -2,6 +2,8 @@ var path = require('path');
 var fs = require('fs');
 var express = require('express');
 var app = express();
+let http = require('http').Server(app);
+let io = require('socket.io')(http);
 
 var multer = require('multer');
 
@@ -38,8 +40,17 @@ var projectConfig = {
   projectId: 'cookbookdemo-6bde5'
 };
 
-var firebase = require('firebase');
-var firebaseApp = firebase.initializeApp(projectConfig);
+var firebaseAdmin = require('firebase-admin');
+var serviceAccount = require('./cookbookdemo-6bde5-firebase-adminsdk-068b6-c17f1ec76e.json');
+
+firebaseAdmin.initializeApp({
+  credential: firebaseAdmin.credential.cert(serviceAccount),
+  databaseURL: 'https://cookbookdemo-6bde5.firebaseio.com'
+});
+
+var db = firebaseAdmin.database();
+
+const CHATROOMS_URL = 'chats';
 
 var gcloud = require('google-cloud')(projectConfig);
 
@@ -81,6 +92,62 @@ app.post('/api/upload/image/single', (req, res) => {
   });
 });
 
-app.listen(3000, () => {
+var chatNamespace = io.of('/chat');
+
+var chatsRef = db.ref(CHATROOMS_URL);
+
+var retrieveChatsCallback = (userId, namespace) => {
+  return (snapShot) => {
+    let userChatrroms = [];
+
+    let chatrooms = snapShot.val();
+
+    for (let index in chatrooms) {
+      let chatroom = chatrooms[index];
+
+      if (chatroom.users.find(((user) => user === userId))) {
+        chatroom.$key = index;
+        userChatrroms.push(chatroom);
+      }
+    }
+
+    namespace.emit(`chatrooms+${userId}`, userChatrroms);
+  };
+};
+
+chatNamespace.on('connection', (socket) => {
+  console.log('User joined chat namespace.');
+
+  socket.on('register', (data, listener) => {
+    listener('ack');
+    let userId = data.userId;
+
+    console.log(`User ${userId} registered for chat.`);
+
+    let userChatsCallback = retrieveChatsCallback(userId, chatNamespace);
+    chatsRef.on('value', userChatsCallback);
+
+    socket.on(`new chat+${userId}`, (data) => {
+      let otherUserId = data.other;
+
+      chatsRef.push().set({users: [userId, otherUserId], messages: []});
+    });
+
+    socket.on('disconnect', () => {
+      chatsRef.off('value', userChatsCallback);
+    });
+  });
+});
+
+// io.on('connection', (socket) => {
+
+//   console.log(socket);
+
+//   socket.on('register', (userId) => {
+//     console.log(`User ${userId} registered.`);
+//   });
+// });
+
+http.listen(3000, () => {
   console.log('Server started on port 3000.');
 });

@@ -28,4 +28,11 @@ export class DefaultTransferActions {
     }
     return value;
   }
+
+  public static numberAction(value: number): number {
+    if (!value) {
+      return 0;
+    }
+    return value;
+  }
 }
