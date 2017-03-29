@@ -46,7 +46,7 @@
       </div>
       <input id="avatar-upload" #avatarUploadInput type="file" ng2FileSelect [uploader]="avatarUploader">
       <md-card-actions>
-        <button md-raised-button (click)="onUploadAvatar()">Upload</button>
+        <button md-raised-button (click)="onUploadAvatar()" [disabled]="avatarUploadFileName.length === 0">Upload</button>
       </md-card-actions>
     </md-card-content>
   </md-card>
