@@ -185,6 +185,15 @@ export class ApiService {
     this.getCurrentUserObservable().first().subscribe((user: User) => {
       let cartEntryLength = user.cart.length;
 
+      // check if input already exists in user cart
+      let isExist = !!user.cart.find((cartItem) => {
+        return cartItem.recipeId === pushCartEntrySchema.recipeId;
+      });
+
+      if (isExist) {
+        this.errorReportService.send('Cart already added');
+        return;
+      }
       this.af.database.list(userCartUrl(user.$key))
           .update(`${cartEntryLength}`, pushCartEntrySchema)
           .then((_) => console.log('success.'), (err) => this.errorReportService.send(err.message));
