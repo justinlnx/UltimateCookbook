@@ -5,7 +5,7 @@ import {Component} from '@angular/core';
   template: `
   <div class="warning-area">
     <md-icon>account_circle</md-icon>
-    <div>Please sign in to add new recipes.</div>
+    <div>Please sign in to view the content.</div>
   </div>
 
   `,
