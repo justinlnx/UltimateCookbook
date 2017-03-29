@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 import {ApiService, CartEntry, Recipe} from '../api';
@@ -25,13 +25,13 @@ import {ApiService, CartEntry, Recipe} from '../api';
     `,
   styleUrls: ['./cart.component.scss']
 })
-export class CartComponent implements OnInit {
+export class CartComponent implements OnInit, OnDestroy {
   public cartObservable: Observable<CartEntry[]>;
   private loginStatusSubscription: Subscription;
+  private _isLoggedIn: boolean;
 
   constructor(public apiService: ApiService) {}
 
-  private _isLoggedIn: boolean;
   set isLoggedIn(status: boolean) {
     this._isLoggedIn = status;
   }
