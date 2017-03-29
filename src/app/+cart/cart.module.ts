@@ -9,12 +9,6 @@ import {CartItemComponent} from './cart-item.component';
 import {CartComponent} from './cart.component';
 import {routes} from './cart.routes';
 
-
-
-// interface marker {
-//   lat: number;
-//   lng: number;
-// }
 @NgModule({
   imports: [CommonModule, FormsModule, SharedModule, RouterModule.forChild(routes)],
   declarations: [CartComponent, CartItemComponent],
