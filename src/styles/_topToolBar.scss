@@ -19,13 +19,14 @@ html, body {
 }
 
 .page-content {
-    position: absolute;
+    position: fixed;
     left: 0;
     right: 0;
     overflow: auto;
-    margin: 36px 0;
+    margin: 36px 3px;
     top: 3%;
     bottom: 3%;
+    overflow-x: hidden;
 }
 
 .back-button {
