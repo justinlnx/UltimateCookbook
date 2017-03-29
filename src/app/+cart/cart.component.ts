@@ -1,8 +1,9 @@
-import {Component, ElementRef, NgZone, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {Http} from '@angular/http';
 import {MapsAPILoader} from 'angular2-google-maps/core';
 import {Observable} from 'rxjs/Observable';
+import {Subscription} from 'rxjs/Subscription';
 
 import {ApiService, CartEntry, Recipe} from '../api';
 
@@ -10,9 +11,12 @@ import {ApiService, CartEntry, Recipe} from '../api';
   selector: 'cart',
   template: `
     <md-toolbar class="top-toolbar" color="primary">
-        <span>Cart</span>
+      <span>Cart</span>
     </md-toolbar>
-
+   <div class="page-content">
+     <login-warning *ngIf="!userLoggedIn"></login-warning>
+    </div>
+    <div *ngIf="isLoggedIn">
     <div class="page-content">
         <md-tab-group>
             <md-tab class="list-label" label="LIST">
@@ -35,11 +39,12 @@ import {ApiService, CartEntry, Recipe} from '../api';
             </md-tab>
         </md-tab-group>
     </div>
+    </div>
     `,
   styleUrls: ['./cart.component.scss']
 })
 
-export class CartComponent implements OnInit {
+export class CartComponent implements OnInit, OnDestroy {
   public title: string = 'Google Map to find stores location';
   public lat: number;
   public lng: number;
@@ -49,20 +54,36 @@ export class CartComponent implements OnInit {
   public nearByStores: string[];
 
   public cartObservable: Observable<CartEntry[]>;
+  private loginStatusSubscription: Subscription;
+  private _isLoggedIn: boolean;
 
   @ViewChild('search') public searchElementRef: ElementRef;
   constructor(
       public apiService: ApiService, private mapsAPILoader: MapsAPILoader, private ngZone: NgZone,
       private http: Http) {}
 
+  set isLoggedIn(status: boolean) {
+    this._isLoggedIn = status;
+  }
+
+  get isLoggedIn(): boolean {
+    return this._isLoggedIn;
+  }
+
   public ngOnInit() {
     this.cartObservable = this.apiService.getCartObservableOfCurrentUser().first();
+    this.loginStatusSubscription = this.apiService.getLoginObservable().subscribe((status) => {
+      this.isLoggedIn = status;
+    });
     // set google maps defaults
     this.zoom = 12;
     this.lat = 0;
     this.lng = 0;
     this.searchControl = new FormControl();
     this.getAllStores();
+  }
+  public ngOnDestroy() {
+    this.loginStatusSubscription.unsubscribe();
   }
 
   private getAllStores() {

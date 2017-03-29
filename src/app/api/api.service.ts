@@ -85,7 +85,8 @@ export class ApiService {
             (state) => {
               let id = state.uid;
 
-              let newUser: PushUserSchema = {id, name, recipes: [], likedRecipes: [], cart: []};
+              let newUser:
+                  PushUserSchema = {id, name, avatar: '', recipes: [], likedRecipes: [], cart: []};
 
               this.userListObservable.push(newUser).then(
                   (_) => console.log(`User created: ${email}, ${password}, ${name}`),
@@ -95,6 +96,15 @@ export class ApiService {
             (err) => {
               this.errorReportService.send(err.message);
             });
+  }
+
+  public logout(): void {
+    this.af.auth.logout();
+  }
+
+  public updateUserInfo(user: User): void {
+    this.userListObservable.update(user.$key, user.asPushSchema())
+        .then((_) => console.log('success.'), (err) => this.errorReportService.send(err.message));
   }
 
   public getCurrentUserObservable(): Observable<User> {
@@ -185,6 +195,15 @@ export class ApiService {
     this.getCurrentUserObservable().first().subscribe((user: User) => {
       let cartEntryLength = user.cart.length;
 
+      // check if input already exists in user cart
+      let isExist = !!user.cart.find((cartItem) => {
+        return cartItem.recipeId === pushCartEntrySchema.recipeId;
+      });
+
+      if (isExist) {
+        this.errorReportService.send('Cart already added');
+        return;
+      }
       this.af.database.list(userCartUrl(user.$key))
           .update(`${cartEntryLength}`, pushCartEntrySchema)
           .then((_) => console.log('success.'), (err) => this.errorReportService.send(err.message));
