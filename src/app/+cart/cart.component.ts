@@ -25,7 +25,7 @@ import {ApiService, CartEntry, Recipe} from '../api';
               </cart-item>
             </md-tab>
             <md-tab class="location-label" label="LOCATION">
-              <md-card>
+              <md-card id = "map">
               <md-card-title>Find a store near you</md-card-title>
               <md-card-content>
                 <sebm-google-map [latitude]="lat" [longitude]="lng" [zoom]="zoom">
@@ -35,6 +35,12 @@ import {ApiService, CartEntry, Recipe} from '../api';
               </md-card-content>
               </md-card>
               <md-card>
+                <md-card-title>Acme Grocery Store</md-card-title>
+                <md-card-content>3031 Beckman Pl, Richmond, BC V6X 3R3</md-card-content>
+              </md-card>
+              <md-card>
+                <md-card-title>Acme Grocery Store</md-card-title>
+                <md-card-content>3031 Beckman Pl, Richmond, BC V6X 3R3</md-card-content>
               </md-card>
             </md-tab>
         </md-tab-group>
