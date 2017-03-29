@@ -11,7 +11,14 @@ import {ErrorReportService} from '../error-report';
   selector: 'add-recipe',
   template: `
   <md-toolbar class="top-toolbar" color="primary">
-      <span>Add new recipe</span>
+    <button md-icon-button class="back-button" (click)="onNavigatingBack()">
+      <md-icon>arrow_back</md-icon>
+    </button>
+    <span>Add a recipe</span>
+    <span class="toolbar-spacer"></span>
+    <button md-icon-button (click)="onAddRecipe()">
+      <md-icon>done</md-icon>
+    </button>
   </md-toolbar>
 
   <div class="page-content">
