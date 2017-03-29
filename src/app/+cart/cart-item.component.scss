@@ -16,7 +16,7 @@ md-card-title {
 }
 
 md-card-subtitle {
-    padding: 5px 0px 0px 5px;
+    padding: 5px 0px 0px 10px;
     margin-bottom: 0px !important;
 }
 
@@ -27,25 +27,9 @@ md-card-subtitle {
 
 .cart-ingredient-item {
   height: 30px;
+  padding-bottom: 8px;
 }
 
 .cart-ingredient-list {
-  padding-top: 0px;
+  padding: 0px 0px 5px 0px;
 }
-// md-card-actions {
-//     padding: 10px 0px 5px 10px;
-
-//     md-list {
-//         padding-top: 0px !important;
-//     }
-
-//     .ingredient-name {
-//         width: 70%;
-//         font-size: 21px;
-//     }
-
-//     .ingredient-numbers {
-//         width: 20%;
-//         font-size: 21px;
-//     }
-// }

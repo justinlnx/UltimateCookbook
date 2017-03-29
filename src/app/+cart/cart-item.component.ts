@@ -15,11 +15,10 @@ import {ApiService, CartEntry, Ingredient, Recipe} from '../api';
       <md-card-content>
           <md-list class="cart-ingredient-list">
               <md-list-item class="cart-ingredient-item" *ngFor="let ingredient of filteredIngredients">
-                  <md-checkbox [ngModel]="ingredient.bought" (ngModelChange)="updateCartEntry(ingredient, $event)" (click)="$event.stopPropagation()">
-
-                  </md-checkbox>{{ingredient.content}}
+                <md-checkbox [ngModel]="ingredient.bought" (ngModelChange)="updateCartEntry(ingredient, $event)" (click)="$event.stopPropagation()">
+                </md-checkbox>{{ingredient.content}}
               </md-list-item>
-              <md-list-item *ngIf="contracted">
+              <md-list-item class="cart-ingredient-item" *ngIf="contracted">
                 ...
               </md-list-item>
           </md-list>
@@ -42,7 +41,6 @@ export class CartItemComponent implements OnInit {
   public ngOnInit() {
     this.getRecipeOnce();
     this.getAuthorOnce();
-
     this.populateFilteredIngredients();
   }
 
@@ -50,7 +48,7 @@ export class CartItemComponent implements OnInit {
     return !!this.cartEntry && !!this.recipe;
   }
 
-  public show2Items(ingredients: Ingredient[]): Ingredient[] {
+  public showFirstTwoItems(ingredients: Ingredient[]): Ingredient[] {
     return ingredients.filter((_, index) => {
       return index < 2;
     });
@@ -62,10 +60,9 @@ export class CartItemComponent implements OnInit {
   }
 
   public populateFilteredIngredients() {
-    this.filteredIngredients =
-        this.contracted ? this.show2Items(this.cartEntry.ingredients) : this.cartEntry.ingredients;
-
-    console.log(this.filteredIngredients);
+    this.filteredIngredients = this.contracted ?
+        this.showFirstTwoItems(this.cartEntry.ingredients) :
+        this.cartEntry.ingredients;
   }
 
   public getRecipeOnce(): void {
