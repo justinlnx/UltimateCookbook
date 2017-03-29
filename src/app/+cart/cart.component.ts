@@ -25,14 +25,12 @@ import {ApiService, CartEntry, Recipe} from '../api';
               <md-card-title>Find a store near you</md-card-title>
               <md-card-content>
                 <sebm-google-map [latitude]="lat" [longitude]="lng" [zoom]="zoom">
-                    <sebm-google-map-marker [latitude]="lat" [longitude]="lng">
-                    </sebm-google-map-marker>
+                  <sebm-google-map-marker [latitude]="lat" [longitude]="lng">
+                  </sebm-google-map-marker>
                 </sebm-google-map>
-                <input type="text" [(ngModel)]="address"  (setAddress)="getAddress($event)" googleplace/>
               </md-card-content>
               </md-card>
               <md-card>
-
               </md-card>
             </md-tab>
         </md-tab-group>
