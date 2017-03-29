@@ -1,27 +1,43 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Launch Chrome against localhost, with sourcemaps",
-            "type": "chrome",
-            "request": "launch",
-            "url": "http://localhost:3000/*",
-            "runtimeArgs": [
-              "--disable-web-security",
-              "--user-data-dir",
-              "--remote-debugging-port=9222"
-            ],
-            "sourceMaps": true,
-            "webRoot": "${workspaceRoot}"
-        },
-        {
-            "name": "Attach to Chrome, with sourcemaps",
-            "type": "chrome",
-            "request": "attach",
-            "url": "http://localhost:3000/*",
-            "port": 9222,
-            "sourceMaps": true,
-            "webRoot": "${workspaceRoot}"
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to Process",
+      "processId": "${command:PickProcess}",
+      "port": 5858
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Program",
+      "program": "${workspaceRoot}/server.js",
+      "args": [
+        "dev"
+      ]
+    },
+    {
+      "name": "Launch Chrome against localhost, with sourcemaps",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000/*",
+      "runtimeArgs": [
+        "--disable-web-security",
+        "--user-data-dir",
+        "--remote-debugging-port=9222"
+      ],
+      "sourceMaps": true,
+      "webRoot": "${workspaceRoot}"
+    },
+    {
+      "name": "Attach to Chrome, with sourcemaps",
+      "type": "chrome",
+      "request": "attach",
+      "url": "http://localhost:3000/*",
+      "port": 9222,
+      "sourceMaps": true,
+      "webRoot": "${workspaceRoot}"
+    }
+  ]
 }

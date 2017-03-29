@@ -8,6 +8,7 @@ import {Recipe, RecipeSchema} from './recipe';
 export interface PushUserSchema extends PushDatabaseSchema {
   id: string;
   name: string;
+  avatar: string;
   recipes: string[];
   likedRecipes: string[];
   cart: PushCartEntrySchema[];
@@ -17,8 +18,8 @@ export interface UserSchema extends PushUserSchema, DatabaseSchema {}
 
 export class User extends FrontendObject {
   constructor(
-      public $key: string, public id: string, public name: string, public recipes: string[],
-      public likedRecipes: string[], public cart: CartEntry[]) {
+      public $key: string, public id: string, public name: string, public avatar: string,
+      public recipes: string[], public likedRecipes: string[], public cart: CartEntry[]) {
     super($key);
   }
 
@@ -26,6 +27,7 @@ export class User extends FrontendObject {
     return {
       id: this.id,
       name: this.name,
+      avatar: this.avatar,
       recipes: this.recipes,
       likedRecipes: this.likedRecipes,
       cart: this.pushcCartSchema()
@@ -65,6 +67,7 @@ class UserReceiveScheme extends ReceiveScheme {
     let $key = DefaultTransferActions.requiredStringAction(index);
     let id = DefaultTransferActions.stringAction(userSchema.id);
     let name = DefaultTransferActions.stringAction(userSchema.name);
+    let avatar = DefaultTransferActions.stringAction(userSchema.avatar);
     let recipes = DefaultTransferActions.arrayAction(userSchema.recipes);
     let likedRecipes = DefaultTransferActions.arrayAction(userSchema.likedRecipes);
     let cart = DefaultTransferActions.arrayAction(userSchema.cart);
@@ -72,7 +75,7 @@ class UserReceiveScheme extends ReceiveScheme {
       return cartEntryReceiveScheme.receiveAsDescendant(pushCartEntrySchema, `${cartEntryIndex}`);
     });
 
-    return new User($key, id, name, recipes, likedRecipes, transferredCart);
+    return new User($key, id, name, avatar, recipes, likedRecipes, transferredCart);
   }
 }
 

@@ -1,4 +1,17 @@
 @import '~@angular/material/core/theming/theming';
+@import 'src/styles/styles.scss';
+
+.progress-bar {
+  position: fixed;
+  top: $toolbar-height;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
 #profile-image {
     width: 30%;
     height: 100px;
@@ -23,8 +36,27 @@
     font-size:20px;
     color:purple;
  }
- 
+
 .tag{
     color:#333300;
 }
 
+#avatar-upload {
+  display: none;
+}
+
+.upload-line {
+  display: flex;
+
+  button {
+    margin-right: 12px;
+  }
+
+  .avatar-file-name {
+    flex: 1 1 auto;
+
+    input {
+      color: black !important;
+    }
+  }
+}
