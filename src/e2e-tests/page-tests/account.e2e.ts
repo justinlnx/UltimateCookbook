@@ -59,18 +59,14 @@ describe('account page', () => {
 
     describe('"Email" validation checking', () => {
       it('Invalid "Email" input should display error message', () => {
-        let emailInput = accountPage.getEmailInputElement();
-
-        emailInput.sendKeys(invalidEmail);
+        entersEmailInput(invalidEmail);
 
         let warningMessage = accountPage.getEmailInputWarningMessage();
         expect(warningMessage).toEqual('Incorrect email format');
       });
 
       it('Valid "Email" input should display no error message', () => {
-        let emailInput = accountPage.getEmailInputElement();
-
-        emailInput.sendKeys(validEmail);
+        entersEmailInput(validEmail);
 
         let warningMessage = $('email-input-warning');
         expect(warningMessage.isPresent()).toBeFalsy();
@@ -79,27 +75,21 @@ describe('account page', () => {
 
     describe('"Password" validation checking', () => {
       it('"Password" less than 6 char displays error message', () => {
-        let passwordInput = accountPage.getPasswordInputElement();
-
-        passwordInput.sendKeys(invalidShortPassword);
+        entersPasswordInput(invalidShortPassword);
 
         let warningMessage = accountPage.getPasswordInputWarningMessage();
         expect(warningMessage).toEqual('Incorrect password format');
       });
 
       it('"Password" longer than 16 char displays error message', () => {
-        let passwordInput = accountPage.getPasswordInputElement();
-
-        passwordInput.sendKeys(invalidLongPassword);
+        entersPasswordInput(invalidLongPassword);
 
         let warningMessage = accountPage.getPasswordInputWarningMessage();
         expect(warningMessage).toEqual('Incorrect password format');
       });
 
       it('Valid "Password" input should display no error message', () => {
-        let passwordInput = accountPage.getPasswordInputElement();
-
-        passwordInput.sendKeys(validPassword);
+        entersPasswordInput(validPassword);
 
         let warningMessage = $('password-input-warning');
         expect(warningMessage.isPresent()).toBeFalsy();
@@ -108,18 +98,14 @@ describe('account page', () => {
 
     describe('"Username" validation checking', () => {
       it('Empty "Username" should display error message', () => {
-        let usernameInput = accountPage.getUsernameInputElement();
-
-        usernameInput.sendKeys('');
+        entersUsernameInput('');
 
         let warningMessage = accountPage.getUsernameInputWarningMessage();
         expect(warningMessage).toEqual('Incorrect user name format');
       });
 
       it('Valid "Username" should display no error message', () => {
-        let usernameInput = accountPage.getUsernameInputElement();
-
-        usernameInput.sendKeys(validUserName);
+        entersUsernameInput(validUserName);
 
         let warningMessage = $('username-input-warning');
         expect(warningMessage.isPresent()).toBeFalsy();
@@ -127,30 +113,47 @@ describe('account page', () => {
     });
 
     describe('Valid inputs should enable "Sign In" and "Create Account" buttons', () => {
-      it('Valid "Email" and "Password" should enable "Sign In" button and disable "Create Account" button',
-         () => {
-           let emailInput = accountPage.getEmailInputElement();
-           let passwordInput = accountPage.getPasswordInputElement();
+      it('Valid "Email" and "Password" enables "Sign In" and disables "Create Account"', () => {
+        entersEmailInput(validEmail);
+        entersPasswordInput(validPassword);
+        entersUsernameInput('');
 
-           emailInput.sendKeys(validEmail);
-           passwordInput.sendKeys(validPassword);
-
-           expect(accountPage.getSignInButtonEnabledState()).toBeTruthy();
-           expect(accountPage.getCreateAccButtonEnabledState()).toBeFalsy();
-         });
+        expect(accountPage.getSignInButtonEnabledState()).toBeTruthy();
+        expect(accountPage.getCreateAccButtonEnabledState()).toBeFalsy();
+      });
 
       it('Valid "Email", "Password", and "Username" shoud enable both buttons', () => {
-        let emailInput = accountPage.getEmailInputElement();
-        let passwordInput = accountPage.getPasswordInputElement();
-        let usernameInput = accountPage.getUsernameInputElement();
-
-        emailInput.sendKeys(validEmail);
-        passwordInput.sendKeys(validPassword);
-        usernameInput.sendKeys(validUserName);
+        entersEmailInput(validEmail);
+        entersPasswordInput(validPassword);
+        entersUsernameInput(validUserName);
 
         expect(accountPage.getSignInButtonEnabledState()).toBeTruthy();
         expect(accountPage.getCreateAccButtonEnabledState()).toBeTruthy();
       });
     });
+
+    function entersEmailInput(input: string): void {
+      let emailInput = accountPage.getEmailInputElement();
+
+      emailInput.clear();
+
+      emailInput.sendKeys(input);
+    }
+
+    function entersPasswordInput(input: string): void {
+      let passwordInput = accountPage.getPasswordInputElement();
+
+      passwordInput.clear();
+
+      passwordInput.sendKeys(input);
+    }
+
+    function entersUsernameInput(input: string): void {
+      let usernameInput = accountPage.getUsernameInputElement();
+
+      usernameInput.clear();
+
+      usernameInput.sendKeys(input);
+    }
   });
 });
