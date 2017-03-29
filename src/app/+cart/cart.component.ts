@@ -7,9 +7,11 @@ import {ApiService, CartEntry, Recipe} from '../api';
   selector: 'cart',
   template: `
     <md-toolbar class="top-toolbar" color="primary">
-        <span>Cart</span>
+      <span>Cart</span>
     </md-toolbar>
-    <login-warning *ngIf="!isLoggedIn"></login-warning>
+   <div class="page-content">
+     <login-warning *ngIf="!userLoggedIn"></login-warning>
+    </div>
     <div *ngIf="isLoggedIn">
     <div class="page-content">
         <md-tab-group>
