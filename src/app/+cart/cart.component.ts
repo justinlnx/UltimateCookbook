@@ -1,12 +1,10 @@
 import {Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {Http} from '@angular/http';
+import {Http, Jsonp, Response} from '@angular/http';
 import {MapsAPILoader} from 'angular2-google-maps/core';
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
-
 import {ApiService, CartEntry, Recipe} from '../api';
-
 @Component({
   selector: 'cart',
   template: `
@@ -18,6 +16,10 @@ import {ApiService, CartEntry, Recipe} from '../api';
     </div>
     <div *ngIf="isLoggedIn">
     <div class="page-content">
+        <sebm-google-map id="map" [latitude]="lat" [longitude]="lng" [zoom]="zoom">
+          <sebm-google-map-marker [latitude]="lat" [longitude]="lng">
+          </sebm-google-map-marker>
+        </sebm-google-map>
         <md-tab-group>
             <md-tab class="list-label" label="LIST">
               <cart-item *ngFor="let cartEntry of cartObservable | async"
@@ -28,10 +30,6 @@ import {ApiService, CartEntry, Recipe} from '../api';
               <md-card>
               <md-card-title>Find a store near you</md-card-title>
               <md-card-content>
-                <sebm-google-map [latitude]="lat" [longitude]="lng" [zoom]="zoom">
-                  <sebm-google-map-marker [latitude]="lat" [longitude]="lng">
-                  </sebm-google-map-marker>
-                </sebm-google-map>
               </md-card-content>
               </md-card>
               <md-card>
@@ -77,8 +75,8 @@ export class CartComponent implements OnInit, OnDestroy {
     });
     // set google maps defaults
     this.zoom = 12;
-    this.lat = 0;
-    this.lng = 0;
+    this.lat = 49.246292;
+    this.lng = -123.116226;
     this.searchControl = new FormControl();
     this.getAllStores();
   }
@@ -92,11 +90,21 @@ export class CartComponent implements OnInit, OnDestroy {
         this.lat = position.coords.latitude;
         this.lng = position.coords.longitude;
         this.zoom = 12;
-        this.url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
-            this.lat.toString() + ',' + this.lng.toString() +
-            '&rankby=distance&types=grocery_or_supermarket&key=AIzaSyDrxvSMaiyZkfUZFZMDiRg_alqhYaOOIBk';
-        this.http.get(this.url).map(response => response.json()).subscribe(data => {
-          console.log('success ' + JSON.stringify(data.results));
+        console.log(this.lat);
+        console.log(this.lng);
+        this.mapsAPILoader.load().then(() => {
+          let pyrmont = new google.maps.LatLng(this.lat, this.lng);
+          let map = new google.maps.Map(document.getElementById('map'));
+          console.log('map is ------' + map);
+          let service = new google.maps.places.PlacesService(map);
+          let request: any = {
+            location: pyrmont,
+            radius: '100000',
+            openNow: true,
+            rankby: google.maps.places.RankBy.DISTANCE,
+            types: ['grocery_or_supermarket']
+          };
+          service.nearbySearch(request, (result) => {console.log(result)});
         });
       })
     }
