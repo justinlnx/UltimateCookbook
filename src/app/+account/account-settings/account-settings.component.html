@@ -1,7 +1,7 @@
 <md-toolbar class="top-toolbar" color="primary">
-  <span id="profile-text">Profile</span>
+  <span id="profile-header-text">Profile</span>
   <span class="toolbar-spacer"></span>
-  <button md-raised-button (click)="onLogout()" class="right-icon" color="warn">Sign out</button>
+  <button md-raised-button (click)="onLogout()" class="sign-out" id='sign-out-id' color="warn">Sign out</button>
 </md-toolbar>
 <div class="progress-bar">
   <md-progress-bar *ngIf="loading" color="accent" mode="indeterminate"></md-progress-bar>

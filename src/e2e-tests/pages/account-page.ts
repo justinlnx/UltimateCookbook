@@ -7,22 +7,26 @@ export class AccountPage {
   }
 
   public getSignInButtonLabel(): webdriver.promise.Promise<string> {
-    let signInButton = element(by.css('.sign-in-btn'));
+    let signInButton = this.getSignInButtonElement();
     return signInButton.getText();
   }
 
+  public getSignInButtonElement(): ElementFinder {
+    return element(by.id('sign-in-btn-id'));
+  }
+
   public getSignInButtonEnabledState(): webdriver.promise.Promise<boolean> {
-    let signInButton = element(by.css('.sign-in-btn'));
+    let signInButton = this.getSignInButtonElement();
     return signInButton.isEnabled();
   }
 
   public getCreateAccButtonLabel(): webdriver.promise.Promise<string> {
-    let createAccButton = element(by.css('.create-account-btn'));
+    let createAccButton = element(by.id('create-account-btn-id'));
     return createAccButton.getText();
   }
 
   public getCreateAccButtonEnabledState(): webdriver.promise.Promise<boolean> {
-    let createAccButton = element(by.css('.create-account-btn'));
+    let createAccButton = element(by.id('create-account-btn-id'));
     return createAccButton.isEnabled();
   }
 

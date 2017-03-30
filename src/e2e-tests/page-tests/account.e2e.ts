@@ -1,4 +1,4 @@
-import {$, browser} from 'protractor';
+import {$, browser, by, element, ElementFinder} from 'protractor';
 
 import {AccountPage} from '../pages/account-page';
 
@@ -48,7 +48,8 @@ describe('account page', () => {
   });
 
   describe('Invalid user inputs should not allow sign in or create account', () => {
-    let invalidEmail = 'invalidEmail';
+    let invalidEmailFormat = 'invalidEmail';
+    let invalidEmail = 'no@user.com';
     let invalidShortPassword = '123';
     let invalidLongPassword = '1111-1111-1111-1111';
     let validEmail = 'admin@gmail.com';
@@ -57,7 +58,7 @@ describe('account page', () => {
 
     describe('"Email" validation checking', () => {
       it('Invalid "Email" input should display error message', () => {
-        entersEmailInput(invalidEmail);
+        entersEmailInput(invalidEmailFormat);
 
         let warningMessage = accountPage.getEmailInputWarningMessage();
         expect(warningMessage).toEqual('Incorrect email format');
@@ -134,6 +135,43 @@ describe('account page', () => {
       });
     });
 
+    describe('login with correct input format results in different actions', () => {
+      let signInBtnElement: ElementFinder;
+      beforeEach(() => {
+        signInBtnElement = accountPage.getSignInButtonElement();
+      })
+
+      it('login with incorrect "Email" displays no user exists error message', () => {
+        entersEmailInput(invalidEmail);
+        entersPasswordInput(validPassword);
+        browser.sleep(1000);
+
+        signInBtnElement.click();
+        browser.sleep(500);
+
+        let snackBarMsgElement = element(by.className('mat-simple-snackbar-message'));
+        let expectedErrorMessage =
+            'There is no user record corresponding to this identifier. The user may have been deleted.';
+        expect(snackBarMsgElement.isPresent()).toBeTruthy();
+        expect(snackBarMsgElement.getText()).toEqual(expectedErrorMessage);
+      });
+
+      it('login with correct "Email" and "Password" displays "Profile" page', () => {
+        entersEmailInput(validEmail);
+        entersPasswordInput(validPassword);
+        browser.sleep(1000);
+
+        signInBtnElement.click();
+        browser.sleep(3000);
+
+        let profileElement = element(by.id('profile-header-text'));
+        expect(profileElement.isPresent()).toBeTruthy();
+        expect(profileElement.getText()).toEqual('Profile');
+
+        signOut();
+      });
+    });
+
     function entersEmailInput(input: string): void {
       let emailInput = accountPage.getEmailInputElement();
 
@@ -156,6 +194,13 @@ describe('account page', () => {
       usernameInput.clear();
 
       usernameInput.sendKeys(input);
+    }
+
+    function signOut(): void {
+      let signOutBtnElement = element(by.id('sign-out-id'));
+
+      signOutBtnElement.click();
+      browser.sleep(1000);
     }
   });
 });
