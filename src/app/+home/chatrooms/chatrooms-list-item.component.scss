@@ -1,0 +1,5 @@
+@import '~@angular/material/core/theming/theming';
+
+.message-line {
+  color: map-get($mat-grey, 600);
+}

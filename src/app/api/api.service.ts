@@ -102,6 +102,14 @@ export class ApiService {
     this.af.auth.logout();
   }
 
+  public getUserInfoObservable(userId: string): Observable<User> {
+    return this.userListMappedObservable.map((users: User[]) => {
+      return users.find((user) => {
+        return user.id === userId;
+      });
+    });
+  }
+
   public updateUserInfo(user: User): void {
     this.userListObservable.update(user.$key, user.asPushSchema())
         .then((_) => console.log('success.'), (err) => this.errorReportService.send(err.message));

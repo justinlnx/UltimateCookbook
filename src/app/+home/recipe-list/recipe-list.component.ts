@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 import {Subscription} from 'rxjs/Subscription';
 import {ApiService, Recipe} from '../../api';
 
@@ -8,7 +9,7 @@ import {ApiService, Recipe} from '../../api';
   <md-toolbar class="top-toolbar"  color="primary">
     <search-bar (searchInputChange)="onSearchInputChange($event)"></search-bar>
     <span class="toolbar-spacer"></span>
-    <button md-icon-button>
+    <button md-icon-button (click)="onNavigateToChatrooms()">
       <md-icon>chat</md-icon>
     </button>
   </md-toolbar>
@@ -36,7 +37,7 @@ export class RecipeListComponent implements OnInit {
     this.filterRecipeList();
   }
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, public router: Router) {}
 
   public ngOnInit(): void {
     this.recipesSubscription = this.apiService.getAllRecipes().subscribe((recipes) => {
@@ -49,6 +50,10 @@ export class RecipeListComponent implements OnInit {
     this.searchInput = input;
 
     this.filterRecipeList();
+  }
+
+  public onNavigateToChatrooms(): void {
+    this.router.navigateByUrl('/home/chatrooms');
   }
 
   private filterRecipeList(): void {
