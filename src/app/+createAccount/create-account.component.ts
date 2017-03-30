@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import {SafeResourceUrl} from '@angular/platform-browser';
 import {Router} from '@angular/router';
 import {AngularFire, FirebaseAuthState} from 'angularfire2';
 
@@ -31,7 +31,7 @@ import {createSingleFileUploader, FileUploader} from '../file-upload';
           <md-hint *ngIf="!validUserNameInput()" id="username-input-warning">Incorrect user name format</md-hint>
         </md-input-container>
         <md-card>
-          <md-card-title>Change avatar</md-card-title>
+          <md-card-title>Upload avatar</md-card-title>
           <md-card-content>
             <div class="upload-line">
               <button md-mini-fab (click)="onSelectFile()">
@@ -43,7 +43,7 @@ import {createSingleFileUploader, FileUploader} from '../file-upload';
             </div>
             <input id="avatar-upload" #avatarUploadInput type="file" ng2FileSelect [uploader]="avatarUploader">
             <md-card-actions>
-              <button md-raised-button (click)="onUploadAvatar()" [disabled]="avatarUploadFileName.length === 0">Upload</button>
+              <button md-raised-button (click)="onUploadAvatarReturnAvatarPath()" [disabled]="avatarUploadFileName.length === 0">Upload</button>
             </md-card-actions>
           </md-card-content>
         </md-card>
@@ -83,8 +83,7 @@ export class CreateAccountComponent implements OnInit {
 
   constructor(
       private af: AngularFire, private errorReportService: ErrorReportService,
-      private fb: FormBuilder, private apiService: ApiService, private router: Router,
-      public domSanitizer: DomSanitizer) {}
+      private fb: FormBuilder, private apiService: ApiService, private router: Router) {}
 
   public ngOnInit() {
     this.createCreateAccountForm();
@@ -94,8 +93,9 @@ export class CreateAccountComponent implements OnInit {
     let email = this.createAccountForm.value.email;
     let password = this.createAccountForm.value.password;
     let name = this.createAccountForm.value.name;
+    let avatarPath = this.onUploadAvatarReturnAvatarPath();
 
-    this.apiService.createUser(email, password, name);
+    this.apiService.createUser(email, password, name, avatarPath);
     this.nagivateToRecipesPage();
   }
 
@@ -152,7 +152,7 @@ export class CreateAccountComponent implements OnInit {
     this.avatarUploadInput.nativeElement.click();
   }
 
-  public onUploadAvatar(): void {
+  public onUploadAvatarReturnAvatarPath(): string {
     this.loading = true;
     for (let item of this.avatarUploader.queue) {
       item.upload();
@@ -161,15 +161,11 @@ export class CreateAccountComponent implements OnInit {
 
       item.onComplete = (response: string) => {
         console.log(response);
-        self.user.avatar = response;
-        self.apiServie.updateUserInfo(self.user);
-
         this.loading = false;
+
+        return response;
       };
     }
-  }
-
-  private updateAvatarSafeUrl(user: User) {
-    this.avatarUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(user.avatar);
+    return '';
   }
 }

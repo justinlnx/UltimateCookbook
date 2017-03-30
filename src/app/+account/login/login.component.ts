@@ -84,7 +84,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  private createUser(email: string, password: string, name: string) {
-    this.apiService.createUser(email, password, name);
-  }
+  // private createUser(email: string, password: string, name: string) {
+  //   this.apiService.createUser(email, password, name);
+  // }
 }
