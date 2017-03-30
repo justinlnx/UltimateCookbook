@@ -185,6 +185,28 @@ describe('account page', () => {
 
         signOut();
       });
+
+      describe('create account with correct input formats results in different action', () => {
+        let createAccountBtnElement: ElementFinder;
+
+        beforeEach(() => {
+          createAccountBtnElement = accountPage.getCreateAccountButtonElement();
+        })
+
+        it('create account with existing email displays error message', () => {
+          entersEmailInput(validEmail);
+          entersPasswordInput(invalidPassword);
+          entersUsernameInput(validUserName);
+
+          createAccountBtnElement.click();
+          browser.sleep(500);
+
+          let snackBarMsgElement = element(by.className('mat-simple-snackbar-message'));
+          let expectedErrorMessage = 'The email address is already in use by another account.';
+          expect(snackBarMsgElement.isPresent()).toBeTruthy();
+          expect(snackBarMsgElement.getText()).toEqual(expectedErrorMessage);
+        });
+      });
     });
 
     function entersEmailInput(input: string): void {

@@ -21,12 +21,16 @@ export class AccountPage {
   }
 
   public getCreateAccButtonLabel(): webdriver.promise.Promise<string> {
-    let createAccButton = element(by.id('create-account-btn-id'));
+    let createAccButton = this.getCreateAccountButtonElement();
     return createAccButton.getText();
   }
 
+  public getCreateAccountButtonElement(): ElementFinder {
+    return element(by.id('create-account-btn-id'));
+  }
+
   public getCreateAccButtonEnabledState(): webdriver.promise.Promise<boolean> {
-    let createAccButton = element(by.id('create-account-btn-id'));
+    let createAccButton = this.getCreateAccountButtonElement();
     return createAccButton.isEnabled();
   }
 
