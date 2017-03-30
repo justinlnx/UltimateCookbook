@@ -34,19 +34,19 @@ import {ErrorReportService} from '../error-report';
         </md-input-container>
 
         <div formArrayName="stepDesc">
-        <md-input-container md-no-float *ngFor="let step of stepsArray.controls; let i = index" [formGroupName]="i">
-          <button md-icon-button class="addPhoto" (click)="uploadPhoto()">
-            <md-icon>add_a_photo</md-icon>
-          </button>
-          <textarea mdInput placeholder="Step {{i+1}}" type="text" formControlName="stepDescription"></textarea>
-        </md-input-container>
+          <md-input-container md-no-float *ngFor="let step of stepsArray.controls; let i = index" [formGroupName]="i">
+            <button md-icon-button class="addPhoto" (click)="uploadPhoto()">
+              <md-icon>add_a_photo</md-icon>
+            </button>
+            <textarea mdInput placeholder="Step {{i+1}}" type="text" formControlName="stepDescription"></textarea>
+          </md-input-container>
         </div>
         <button md-raised-button (click)="addStep()">+ Step</button>
 
         <div formArrayName="ingredientsList">
-        <md-input-container md-no-float *ngFor="let ingredient of ingredientsArray.controls; let i = index" [formGroupName]="i">
-          <input mdInput placeholder="Ingredient {{i+1}}" type="text" formControlName="ingredientDescription">
-        </md-input-container>
+          <md-input-container md-no-float *ngFor="let ingredient of ingredientsArray.controls; let i = index" [formGroupName]="i">
+            <input mdInput placeholder="Ingredient {{i+1}}" type="text" formControlName="ingredientDescription">
+          </md-input-container>
         </div>
         <button md-raised-button (click)="addIngredient()">+ Ingredient</button>
       </form>
@@ -115,8 +115,13 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
     let newRecipe: PushRecipeSchema;
     newRecipe = {avatar, name, authorId, description, steps, ingredients, comments, likedUsers};
 
-    this.apiService.addRecipe(newRecipe);
-    this.nagivateToRecipesPage();
+    if (this.addRecipeForm.valid) {
+      this.apiService.addRecipe(newRecipe);
+      this.nagivateToRecipesPage();
+    } else {
+      this.errorReportService.send('Please fill in required fields.');
+      return;
+    }
   }
 
   get stepsArray(): FormArray {
