@@ -150,11 +150,9 @@ describe('account page', () => {
         signInBtnElement.click();
         browser.sleep(500);
 
-        let snackBarMsgElement = element(by.className('mat-simple-snackbar-message'));
         let expectedErrorMessage =
             'There is no user record corresponding to this identifier. The user may have been deleted.';
-        expect(snackBarMsgElement.isPresent()).toBeTruthy();
-        expect(snackBarMsgElement.getText()).toEqual(expectedErrorMessage);
+        verifySnackBarMsgIsDisplayed(expectedErrorMessage);
       });
 
       it('login with incorrect "Password" display invalid password error message', () => {
@@ -165,10 +163,8 @@ describe('account page', () => {
         signInBtnElement.click();
         browser.sleep(500);
 
-        let snackBarMsgElement = element(by.className('mat-simple-snackbar-message'));
         let expectedErrorMessage = 'The password is invalid or the user does not have a password.';
-        expect(snackBarMsgElement.isPresent()).toBeTruthy();
-        expect(snackBarMsgElement.getText()).toEqual(expectedErrorMessage);
+        verifySnackBarMsgIsDisplayed(expectedErrorMessage);
       });
 
       it('login with correct "Email" and "Password" displays "Profile" page', () => {
@@ -201,10 +197,8 @@ describe('account page', () => {
           createAccountBtnElement.click();
           browser.sleep(500);
 
-          let snackBarMsgElement = element(by.className('mat-simple-snackbar-message'));
           let expectedErrorMessage = 'The email address is already in use by another account.';
-          expect(snackBarMsgElement.isPresent()).toBeTruthy();
-          expect(snackBarMsgElement.getText()).toEqual(expectedErrorMessage);
+          verifySnackBarMsgIsDisplayed(expectedErrorMessage);
         });
       });
     });
@@ -238,6 +232,12 @@ describe('account page', () => {
 
       signOutBtnElement.click();
       browser.sleep(1000);
+    }
+
+    function verifySnackBarMsgIsDisplayed(expectedErrorMessage: string): void {
+      let snackBarMsgElement = element(by.className('mat-simple-snackbar-message'));
+      expect(snackBarMsgElement.isPresent()).toBeTruthy();
+      expect(snackBarMsgElement.getText()).toEqual(expectedErrorMessage);
     }
   });
 });
