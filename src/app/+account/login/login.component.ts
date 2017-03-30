@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+
 import {ApiService} from '../../api';
 import {ErrorReportService} from '../../error-report';
 
@@ -13,7 +15,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
       public apiService: ApiService, public fb: FormBuilder,
-      public errorReportService: ErrorReportService) {}
+      public errorReportService: ErrorReportService, private router: Router) {}
 
   public ngOnInit() {
     this.createForm();
@@ -48,8 +50,9 @@ export class LoginComponent implements OnInit {
   }
 
   public onCreateAccount() {
-    this.createUser(
-        this.loginForm.value.email, this.loginForm.value.password, this.loginForm.value.name);
+    // this.createUser(
+    //     this.loginForm.value.email, this.loginForm.value.password, this.loginForm.value.name);
+    this.router.navigateByUrl('/createAccount');
   }
 
   public validSigninInput(): boolean {

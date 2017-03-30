@@ -1,0 +1,17 @@
+@import '~@angular/material/core/theming/theming';
+@import 'src/styles/styles';
+
+md-hint {
+  color: mat-color($recipes-app-warn);
+}
+
+form {
+    md-input-container {
+        width: 90%;
+        padding: 10px;
+    }
+
+    .create-btn {
+        margin: 10px;
+    }
+}
