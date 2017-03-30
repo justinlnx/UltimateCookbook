@@ -20,7 +20,13 @@
     ],
     "types": [
       "hammerjs",
-      "node"
+      "node",
+      "jasmine",
+      "source-map",
+      "uglify-js",
+      "webpack",
+      "googlemaps",
+      "google-maps"
     ]
   },
   "exclude": [
