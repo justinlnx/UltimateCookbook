@@ -2,27 +2,28 @@ import {browser, by, element, ElementArrayFinder, ElementFinder} from 'protracto
 import * as webdriver from 'selenium-webdriver';
 
 export class AccountPage {
-  private signInButton = element(by.css('.sign-in-btn'));
-  private createAccButton = element(by.css('.create-account-btn'));
-
   public get(): void {
     browser.get('#/account');
   }
 
   public getSignInButtonLabel(): webdriver.promise.Promise<string> {
-    return this.signInButton.getText();
+    let signInButton = element(by.css('.sign-in-btn'));
+    return signInButton.getText();
   }
 
-  public getSignInButtonEnabledState(): webdriver.promise.Promise<any> {
-    return this.signInButton.isEnabled();
+  public getSignInButtonEnabledState(): webdriver.promise.Promise<boolean> {
+    let signInButton = element(by.css('.sign-in-btn'));
+    return signInButton.isEnabled();
   }
 
   public getCreateAccButtonLabel(): webdriver.promise.Promise<string> {
-    return this.createAccButton.getText();
+    let createAccButton = element(by.css('.create-account-btn'));
+    return createAccButton.getText();
   }
 
-  public getCreateAccButtonEnabledState(): webdriver.promise.Promise<any> {
-    return this.createAccButton.isEnabled();
+  public getCreateAccButtonEnabledState(): webdriver.promise.Promise<boolean> {
+    let createAccButton = element(by.css('.create-account-btn'));
+    return createAccButton.isEnabled();
   }
 
   public getEmailInputElement(): ElementFinder {

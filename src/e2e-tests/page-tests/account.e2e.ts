@@ -7,25 +7,23 @@ describe('account page', () => {
 
   beforeEach(() => {
     accountPage = new AccountPage();
+
+    accountPage.get();
   });
 
   describe('account page default setting', () => {
     it('should show correct browser title', () => {
-      accountPage.get();
+      let title = browser.getTitle();
 
-      expect(browser.getTitle()).toEqual('Ultimate Cookbook');
+      expect(title).toEqual('Ultimate Cookbook');
     });
 
     it('should display "Sign In" Button in proper state', () => {
-      accountPage.get();
-
       expect(accountPage.getSignInButtonLabel()).toEqual('Sign in');
       expect(accountPage.getSignInButtonEnabledState()).toBeFalsy();
     });
 
     it('should display "Create Account" Button in proper state', () => {
-      accountPage.get();
-
       expect(accountPage.getCreateAccButtonLabel()).toEqual('Create Account');
       expect(accountPage.getCreateAccButtonEnabledState()).toBeFalsy();
     });
@@ -118,6 +116,8 @@ describe('account page', () => {
         entersPasswordInput(validPassword);
         entersUsernameInput('');
 
+        browser.sleep(1000);
+
         expect(accountPage.getSignInButtonEnabledState()).toBeTruthy();
         expect(accountPage.getCreateAccButtonEnabledState()).toBeFalsy();
       });
@@ -126,6 +126,8 @@ describe('account page', () => {
         entersEmailInput(validEmail);
         entersPasswordInput(validPassword);
         entersUsernameInput(validUserName);
+
+        browser.sleep(1000);
 
         expect(accountPage.getSignInButtonEnabledState()).toBeTruthy();
         expect(accountPage.getCreateAccButtonEnabledState()).toBeTruthy();
