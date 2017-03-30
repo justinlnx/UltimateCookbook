@@ -6,11 +6,6 @@ import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 import {ApiService, CartEntry, Recipe} from '../api';
 
-interface nearByStores {
-  rating: number[];
-  name: string[];
-  location: string[];
-}
 @Component({
   selector: 'cart',
   template: `
@@ -61,7 +56,7 @@ export class CartComponent implements OnInit, OnDestroy {
   public searchControl: FormControl;
   public zoom: number;
   public url: string;
-  public nearByStores: nearByStores;
+  public nearByStores: {rating: number[]; name: string[]; location: string[];};
   public cartObservable: Observable<CartEntry[]>;
   private loginStatusSubscription: Subscription;
   private _isLoggedIn: boolean;
@@ -89,6 +84,7 @@ export class CartComponent implements OnInit, OnDestroy {
     this.lat = 49.246292;
     this.lng = -123.116226;
     this.searchControl = new FormControl();
+    console.log('nearByStores is' + this.nearByStores);
     this.getAllStores();
   }
   public ngOnDestroy() {
@@ -98,7 +94,7 @@ export class CartComponent implements OnInit, OnDestroy {
   private getAllStores() {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
-          position => {
+          (position) => {
             this.lat = position.coords.latitude;
             this.lng = position.coords.longitude;
             this.zoom = 12;
@@ -128,7 +124,7 @@ export class CartComponent implements OnInit, OnDestroy {
             });
           },
           () => {window.alert(
-              'Error: The Geolocation service failed on your device, unable to get your current location :(')},
+              'Warning: The Geolocation service failed on your device browser at current time, unable to get your current location. Please try it later :(')},
           {maximumAge: 60000, timeout: 5000, enableHighAccuracy: true});
     } else {
       console.log('Browser doesn\'t support Geolocation');
