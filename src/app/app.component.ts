@@ -16,8 +16,8 @@ export class AppComponent {
   public sections: Section[];
   constructor() {
     this.sections = [
+      {name: 'Home', url: './home', icon: 'home'},
       {name: 'Cart', url: './cart', icon: 'shopping_cart'},
-      {name: 'Search', url: './recipes', icon: 'search'},
       {name: 'Favorites', url: './favorite', icon: 'favorite'},
       {name: 'Mine', url: './personal_recipes', icon: 'local_library'},
       {name: 'Profile', url: './account', icon: 'account_circle'}

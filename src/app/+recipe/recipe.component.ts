@@ -1,13 +1,12 @@
+import {Location} from '@angular/common';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 
-import {ApiService, PushCartEntrySchema, Recipe} from '../../api';
-import {ErrorReportService} from '../../error-report';
-
-import {Rating} from './rating.component';
+import {ApiService, PushCartEntrySchema, Recipe} from '../api';
+import {ErrorReportService} from '../error-report';
 
 @Component({
   selector: 'recipe',
@@ -110,7 +109,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
   constructor(
       private route: ActivatedRoute, private apiService: ApiService,
       private domSanitizer: DomSanitizer, private router: Router,
-      private errorReportService: ErrorReportService) {}
+      private errorReportService: ErrorReportService, public location: Location) {}
 
   public ngOnInit(): void {
     this.route.params
@@ -128,7 +127,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
   }
 
   public onNavigatingBack() {
-    this.router.navigateByUrl('recipes/all');
+    this.location.back();
   }
 
   public likeRecipe(recipe: Recipe) {
