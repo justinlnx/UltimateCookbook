@@ -5,6 +5,12 @@ import {MapsAPILoader} from 'angular2-google-maps/core';
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 import {ApiService, CartEntry, Recipe} from '../api';
+
+interface nearByStores {
+  rating: number[];
+  name: string[];
+  location: string[];
+}
 @Component({
   selector: 'cart',
   template: `
@@ -55,8 +61,7 @@ export class CartComponent implements OnInit, OnDestroy {
   public searchControl: FormControl;
   public zoom: number;
   public url: string;
-  public nearByStores: string[];
-
+  public nearByStores: nearByStores;
   public cartObservable: Observable<CartEntry[]>;
   private loginStatusSubscription: Subscription;
   private _isLoggedIn: boolean;
@@ -92,27 +97,41 @@ export class CartComponent implements OnInit, OnDestroy {
 
   private getAllStores() {
     if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(position => {
-        this.lat = position.coords.latitude;
-        this.lng = position.coords.longitude;
-        this.zoom = 12;
-        console.log(this.lat);
-        console.log(this.lng);
-        this.mapsAPILoader.load().then(() => {
-          let pyrmont = new google.maps.LatLng(this.lat, this.lng);
-          let map = new google.maps.Map(document.getElementById('map'));
-          console.log('map is ------' + map);
-          let service = new google.maps.places.PlacesService(map);
-          let request: any = {
-            location: pyrmont,
-            radius: '100000',
-            openNow: true,
-            rankby: google.maps.places.RankBy.DISTANCE,
-            types: ['grocery_or_supermarket']
-          };
-          service.nearbySearch(request, (result) => {console.log(result)});
-        });
-      })
+      navigator.geolocation.getCurrentPosition(
+          position => {
+            this.lat = position.coords.latitude;
+            this.lng = position.coords.longitude;
+            this.zoom = 12;
+            console.log(this.lat);
+            console.log(this.lng);
+            this.mapsAPILoader.load().then(() => {
+              let pyrmont = new google.maps.LatLng(this.lat, this.lng);
+              let map = new google.maps.Map(document.getElementById('map'));
+              console.log('map is ------' + map);
+              let service = new google.maps.places.PlacesService(map);
+              let request: any = {
+                location: pyrmont,
+                radius: '100000',
+                openNow: true,
+                rankby: google.maps.places.RankBy.DISTANCE,
+                types: ['grocery_or_supermarket']
+              };
+              service.nearbySearch(request, (results) => {
+                console.log('results sent by google is ' + results);
+                for (let result of results) {
+                  this.nearByStores.name.push(result.name);
+                  this.nearByStores.rating.push(result.rating);
+                  this.nearByStores.location.push(result.vicinity);
+                }
+                console.log('nearByStores variable now is' + this.nearByStores);
+              });
+            });
+          },
+          () => {window.alert(
+              'Error: The Geolocation service failed on your device, unable to get your current location :(')},
+          {maximumAge: 60000, timeout: 5000, enableHighAccuracy: true});
+    } else {
+      console.log('Browser doesn\'t support Geolocation');
     }
   }
 }
