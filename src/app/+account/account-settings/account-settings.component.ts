@@ -41,15 +41,15 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
 
   private userSubscription: Subscription;
 
-  constructor(public apiServie: ApiService, public domSanitizer: DomSanitizer) {}
+  constructor(public apiService: ApiService, public domSanitizer: DomSanitizer) {}
 
   public ngOnInit() {
-    this.userSubscription = this.apiServie.getCurrentUserObservable().subscribe((user) => {
+    this.userSubscription = this.apiService.getCurrentUserObservable().subscribe((user) => {
       this.user = user;
       this.updateAvatarSafeUrl(user);
     });
 
-    this.apiServie.getAuth().subscribe((authState) => {
+    this.apiService.getAuth().subscribe((authState) => {
       this.authState = authState;
     });
   }
@@ -59,7 +59,7 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
   }
 
   public onLogout() {
-    this.apiServie.logout();
+    this.apiService.logout();
   }
 
   public onSelectFile() {
@@ -76,7 +76,7 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
       item.onComplete = (response: string) => {
         console.log(response);
         self.user.avatar = response;
-        self.apiServie.updateUserInfo(self.user);
+        self.apiService.updateUserInfo(self.user);
 
         this.loading = false;
       };

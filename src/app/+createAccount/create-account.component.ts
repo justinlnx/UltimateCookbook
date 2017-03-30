@@ -1,10 +1,12 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {Router} from '@angular/router';
 import {AngularFire, FirebaseAuthState} from 'angularfire2';
 
 import {ApiService, PushRecipeSchema, Recipe} from '../api';
 import {ErrorReportService} from '../error-report';
+import {createSingleFileUploader, FileUploader} from '../file-upload';
 
 @Component({
   selector: 'create-account',
@@ -28,6 +30,23 @@ import {ErrorReportService} from '../error-report';
           <input mdInput placeholder="User name" type="text" formControlName="name">
           <md-hint *ngIf="!validUserNameInput()" id="username-input-warning">Incorrect user name format</md-hint>
         </md-input-container>
+        <md-card>
+          <md-card-title>Change avatar</md-card-title>
+          <md-card-content>
+            <div class="upload-line">
+              <button md-mini-fab (click)="onSelectFile()">
+                <md-icon>file_upload</md-icon>
+              </button>
+              <md-input-container class="avatar-file-name">
+                <input mdInput type="text" disabled [value]="avatarUploadFileName">
+              </md-input-container>
+            </div>
+            <input id="avatar-upload" #avatarUploadInput type="file" ng2FileSelect [uploader]="avatarUploader">
+            <md-card-actions>
+              <button md-raised-button (click)="onUploadAvatar()" [disabled]="avatarUploadFileName.length === 0">Upload</button>
+            </md-card-actions>
+          </md-card-content>
+        </md-card>
         <div>
           <button md-raised-button class="create-btn" [disabled]="!validCreateAccountForm" type="button" (click)="onAddRecipe()">Create Account</button>
         </div>
@@ -37,23 +56,38 @@ import {ErrorReportService} from '../error-report';
   `,
   styleUrls: ['./create-account.component.scss']
 })
-export class CreateAccountComponent implements OnInit, OnDestroy {
+export class CreateAccountComponent implements OnInit {
+  @ViewChild('avatarUploadInput') public avatarUploadInput: ElementRef;
   public createAccountForm: FormGroup;
+  public avatarUrl: SafeResourceUrl;
+  public avatarUploader: FileUploader = createSingleFileUploader();
+  public loading: boolean = false;
+
 
   get validCreateAccountForm(): boolean {
     return this.validEmailInput() && this.validPasswordInput() && this.validUserNameInput();
   }
 
+  get avatarUploadFileName(): string {
+    if (!this.avatarUploadInput || !this.avatarUploadInput.nativeElement.files ||
+        this.avatarUploadInput.nativeElement.files.length < 1) {
+      return '';
+    }
+
+    let files = this.avatarUploadInput.nativeElement.files as File[];
+
+    let avatarImage = files[0];
+
+    return avatarImage.name;
+  }
+
   constructor(
       private af: AngularFire, private errorReportService: ErrorReportService,
-      private fb: FormBuilder, private apiService: ApiService, private router: Router) {}
+      private fb: FormBuilder, private apiService: ApiService, private router: Router,
+      public domSanitizer: DomSanitizer) {}
 
   public ngOnInit() {
     this.createCreateAccountForm();
-  }
-
-  public ngOnDestroy() {
-    // this.logInSubscription.unsubscribe();
   }
 
   public onAddRecipe() {
@@ -112,5 +146,30 @@ export class CreateAccountComponent implements OnInit, OnDestroy {
 
   private nagivateToRecipesPage() {
     this.router.navigateByUrl('/account');
+  }
+
+  public onSelectFile() {
+    this.avatarUploadInput.nativeElement.click();
+  }
+
+  public onUploadAvatar(): void {
+    this.loading = true;
+    for (let item of this.avatarUploader.queue) {
+      item.upload();
+
+      const self = this;
+
+      item.onComplete = (response: string) => {
+        console.log(response);
+        self.user.avatar = response;
+        self.apiServie.updateUserInfo(self.user);
+
+        this.loading = false;
+      };
+    }
+  }
+
+  private updateAvatarSafeUrl(user: User) {
+    this.avatarUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(user.avatar);
   }
 }
