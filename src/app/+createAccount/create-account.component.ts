@@ -26,6 +26,10 @@ import {createSingleFileUploader, FileUploader} from '../file-upload';
           <input mdInput placeholder="Password" type="text" formControlName="password">
           <md-hint *ngIf="!validPasswordInput()" id="password-input-warning">Incorrect password format</md-hint>
         </md-input-container>
+        <md-input-container [dividerColor]="confirmPasswordInputColor()">
+          <input mdInput placeholder="Confirm Password" type="text" formControlName="confirmPassword">
+          <md-hint *ngIf="!confirmPasswordInput()" id="confirm-password-input-warning">Inconsistent password</md-hint>
+        </md-input-container>
         <md-input-container [dividerColor]="userNameInputColor()">
           <input mdInput placeholder="User name" type="text" formControlName="name">
           <md-hint *ngIf="!validUserNameInput()" id="username-input-warning">Incorrect user name format</md-hint>
@@ -65,7 +69,8 @@ export class CreateAccountComponent implements OnInit {
 
 
   get validCreateAccountForm(): boolean {
-    return this.validEmailInput() && this.validPasswordInput() && this.validUserNameInput();
+    return this.validEmailInput() && this.validPasswordInput() && this.confirmPasswordInput() &&
+        this.validUserNameInput();
   }
 
   get avatarUploadFileName(): string {
@@ -111,6 +116,10 @@ export class CreateAccountComponent implements OnInit {
     return this.inputColor(this.validPasswordInput());
   }
 
+  public confirmPasswordInputColor(): string {
+    return this.inputColor(this.confirmPasswordInput());
+  }
+
   public userNameInputColor(): string {
     return this.inputColor(this.validUserNameInput());
   }
@@ -121,6 +130,10 @@ export class CreateAccountComponent implements OnInit {
 
   public validPasswordInput(): boolean {
     return this.createAccountForm.controls['password'].valid;
+  }
+
+  public confirmPasswordInput(): boolean {
+    return this.createAccountForm.value.password === this.createAccountForm.value.confirmPassword;
   }
 
   public validUserNameInput(): boolean {
@@ -134,6 +147,13 @@ export class CreateAccountComponent implements OnInit {
     this.createAccountForm = this.fb.group({
       email: ['', [Validators.required, Validators.pattern(emailRegex)]],
       password: [
+        '',
+        [
+          Validators.required, Validators.pattern(passwordRegex), Validators.minLength(6),
+          Validators.maxLength(16)
+        ]
+      ],
+      confirmPassword: [
         '',
         [
           Validators.required, Validators.pattern(passwordRegex), Validators.minLength(6),
