@@ -50,8 +50,9 @@ describe('account page', () => {
   describe('Invalid user inputs should not allow sign in or create account', () => {
     let invalidEmailFormat = 'invalidEmail';
     let invalidEmail = 'no@user.com';
-    let invalidShortPassword = '123';
-    let invalidLongPassword = '1111-1111-1111-1111';
+    let invalidPasswordFormatShort = '123';
+    let invalidPasswordFormatLong = '1111-1111-1111-1111';
+    let invalidPassword = '111111';
     let validEmail = 'admin@gmail.com';
     let validPassword = 'Test!11';
     let validUserName = 'Admin Admin';
@@ -74,14 +75,14 @@ describe('account page', () => {
 
     describe('"Password" validation checking', () => {
       it('"Password" less than 6 char displays error message', () => {
-        entersPasswordInput(invalidShortPassword);
+        entersPasswordInput(invalidPasswordFormatShort);
 
         let warningMessage = accountPage.getPasswordInputWarningMessage();
         expect(warningMessage).toEqual('Incorrect password format');
       });
 
       it('"Password" longer than 16 char displays error message', () => {
-        entersPasswordInput(invalidLongPassword);
+        entersPasswordInput(invalidPasswordFormatLong);
 
         let warningMessage = accountPage.getPasswordInputWarningMessage();
         expect(warningMessage).toEqual('Incorrect password format');
@@ -152,6 +153,20 @@ describe('account page', () => {
         let snackBarMsgElement = element(by.className('mat-simple-snackbar-message'));
         let expectedErrorMessage =
             'There is no user record corresponding to this identifier. The user may have been deleted.';
+        expect(snackBarMsgElement.isPresent()).toBeTruthy();
+        expect(snackBarMsgElement.getText()).toEqual(expectedErrorMessage);
+      });
+
+      it('login with incorrect "Password" display invalid password error message', () => {
+        entersEmailInput(validEmail);
+        entersPasswordInput(invalidPassword);
+        browser.sleep(1000);
+
+        signInBtnElement.click();
+        browser.sleep(500);
+
+        let snackBarMsgElement = element(by.className('mat-simple-snackbar-message'));
+        let expectedErrorMessage = 'The password is invalid or the user does not have a password.';
         expect(snackBarMsgElement.isPresent()).toBeTruthy();
         expect(snackBarMsgElement.getText()).toEqual(expectedErrorMessage);
       });
