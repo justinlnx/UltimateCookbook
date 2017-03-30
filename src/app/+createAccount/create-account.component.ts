@@ -54,7 +54,7 @@ import {createSingleFileUploader, FileUploader} from '../file-upload';
         </md-card>
         <div>
           <button md-raised-button class="create-btn" [disabled]="!validCreateAccountForm" 
-            type="button" (click)="onAddRecipe()">Create Account</button>
+            type="button" (click)="onCreateAccount()">Create Account</button>
         </div>
       </form>
     </div>
@@ -96,7 +96,7 @@ export class CreateAccountComponent implements OnInit {
     this.createCreateAccountForm();
   }
 
-  public onAddRecipe() {
+  public onCreateAccount() {
     let email = this.createAccountForm.value.email;
     let password = this.createAccountForm.value.password;
     let name = this.createAccountForm.value.name;

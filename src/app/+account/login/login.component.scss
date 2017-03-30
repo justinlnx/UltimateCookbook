@@ -7,4 +7,13 @@ md-hint {
 
 form {
   margin-top: 24px;
+
+  md-input-container {
+    width: 90%;
+    margin: 10px;
+  }
+
+  button {
+    margin: 10px;
+  }
 }
