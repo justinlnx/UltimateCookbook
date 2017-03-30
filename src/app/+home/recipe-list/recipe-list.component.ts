@@ -5,11 +5,17 @@ import {ApiService, Recipe} from '../../api';
 @Component({
   selector: 'recipe-list',
   template: `
-  <search-bar (searchInputChange)="onSearchInputChange($event)"></search-bar>
- <div class="page-content">
-  <md-list>
-    <recipe-list-item *ngFor="let recipe of filteredRecipes" [recipe]="recipe"></recipe-list-item>
-  </md-list>
+  <md-toolbar class="top-toolbar"  color="primary">
+    <search-bar (searchInputChange)="onSearchInputChange($event)"></search-bar>
+    <span class="toolbar-spacer"></span>
+    <button md-icon-button>
+      <md-icon>chat</md-icon>
+    </button>
+  </md-toolbar>
+  <div class="page-content">
+    <md-list>
+      <recipe-list-item *ngFor="let recipe of filteredRecipes" [recipe]="recipe"></recipe-list-item>
+    </md-list>
   </div>
   `,
   styleUrls: ['./recipe-list.component.scss']
