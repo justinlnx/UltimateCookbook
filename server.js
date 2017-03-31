@@ -95,6 +95,9 @@ app.post('/api/upload/image/single', (req, res) => {
 var chatNamespace = io.of('/chat');
 
 var chatsRef = db.ref(CHATROOMS_URL);
+var chatroomMessagesRef = (chatroomId) => {
+  return db.ref(`${CHATROOMS_URL}/${chatroomId}/messages`);
+};
 
 var retrieveChatsCallback = (userId, namespace) => {
   return (snapShot) => {
@@ -132,6 +135,17 @@ chatNamespace.on('connection', (socket) => {
 
       chatsRef.push().set({users: [userId, otherUserId], messages: []});
     });
+
+    socket.on(`new message+${userId}`, (data) => {
+      console.log(`user ${userId} sent a new message.`);
+
+      let chatroomId = data.chatroom;
+      let message = data.message;
+
+      console.log(`chatroomId: ${chatroomId}, message: ${message.message}`);
+
+      chatroomMessagesRef(chatroomId).push().set(message);
+    })
 
     socket.on('disconnect', () => {
       chatsRef.off('value', userChatsCallback);

@@ -4,7 +4,7 @@ import * as Rx from 'rxjs/Rx';
 import * as io from 'socket.io-client';
 
 import {ApiService} from './api.service';
-import {Chatroom, chatroomRetrieveScheme, ChatroomSchema, Mapper, User} from './objects';
+import {Chatroom, chatroomRetrieveScheme, ChatroomSchema, Mapper, PushMessageSchema, User} from './objects';
 
 const CHATROOM_SOCKET_NAMESPACE = '/chat';
 
@@ -53,6 +53,11 @@ export class ChatroomService {
         (users: User[], currentUser: User) => {
           return users.find((user) => user.id !== currentUser.id);
         });
+  }
+
+  public sendNewMessage(chatroomId: string, message: PushMessageSchema): void {
+    this.chatroomSocket.emit(
+        this.newMessageEvent(this.user.id), {chatroom: chatroomId, message: message});
   }
 
   public createNewChatroom(otherUserId: string): void {

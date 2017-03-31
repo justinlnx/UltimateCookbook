@@ -38,9 +38,12 @@ class ChatroomRetrieveScheme extends ReceiveScheme {
     let users = DefaultTransferActions.arrayAction(chatroomSchema.users);
     let messages = DefaultTransferActions.arrayAction(chatroomSchema.messages);
 
-    let transferredMessages = messages.map((pushMessageSchema, messageIndex) => {
-      return messageRetrieveScheme.receiveAsDescendant(pushMessageSchema, `${messageIndex}`);
-    });
+    let transferredMessages: Message[] = [];
+
+    for (let messageKey in messages) {
+      transferredMessages.push(
+          messageRetrieveScheme.receiveAsDescendant(messages[messageKey], messageKey));
+    }
 
     return new Chatroom($key, users, transferredMessages);
   }

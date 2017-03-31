@@ -1,11 +1,12 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+
 import {Message, User} from '../../api';
 
 @Component({
   selector: 'chat-content',
   template: `
-  <div class="chat-content" *ngIf="shouldDisplay()">
+  <div #chatScroll class="chat-content" *ngIf="shouldDisplay()">
     <div *ngFor="let message of displayMessages" class="message-entry">
       <div *ngIf="isCurrentUser(message)" class="current-user">
         <div class="spacer"></div>
@@ -21,7 +22,8 @@ import {Message, User} from '../../api';
   `,
   styleUrls: ['./chat-content.component.scss']
 })
-export class ChatContentComponent implements OnChanges {
+export class ChatContentComponent implements OnChanges, AfterViewInit {
+  @ViewChild('chatScroll') public chatScrollDiv: ElementRef;
   @Input() public currentUser: User;
   @Input() public otherUser: User;
   @Input() public messages: Message[];
@@ -32,9 +34,14 @@ export class ChatContentComponent implements OnChanges {
 
   constructor(public domSanitizer: DomSanitizer) {}
 
+  public ngAfterViewInit() {
+    this.scrollToBottom();
+  }
+
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['messages']) {
       this.appendNewMessages();
+      this.scrollToBottom();
     }
     if (changes['currentUser']) {
       this.updateCurrentUserAvatarUrl();
@@ -84,5 +91,11 @@ export class ChatContentComponent implements OnChanges {
     }
     this.otherUserAvatarUrl =
         this.domSanitizer.bypassSecurityTrustResourceUrl(this.otherUser.avatar);
+  }
+
+  private scrollToBottom(): void {
+    if (this.chatScrollDiv) {
+      this.chatScrollDiv.nativeElement.scrollTop = this.chatScrollDiv.nativeElement.scrollHeight;
+    }
   }
 }

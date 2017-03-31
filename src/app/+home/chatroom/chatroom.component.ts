@@ -1,9 +1,10 @@
 import {Location} from '@angular/common';
 import {Component, OnInit} from '@angular/core';
+import {FormControl, Validators} from '@angular/forms';
 import {ActivatedRoute, Params} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 
-import {ApiService, Chatroom, ChatroomService, Message, User} from '../../api';
+import {ApiService, Chatroom, ChatroomService, PushMessageSchema, User} from '../../api';
 
 @Component({
   selector: 'chatroom',
@@ -19,10 +20,23 @@ import {ApiService, Chatroom, ChatroomService, Message, User} from '../../api';
                   [otherUser]="otherUser"
                   [messages]="chatroom?.messages">
     </chat-content>
+    <md-card class="send-message">
+      <button md-icon-button [disabled]="!validNewMessage()" (click)="onSendNewMessage()">
+        <md-icon>send</md-icon>
+      </button>
+      <md-input-container floatPlaceholder="never">
+        <input mdInput placeholder="Send message..."
+                        [formControl]="newMessageInput"
+                        (keyup.enter)="onSendNewMessage()">
+      </md-input-container>
+    </md-card>
   </div>
-  `
+  `,
+  styleUrls: ['./chatroom.component.scss']
 })
 export class ChatroomComponent implements OnInit {
+  public newMessageInput: FormControl = new FormControl('', [Validators.required]);
+
   public chatroom: Chatroom;
   public currentUser: User;
   public otherUser: User;
@@ -52,6 +66,26 @@ export class ChatroomComponent implements OnInit {
 
   public onNavigateBack(): void {
     this.location.back();
+  }
+
+  public validNewMessage(): boolean {
+    return this.newMessageInput.valid;
+  }
+
+  public onSendNewMessage(): void {
+    if (this.validNewMessage()) {
+      let newMessage = this.newMessageInput.value;
+      let sender = this.currentUser.id;
+      let timestamp = 123;
+
+      let message: PushMessageSchema = {message: newMessage, sender, timestamp};
+
+      console.log(message);
+
+      this.chatroomService.sendNewMessage(this.chatroom.$key, message);
+
+      this.newMessageInput.setValue('');
+    }
   }
 
   private updateOtherUserObservable(chatroomObservable: Observable<Chatroom>) {

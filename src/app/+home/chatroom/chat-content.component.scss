@@ -1,5 +1,13 @@
 @import '~@angular/material/core/theming/theming';
 
+.chat-content {
+    position: absolute;
+    top: 8px;
+    bottom: 68px;
+    overflow: auto;
+    width: 100%
+}
+
 .message-entry {
   margin-top: 12px;
 
