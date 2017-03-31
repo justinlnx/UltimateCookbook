@@ -22,10 +22,11 @@ interface nearByStore {
     </div>
     <div *ngIf="isLoggedIn">
     <div class="page-content">
-        <sebm-google-map id="map" [latitude]="lat" [longitude]="lng" [zoom]="zoom">
+       <!-- <sebm-google-map id="map" [latitude]="lat" [longitude]="lng" [zoom]="zoom">
           <sebm-google-map-marker [latitude]="lat" [longitude]="lng">
           </sebm-google-map-marker>
-        </sebm-google-map>
+        </sebm-google-map>-->
+        <div id="map"></div>
         <md-tab-group>
             <md-tab class="list-label" label="LIST">
               <cart-item *ngFor="let cartEntry of cartObservable | async"
@@ -101,24 +102,7 @@ export class CartComponent implements OnInit, OnDestroy {
             console.log(this.lat);
             console.log(this.lng);
             this.mapsAPILoader.load().then(() => {
-              let pyrmont = new google.maps.LatLng(this.lat, this.lng);
-              let map = new google.maps.Map(document.getElementById('map'));
-              console.log('map is ------' + map);
-              let service = new google.maps.places.PlacesService(map);
-              let request: any = {
-                location: pyrmont,
-                radius: '100000',
-                openNow: true,
-                rankby: google.maps.places.RankBy.DISTANCE,
-                types: ['grocery_or_supermarket']
-              };
-              service.nearbySearch(request, (results) => {
-                for (let result of results) {
-                  this.nearByStores.push(
-                      {rating: result.rating, name: result.name, location: result.vicinity});
-                }
-                console.log(this.nearByStores);
-              });
+              this.storeInformation();
             });
           },
           () => {window.alert(
@@ -127,5 +111,29 @@ export class CartComponent implements OnInit, OnDestroy {
     } else {
       console.log('Browser doesn\'t support Geolocation');
     }
+  }
+
+  private storeInformation() {
+    let pyrmont = new google.maps.LatLng(this.lat, this.lng);
+    let map =
+        new google.maps.Map(document.getElementById('map'), {center: pyrmont, zoom: this.zoom});
+    // console.log('map is ------' + map);
+    let marker = new google.maps.Marker({map: map, position: {lat: this.lat, lng: this.lng}});
+    let service = new google.maps.places.PlacesService(map);
+    let request: any = {
+      location: pyrmont,
+      radius: '100000',
+      openNow: true,
+      rankby: google.maps.places.RankBy.DISTANCE,
+      types: ['grocery_or_supermarket']
+    };
+    service.nearbySearch(request, (results) => {
+      console.log(results);
+      for (let result of results) {
+        this.nearByStores.push(
+            {rating: result.rating, name: result.name, location: result.vicinity});
+      }
+      console.log(this.nearByStores);
+    });
   }
 }
