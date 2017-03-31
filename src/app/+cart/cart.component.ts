@@ -10,7 +10,7 @@ interface nearByStore {
   rating: number;
   name: string;
   location: string;
-  geometry: object;
+  geometry: any;
 }
 @Component({
   selector: 'cart',
@@ -57,6 +57,7 @@ export class CartComponent implements OnInit, OnDestroy {
   public url: string;
   public nearByStores: nearByStore[] = [];
   public cartObservable: Observable<CartEntry[]>;
+  public map: any;
   private loginStatusSubscription: Subscription;
   private _isLoggedIn: boolean;
 
@@ -99,7 +100,7 @@ export class CartComponent implements OnInit, OnDestroy {
             console.log(this.lat);
             console.log(this.lng);
             this.mapsAPILoader.load().then(() => {
-              this.storeInformation();
+              this.mapSetUp();
             });
           },
           () => {window.alert(
@@ -110,15 +111,25 @@ export class CartComponent implements OnInit, OnDestroy {
     }
   }
 
-  private storeInformation() {
+  private mapSetUp() {
     let pyrmont = new google.maps.LatLng(this.lat, this.lng);
     let map =
         new google.maps.Map(document.getElementById('map'), {center: pyrmont, zoom: this.zoom});
     let marker = new google.maps.Marker({map: map, position: {lat: this.lat, lng: this.lng}});
+    let cityCircle = new google.maps.Circle({
+      strokeColor: '#3F51B5',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: '#5C6BC0',
+      fillOpacity: 0.35,
+      map: map,
+      center: {lat: this.lat, lng: this.lng},
+      radius: 5000
+    });
     let service = new google.maps.places.PlacesService(map);
     let request: any = {
       location: pyrmont,
-      radius: '100000',
+      radius: '5000',
       openNow: true,
       rankby: google.maps.places.RankBy.DISTANCE,
       types: ['grocery_or_supermarket']
@@ -132,8 +143,10 @@ export class CartComponent implements OnInit, OnDestroy {
           location: result.vicinity,
           geometry: result.geometry
         });
+        marker = new google.maps.Marker({map: map, position: result.geometry.location});
       }
       console.log(this.nearByStores);
     });
+    this.map = map;
   }
 }
