@@ -5,7 +5,7 @@ import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 
-import {ApiService, ChatroomService, PushCartEntrySchema, Recipe} from '../api';
+import {ApiService, ChatroomService, PushCartEntrySchema, Recipe, User} from '../api';
 import {ErrorReportService} from '../error-report';
 
 @Component({
@@ -27,7 +27,7 @@ import {ErrorReportService} from '../error-report';
       <md-list-item class="md-2-line">
          <img md-card-avatar class = "avatar" [src]="recipe.avatar">
          <div class="mat-list-text">
-            <p md-line class = "name"> Shiba Inu </p>
+            <p md-line class = "name">{{author?.name}}</p>
           </div>
       </md-list-item>
       <p class = "description">{{recipe?.description}}</p>
@@ -102,6 +102,7 @@ import {ErrorReportService} from '../error-report';
 })
 export class RecipeComponent implements OnInit, OnDestroy {
   public recipe: Recipe;
+  public author: User;
   public trustedImageUrl: SafeResourceUrl;
 
   private chatroomIdObservable: Observable<string>;
@@ -125,6 +126,10 @@ export class RecipeComponent implements OnInit, OnDestroy {
                 .subscribe((chatroomIdObservable) => {
                   this.chatroomIdObservable = chatroomIdObservable;
                 });
+
+            this.apiService.getUserInfoObservable(recipe.authorId).subscribe((user) => {
+              this.author = user;
+            });
           }, (err) => this.errorReportService.send(err));
         });
   }
