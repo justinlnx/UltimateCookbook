@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
   }
 
   public onCreateAccount() {
-    this.router.navigateByUrl('/createAccount');
+    this.router.navigateByUrl('/account/create');
   }
 
   public validSigninInput(): boolean {
