@@ -6,6 +6,11 @@ import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 import {ApiService, CartEntry, Recipe} from '../api';
 
+interface nearByStores {
+  rating: number[];
+  name: string[];
+  location: string[];
+}
 @Component({
   selector: 'cart',
   template: `
@@ -56,7 +61,7 @@ export class CartComponent implements OnInit, OnDestroy {
   public searchControl: FormControl;
   public zoom: number;
   public url: string;
-  public nearByStores: {rating: number[]; name: string[]; location: string[];};
+  public nearByStores: nearByStores = {rating: [], name: [], location: []};
   public cartObservable: Observable<CartEntry[]>;
   private loginStatusSubscription: Subscription;
   private _isLoggedIn: boolean;
@@ -84,7 +89,6 @@ export class CartComponent implements OnInit, OnDestroy {
     this.lat = 49.246292;
     this.lng = -123.116226;
     this.searchControl = new FormControl();
-    console.log('nearByStores is' + this.nearByStores);
     this.getAllStores();
   }
   public ngOnDestroy() {
@@ -113,13 +117,13 @@ export class CartComponent implements OnInit, OnDestroy {
                 types: ['grocery_or_supermarket']
               };
               service.nearbySearch(request, (results) => {
-                console.log('results sent by google is ' + results);
+                console.log(results);
                 for (let result of results) {
                   this.nearByStores.name.push(result.name);
                   this.nearByStores.rating.push(result.rating);
                   this.nearByStores.location.push(result.vicinity);
                 }
-                console.log('nearByStores variable now is' + this.nearByStores);
+                console.log(this.nearByStores);
               });
             });
           },
