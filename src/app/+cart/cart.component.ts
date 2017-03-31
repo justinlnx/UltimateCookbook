@@ -6,6 +6,7 @@ import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 import {ApiService, CartEntry, Recipe} from '../api';
 
+
 interface nearByStore {
   rating: number;
   name: string;
@@ -19,12 +20,11 @@ interface nearByStore {
       <span>Cart</span>
     </md-toolbar>
    <div class="page-content">
-     <login-warning *ngIf="!userLoggedIn"></login-warning>
+     <login-warning *ngIf="!isLoggedIn"></login-warning>
     </div>
-    <div *ngIf="isLoggedIn">
     <div class="page-content">
         <div id="map"></div>
-        <md-tab-group>
+        <md-tab-group *ngIf="isLoggedIn">
             <md-tab class="list-label" label="LIST">
               <cart-item *ngFor="let cartEntry of cartObservable | async"
                           [cartEntry]="cartEntry" onclick="a()">
@@ -42,7 +42,6 @@ interface nearByStore {
               </md-card>
             </md-tab>
         </md-tab-group>
-    </div>
     </div>
     `,
   styleUrls: ['./cart.component.scss']
