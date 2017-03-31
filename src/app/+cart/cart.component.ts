@@ -31,7 +31,7 @@ interface nearByStore {
               </cart-item>
             </md-tab>
             <md-tab class="location-label" label="LOCATION">
-              <md-card *ngFor="let nearByStore of nearByStores">
+              <md-card *ngFor="let nearByStore of nearByStores" (click) = "storeMarker(nearByStore.geometry)">
                 <md-card-title>{{nearByStore.name}}</md-card-title>
                 <md-card-content>
                 <div>
@@ -90,6 +90,10 @@ export class CartComponent implements OnInit, OnDestroy {
     this.loginStatusSubscription.unsubscribe();
   }
 
+  public storeMarker(geometry: any) {
+    let marker = new google.maps.Marker({map: this.map, position: geometry.location});
+  }
+
   private getAllStores() {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
@@ -143,7 +147,6 @@ export class CartComponent implements OnInit, OnDestroy {
           location: result.vicinity,
           geometry: result.geometry
         });
-        marker = new google.maps.Marker({map: map, position: result.geometry.location});
       }
       console.log(this.nearByStores);
     });
