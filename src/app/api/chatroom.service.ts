@@ -18,32 +18,41 @@ export class ChatroomService {
 
   public getCurrentUserChatroomsObservable(): Observable<Observable<Chatroom[]>> {
     return this.apiService.getCurrentUserObservable().map((user) => {
+      // this.disconnectSocketIfPossible();
+
       this.user = user;
       let userId = user.id;
-      let rawChatroomsObservable: Observable<ChatroomSchema[]> =
-          Rx.Observable.create((observer) => {
-            this.chatroomSocket = io(CHATROOM_SOCKET_NAMESPACE);
 
-            this.chatroomSocket.emit(this.registerEvent(), {userId: userId}, (ack) => {
-              console.log(ack);
-
-              this.chatroomSocket.on(this.getChatroomsEvent(userId), (chatrooms) => {
-                console.log(chatrooms);
-
-                observer.next(chatrooms);
-              });
-            });
-
-            return () => {
-              this.chatroomSocket.disconnect();
-            }
-          });
-
-      this.currentUserChatroomsObservable =
-          Mapper.mapListObservable(rawChatroomsObservable, chatroomRetrieveScheme);
+      this.currentUserChatroomsObservable = this.chatroomsObservableFactory(userId);
 
       return this.currentUserChatroomsObservable;
     });
+  }
+
+  public getCurrentUserChatroomObservable(chatroomId: string): Observable<Observable<Chatroom>> {
+    return this.getCurrentUserChatroomsObservable().map((chatroomsObservable) => {
+      return chatroomsObservable.map((chatrooms) => {
+        return chatrooms.find((chatroom) => chatroom.$key === chatroomId);
+      });
+    });
+  }
+
+  public getOtherUseObservable(chatroomObservable: Observable<Chatroom>): Observable<User> {
+    let usersInfoObservable = Rx.Observable.combineLatest(
+        chatroomObservable, this.apiService.getUserInfoListObservable().first(),
+        (chatroom: Chatroom, users: User[]) => {
+          let userIds = chatroom.users;
+
+          return userIds.map((userId) => {
+            return users.find((user) => user.id === userId);
+          });
+        });
+
+    return Rx.Observable.combineLatest(
+        usersInfoObservable, this.apiService.getCurrentUserObservable().first(),
+        (users: User[], currentUser: User) => {
+          return users.find((user) => user.id !== currentUser.id);
+        });
   }
 
   public createNewChatroom(otherUserId: string): void {
@@ -62,9 +71,35 @@ export class ChatroomService {
     return `chatrooms+${userId}`;
   }
 
+  private newMessageEvent(userId: string): string {
+    return `new message+${userId}`;
+  }
+
   private disconnectSocketIfPossible(): void {
     if (this.chatroomSocket) {
       this.chatroomSocket.disconnect();
     }
+  }
+
+  private chatroomsObservableFactory(userId: string): Observable<Chatroom[]> {
+    let rawChatroomsObservable: Observable<ChatroomSchema[]> = Rx.Observable.create((observer) => {
+      this.chatroomSocket = io(CHATROOM_SOCKET_NAMESPACE);
+
+      this.chatroomSocket.emit(this.registerEvent(), {userId: userId}, (ack) => {
+        console.log(ack);
+
+        this.chatroomSocket.on(this.getChatroomsEvent(userId), (chatrooms) => {
+          console.log(chatrooms);
+
+          observer.next(chatrooms);
+        });
+      });
+
+      return () => {
+        this.chatroomSocket.disconnect();
+      };
+    });
+
+    return Mapper.mapListObservable(rawChatroomsObservable, chatroomRetrieveScheme);
   }
 }

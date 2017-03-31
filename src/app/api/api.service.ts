@@ -102,6 +102,10 @@ export class ApiService {
     this.af.auth.logout();
   }
 
+  public getUserInfoListObservable(): Observable<User[]> {
+    return this.userListMappedObservable;
+  }
+
   public getUserInfoObservable(userId: string): Observable<User> {
     return this.userListMappedObservable.map((users: User[]) => {
       return users.find((user) => {

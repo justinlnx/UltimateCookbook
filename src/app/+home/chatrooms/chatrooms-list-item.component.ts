@@ -7,7 +7,7 @@ import {ApiService, Chatroom, Message, User} from '../../api';
 @Component({
   selector: 'chatrooms-list-item',
   template: `
-  <md-list-item (click)="showDetails(recipe)">
+  <md-list-item (click)="showDetails(chatroom)">
     <img md-list-avatar [src]="otherUserAvatarUrl" alt="avatar">
     <h4 md-line>{{otherUser?.name}}</h4>
     <p md-line class="message-line">{{latestMessageContent}}</p>
@@ -45,10 +45,15 @@ export class ChatroomsListItemComponent implements OnChanges {
     return latestMessage.message;
   }
 
-  constructor(public apiService: ApiService, public domSanitizer: DomSanitizer) {}
+  constructor(
+      public apiService: ApiService, public domSanitizer: DomSanitizer, public router: Router) {}
 
   public ngOnChanges(changes: SimpleChanges) {
     this.updateUserObservable();
+  }
+
+  public showDetails(chatroom: Chatroom) {
+    this.router.navigateByUrl(`/home/chatroom/${chatroom.$key}`);
   }
 
   private updateUserObservable() {
