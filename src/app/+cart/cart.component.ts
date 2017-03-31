@@ -33,18 +33,14 @@ interface nearByStore {
               </cart-item>
             </md-tab>
             <md-tab class="location-label" label="LOCATION">
-              <md-card id = "map">
-              <md-card-title>Find a store near you</md-card-title>
-              <md-card-content>
-              </md-card-content>
-              </md-card>
-              <md-card>
-                <md-card-title>Acme Grocery Store</md-card-title>
-                <md-card-content>3031 Beckman Pl, Richmond, BC V6X 3R3</md-card-content>
-              </md-card>
-              <md-card>
-                <md-card-title>Acme Grocery Store</md-card-title>
-                <md-card-content>3031 Beckman Pl, Richmond, BC V6X 3R3</md-card-content>
+              <md-card *ngFor="let nearByStore of nearByStores">
+                <md-card-title>{{nearByStore.name}}</md-card-title>
+                <md-card-content>
+                <div>
+                  <p>Location: {{nearByStore.location}}</p>
+                  <p>Rating: {{nearByStore.rating}}/5</p>
+                </div>
+                </md-card-content>
               </md-card>
             </md-tab>
         </md-tab-group>
