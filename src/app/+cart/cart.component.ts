@@ -55,9 +55,9 @@ export class CartComponent implements OnInit, OnDestroy {
   public searchControl: FormControl;
   public zoom: number;
   public url: string;
+  public map: any;
   public nearByStores: nearByStore[] = [];
   public cartObservable: Observable<CartEntry[]>;
-  public map: any;
   private loginStatusSubscription: Subscription;
   private _isLoggedIn: boolean;
 
