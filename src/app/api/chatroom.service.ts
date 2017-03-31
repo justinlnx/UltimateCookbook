@@ -37,6 +37,18 @@ export class ChatroomService {
     });
   }
 
+  public getCurrentUserChatroomIdObservable(otherUserId: string): Observable<Observable<string>> {
+    return this.getCurrentUserChatroomsObservable().map((chatroomsObservable) => {
+      return chatroomsObservable.map((chatrooms) => {
+        let targetChatroom = chatrooms.find((chatroom) => {
+          return !!chatroom.users.find((userId) => userId === otherUserId);
+        });
+
+        return targetChatroom ? targetChatroom.$key : null;
+      });
+    });
+  }
+
   public getOtherUseObservable(chatroomObservable: Observable<Chatroom>): Observable<User> {
     let usersInfoObservable = Rx.Observable.combineLatest(
         chatroomObservable, this.apiService.getUserInfoListObservable().first(),
