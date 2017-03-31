@@ -33,7 +33,7 @@ interface nearByStore {
               </cart-item>
             </md-tab>
             <md-tab class="location-label" label="LOCATION">
-              <md-card id = "map">
+              <md-card>
               <md-card-title>Find a store near you</md-card-title>
               <md-card-content>
               </md-card-content>
@@ -117,13 +117,9 @@ export class CartComponent implements OnInit, OnDestroy {
                 types: ['grocery_or_supermarket']
               };
               service.nearbySearch(request, (results) => {
-                // console.log(results);
                 for (let result of results) {
                   this.nearByStores.push(
                       {rating: result.rating, name: result.name, location: result.vicinity});
-                  //  this.nearByStores.name.push(result.name);
-                  // this.nearByStores.rating.push(result.rating);
-                  // this.nearByStores.location.push(result.vicinity);
                 }
                 console.log(this.nearByStores);
               });
