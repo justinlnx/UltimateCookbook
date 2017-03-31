@@ -1,4 +1,4 @@
-import {$, browser} from 'protractor';
+import {$, browser, by, element, ElementFinder} from 'protractor';
 
 import {AccountPage} from '../pages/account-page';
 
@@ -48,16 +48,18 @@ describe('account page', () => {
   });
 
   describe('Invalid user inputs should not allow sign in or create account', () => {
-    let invalidEmail = 'invalidEmail';
-    let invalidShortPassword = '123';
-    let invalidLongPassword = '1111-1111-1111-1111';
+    let invalidEmailFormat = 'invalidEmail';
+    let invalidEmail = 'no@user.com';
+    let invalidPasswordFormatShort = '123';
+    let invalidPasswordFormatLong = '1111-1111-1111-1111';
+    let invalidPassword = '111111';
     let validEmail = 'admin@gmail.com';
     let validPassword = 'Test!11';
     let validUserName = 'Admin Admin';
 
     describe('"Email" validation checking', () => {
       it('Invalid "Email" input should display error message', () => {
-        entersEmailInput(invalidEmail);
+        entersEmailInput(invalidEmailFormat);
 
         let warningMessage = accountPage.getEmailInputWarningMessage();
         expect(warningMessage).toEqual('Incorrect email format');
@@ -73,14 +75,14 @@ describe('account page', () => {
 
     describe('"Password" validation checking', () => {
       it('"Password" less than 6 char displays error message', () => {
-        entersPasswordInput(invalidShortPassword);
+        entersPasswordInput(invalidPasswordFormatShort);
 
         let warningMessage = accountPage.getPasswordInputWarningMessage();
         expect(warningMessage).toEqual('Incorrect password format');
       });
 
       it('"Password" longer than 16 char displays error message', () => {
-        entersPasswordInput(invalidLongPassword);
+        entersPasswordInput(invalidPasswordFormatLong);
 
         let warningMessage = accountPage.getPasswordInputWarningMessage();
         expect(warningMessage).toEqual('Incorrect password format');
@@ -134,6 +136,73 @@ describe('account page', () => {
       });
     });
 
+    describe('login with correct input format results in different actions', () => {
+      let signInBtnElement: ElementFinder;
+      beforeEach(() => {
+        signInBtnElement = accountPage.getSignInButtonElement();
+      })
+
+      it('login with incorrect "Email" displays no user exists error message', () => {
+        entersEmailInput(invalidEmail);
+        entersPasswordInput(validPassword);
+        browser.sleep(1000);
+
+        signInBtnElement.click();
+        browser.sleep(500);
+
+        let expectedErrorMessage =
+            'There is no user record corresponding to this identifier. The user may have been deleted.';
+        verifySnackBarMsgIsDisplayed(expectedErrorMessage);
+      });
+
+      it('login with incorrect "Password" display invalid password error message', () => {
+        entersEmailInput(validEmail);
+        entersPasswordInput(invalidPassword);
+        browser.sleep(1000);
+
+        signInBtnElement.click();
+        browser.sleep(500);
+
+        let expectedErrorMessage = 'The password is invalid or the user does not have a password.';
+        verifySnackBarMsgIsDisplayed(expectedErrorMessage);
+      });
+
+      it('login with correct "Email" and "Password" displays "Profile" page', () => {
+        entersEmailInput(validEmail);
+        entersPasswordInput(validPassword);
+        browser.sleep(1000);
+
+        signInBtnElement.click();
+        browser.sleep(3000);
+
+        let profileElement = element(by.id('profile-header-text'));
+        expect(profileElement.isPresent()).toBeTruthy();
+        expect(profileElement.getText()).toEqual('Profile');
+
+        signOut();
+      });
+
+      describe('create account with correct input formats results in different action', () => {
+        let createAccountBtnElement: ElementFinder;
+
+        beforeEach(() => {
+          createAccountBtnElement = accountPage.getCreateAccountButtonElement();
+        })
+
+        it('create account with existing email displays error message', () => {
+          entersEmailInput(validEmail);
+          entersPasswordInput(invalidPassword);
+          entersUsernameInput(validUserName);
+
+          createAccountBtnElement.click();
+          browser.sleep(500);
+
+          let expectedErrorMessage = 'The email address is already in use by another account.';
+          verifySnackBarMsgIsDisplayed(expectedErrorMessage);
+        });
+      });
+    });
+
     function entersEmailInput(input: string): void {
       let emailInput = accountPage.getEmailInputElement();
 
@@ -156,6 +225,19 @@ describe('account page', () => {
       usernameInput.clear();
 
       usernameInput.sendKeys(input);
+    }
+
+    function signOut(): void {
+      let signOutBtnElement = element(by.id('sign-out-id'));
+
+      signOutBtnElement.click();
+      browser.sleep(1000);
+    }
+
+    function verifySnackBarMsgIsDisplayed(expectedErrorMessage: string): void {
+      let snackBarMsgElement = element(by.className('mat-simple-snackbar-message'));
+      expect(snackBarMsgElement.isPresent()).toBeTruthy();
+      expect(snackBarMsgElement.getText()).toEqual(expectedErrorMessage);
     }
   });
 });

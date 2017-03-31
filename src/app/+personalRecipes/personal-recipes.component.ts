@@ -1,4 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 
@@ -17,8 +18,8 @@ import {ApiService, Recipe} from '../api';
         <recipe-list-item *ngFor="let recipe of ownedRecipeList | async"
                           [recipe]="recipe"></recipe-list-item>
       </md-list>
-      <button md-fab class="add-button">
-        <md-icon class="md-24">add</md-icon>
+      <button md-fab class="add-button" (click)="showAddRecipePage()">
+        <md-icon>add</md-icon>
       </button>
     </div>
   </div>
@@ -44,7 +45,7 @@ export class PersonalRecipesComponent implements OnInit, OnDestroy {
 
   private loginStatusSubscription: Subscription;
 
-  constructor(public apiService: ApiService) {}
+  constructor(public apiService: ApiService, private router: Router) {}
 
   public ngOnInit() {
     this.loginStatusSubscription = this.apiService.getLoginObservable().subscribe((status) => {
@@ -55,7 +56,9 @@ export class PersonalRecipesComponent implements OnInit, OnDestroy {
   public ngOnDestroy() {
     this.loginStatusSubscription.unsubscribe();
   }
-
+  public showAddRecipePage() {
+    this.router.navigateByUrl(`/addRecipe`);
+  }
   private getOwnedRecipes() {
     this.ownedRecipeList = this.apiService.getOwnedRecipes();
   }

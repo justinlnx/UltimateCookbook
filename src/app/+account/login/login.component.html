@@ -17,8 +17,9 @@
       <md-hint *ngIf="!validUserNameInput()" id="username-input-warning">Incorrect user name format</md-hint>
     </md-input-container>
     <div>
-      <button md-raised-button class="sign-in-btn" [disabled]='!validSigninInput()' type="button" (click)="onSignIn()">Sign in</button>
-      <button md-raised-button class="create-account-btn" [disabled]='!validCreateInput()' type="button" (click)="onCreateAccount()">Create Account</button>
+      <button md-raised-button class="sign-in-btn" id="sign-in-btn-id" [disabled]='!validSigninInput()' type="button" (click)="onSignIn()">Sign in</button>
+      <button md-raised-button class="create-account-btn" id="create-account-btn-id" [disabled]='!validCreateInput()' type="button"
+        (click)="onCreateAccount()">Create Account</button>
     </div>
   </form>
 </div>
