@@ -25,8 +25,7 @@
       "source-map",
       "uglify-js",
       "webpack",
-      "googlemaps",
-      "google-maps"
+      "googlemaps"
     ]
   },
   "exclude": [

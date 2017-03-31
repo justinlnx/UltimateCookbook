@@ -27,7 +27,7 @@ interface nearByStore {
         <md-tab-group>
             <md-tab class="list-label" label="LIST">
               <cart-item *ngFor="let cartEntry of cartObservable | async"
-                          [cartEntry]="cartEntry">
+                          [cartEntry]="cartEntry" onclick="a()">
               </cart-item>
             </md-tab>
             <md-tab class="location-label" label="LOCATION">
@@ -120,6 +120,7 @@ export class CartComponent implements OnInit, OnDestroy {
     let map =
         new google.maps.Map(document.getElementById('map'), {center: pyrmont, zoom: this.zoom});
     let marker = new google.maps.Marker({map: map, position: {lat: this.lat, lng: this.lng}});
+    marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
     let cityCircle = new google.maps.Circle({
       strokeColor: '#3F51B5',
       strokeOpacity: 0.8,
