@@ -25,30 +25,33 @@ import {ErrorReportService} from '../error-report';
     <login-warning *ngIf="!userLoggedIn"></login-warning>
     <div class="add-field" *ngIf="userLoggedIn">
       <form class="recipeForm" [formGroup]="addRecipeForm" novalidate>
-        <md-input-container md-no-float>
+        <md-input-container md-no-float [dividerColor]="titleInputColor()">
             <input mdInput placeholder="Title" type="text" formControlName="recipeName">
+            <md-hint *ngIf="!validTitleNotEmpty()" id="empty-title-warning">Recipe title cannot be empty</md-hint>
         </md-input-container>
 
         <md-input-container md-no-float class="md-block">
           <input mdInput placeholder="Description" type="text" formControlName="recipeDescription">
         </md-input-container>
 
-        <div formArrayName="stepDesc">
-          <md-input-container md-no-float *ngFor="let step of stepsArray.controls; let i = index" [formGroupName]="i">
+        <div formArrayName="stepDesc" class="step-description">
+          <div class="step-desc-item" *ngFor="let step of stepsArray.controls; let i = index" [formGroupName]="i">
             <button md-icon-button class="addPhoto" (click)="uploadPhoto()">
               <md-icon>add_a_photo</md-icon>
             </button>
-            <textarea mdInput placeholder="Step {{i+1}}" type="text" formControlName="stepDescription"></textarea>
-          </md-input-container>
+            <md-input-container class="step-desc-input-container">
+              <input mdInput placeholder="Step {{i+1}}" type="text" formControlName="stepDescription">
+            </md-input-container>
+          </div>
         </div>
-        <button md-raised-button (click)="addStep()">+ Step</button>
+        <button md-raised-button (click)="addStep()">Add Step</button>
 
         <div formArrayName="ingredientsList">
           <md-input-container md-no-float *ngFor="let ingredient of ingredientsArray.controls; let i = index" [formGroupName]="i">
             <input mdInput placeholder="Ingredient {{i+1}}" type="text" formControlName="ingredientDescription">
           </md-input-container>
         </div>
-        <button md-raised-button (click)="addIngredient()">+ Ingredient</button>
+        <button md-raised-button (click)="addIngredient()">Add Ingredient</button>
       </form>
     </div>
   </div>
@@ -91,6 +94,14 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
     this.stepsArray.push(this.initStep());
   }
 
+  public titleInputColor(): string {
+    return this.inputColor(this.validTitleNotEmpty());
+  }
+
+  public validTitleNotEmpty(): boolean {
+    return this.addRecipeForm.controls['recipeName'].valid;
+  }
+
   public addIngredient() {
     this.ingredientsArray.push(this.initIngredient());
   }
@@ -130,6 +141,10 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
 
   get ingredientsArray(): FormArray {
     return this.addRecipeForm.get('ingredientsList') as FormArray;
+  }
+
+  private inputColor(valid: boolean): string {
+    return valid ? 'primary' : 'warn';
   }
 
   private createAddRecipeForm() {
