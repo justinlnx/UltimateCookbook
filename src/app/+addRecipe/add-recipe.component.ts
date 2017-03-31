@@ -55,7 +55,6 @@ import {ErrorReportService} from '../error-report';
       </form>
     </div>
   </div>
-
   `,
   styleUrls: ['./add-recipe.component.scss']
 })
@@ -150,7 +149,7 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
   private createAddRecipeForm() {
     this.addRecipeForm = this.fb.group({
       recipeName: ['', [Validators.required]],
-      recipeDescription: ['', [Validators.required]],
+      recipeDescription: [''],
       stepDesc: this.fb.array([
         this.initStep(),
       ]),
@@ -162,13 +161,13 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
 
   private initStep() {
     return this.fb.group({
-      stepDescription: ['', [Validators.required]],
+      stepDescription: [''],
     });
   }
 
   private initIngredient() {
     return this.fb.group({
-      ingredientDescription: ['', [Validators.required]],
+      ingredientDescription: [''],
     });
   }
 
