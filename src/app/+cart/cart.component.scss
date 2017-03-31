@@ -8,7 +8,7 @@ md-card {
 
 #map {
   display: block;
-  height: 300px;
+  height: 40%;
   position: fixed !important;
   width:100%;
   z-index:3;
@@ -16,10 +16,10 @@ md-card {
 
 md-tab-group {
   position: relative;
-  top:300px;
+  top:50%;
 }
 
 login-warning {
   position: relative;
-  top: 200px;
+  top: 150px;
 }
