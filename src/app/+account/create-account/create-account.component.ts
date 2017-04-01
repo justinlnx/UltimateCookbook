@@ -49,10 +49,14 @@ export class CreateAccountComponent implements OnInit {
   }
 
   public onCreateAccount() {
+    let avatarPath = this.onUploadAvatarReturnAvatarPath();
+  }
+
+  public onUploadComplete(downloadableUrl: string): void {
     let email = this.createAccountForm.value.email;
     let password = this.createAccountForm.value.password;
     let name = this.createAccountForm.value.name;
-    let avatarPath = this.onUploadAvatarReturnAvatarPath();
+    let avatarPath = downloadableUrl;
 
     console.log('avatar path: ', avatarPath);
 
@@ -96,7 +100,7 @@ export class CreateAccountComponent implements OnInit {
     this.avatarUploadInput.nativeElement.click();
   }
 
-  public onUploadAvatarReturnAvatarPath(): string {
+  public onUploadAvatarReturnAvatarPath(): void {
     this.loading = true;
     for (let item of this.avatarUploader.queue) {
       item.upload();
@@ -105,16 +109,13 @@ export class CreateAccountComponent implements OnInit {
 
       item.onComplete = (response: string) => {
         console.log(response);
-        this.loading = false;
+        self.loading = false;
 
-        this.openSnackBar('Avatar uploaded');
+        self.openSnackBar('Avatar uploaded');
 
-        return response;
+        self.onUploadComplete(response);
       };
     }
-
-    this.openSnackBar('Failed to upload avatar');
-    return '';
   }
 
   private inputColor(valid: boolean): string {
@@ -146,7 +147,7 @@ export class CreateAccountComponent implements OnInit {
   }
 
   private nagivateToRecipesPage() {
-    this.router.navigateByUrl('/account');
+    this.router.navigateByUrl('/home');
   }
 
   private openSnackBar(confirmation: string): void {
