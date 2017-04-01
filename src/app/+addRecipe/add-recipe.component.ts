@@ -30,7 +30,7 @@ import {ErrorReportService} from '../error-report';
             <md-hint *ngIf="!validTitleNotEmpty()" id="empty-title-warning">Recipe title cannot be empty</md-hint>
         </md-input-container>
 
-        <md-input-container md-no-float class="md-block">
+        <md-input-container md-no-float [dividerColor]="" class="md-block">
           <input mdInput placeholder="Description" type="text" formControlName="recipeDescription">
         </md-input-container>
 
@@ -44,14 +44,20 @@ import {ErrorReportService} from '../error-report';
             </md-input-container>
           </div>
         </div>
-        <button md-raised-button (click)="addStep()">Add Step</button>
+        <div>
+          <button md-raised-button (click)="addStep()">Add Step</button>
+          <button md-raised-button (click)="removeStep()" [disabled]='!validateStepsArraySize()'>Remove Step</button>
+        </div>
 
         <div formArrayName="ingredientsList">
           <md-input-container md-no-float *ngFor="let ingredient of ingredientsArray.controls; let i = index" [formGroupName]="i">
             <input mdInput placeholder="Ingredient {{i+1}}" type="text" formControlName="ingredientDescription">
           </md-input-container>
         </div>
-        <button md-raised-button (click)="addIngredient()">Add Ingredient</button>
+        <div>
+          <button md-raised-button (click)="addIngredient()">Add Ingredient</button>
+          <button md-raised-button (click)="removeIngredient()" [disabled]='!validateIngredientsArraySize()'>Remove Ingredient</button>
+        </div>
       </form>
     </div>
   </div>
@@ -93,6 +99,17 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
     this.stepsArray.push(this.initStep());
   }
 
+  public removeStep() {
+    this.stepsArray.removeAt(this.stepsArray.length - 1);
+  }
+
+  public validateStepsArraySize(): boolean {
+    if (this.stepsArray.length === 0 || this.stepsArray.length === undefined) {
+      return false;
+    }
+    return true;
+  }
+
   public titleInputColor(): string {
     return this.inputColor(this.validTitleNotEmpty());
   }
@@ -101,8 +118,27 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
     return this.addRecipeForm.controls['recipeName'].valid;
   }
 
+  public descriptionInputColor(): string {
+    return this.inputColor(this.validDescriptionNotEmpty());
+  }
+
+  public validDescriptionNotEmpty(): boolean {
+    return this.addRecipeForm.controls['recipeDescription'].valid;
+  }
+
   public addIngredient() {
     this.ingredientsArray.push(this.initIngredient());
+  }
+
+  public removeIngredient() {
+    this.ingredientsArray.removeAt(this.ingredientsArray.length - 1);
+  }
+
+  public validateIngredientsArraySize(): boolean {
+    if (this.ingredientsArray.length === 0 || this.ingredientsArray.length === undefined) {
+      return false;
+    }
+    return true;
   }
 
   public uploadPhoto() {
