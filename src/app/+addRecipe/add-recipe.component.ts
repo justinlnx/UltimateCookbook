@@ -30,8 +30,9 @@ import {ErrorReportService} from '../error-report';
             <md-hint *ngIf="!validTitleNotEmpty()" id="empty-title-warning">Recipe title cannot be empty</md-hint>
         </md-input-container>
 
-        <md-input-container md-no-float [dividerColor]="" class="md-block">
+        <md-input-container md-no-float [dividerColor]="descriptionInputColor()" class="md-block">
           <input mdInput placeholder="Description" type="text" formControlName="recipeDescription">
+          <md-hint *ngIf="!validDescriptionNotEmpty()" id="empty-desc-warning">Recipe description cannot be empty</md-hint>
         </md-input-container>
 
         <div formArrayName="stepDesc" class="step-description">
@@ -185,7 +186,7 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
   private createAddRecipeForm() {
     this.addRecipeForm = this.fb.group({
       recipeName: ['', [Validators.required]],
-      recipeDescription: [''],
+      recipeDescription: ['', [Validators.required]],
       stepDesc: this.fb.array([
         this.initStep(),
       ]),
