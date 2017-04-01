@@ -1,13 +1,12 @@
+import {Location} from '@angular/common';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 
-import {ApiService, PushCartEntrySchema, Recipe} from '../../api';
-import {ErrorReportService} from '../../error-report';
-
-import {Rating} from './rating.component';
+import {ApiService, ChatroomService, PushCartEntrySchema, Recipe, User} from '../api';
+import {ErrorReportService} from '../error-report';
 
 @Component({
   selector: 'recipe',
@@ -28,7 +27,7 @@ import {Rating} from './rating.component';
           <md-list-item class="md-2-line">
             <img md-card-avatar class="avatar" [src]="recipe.avatar">
             <div class="mat-list-text">
-              <p md-line class="name"> Shiba Inu </p>
+              <p md-line class = "name">{{author?.name}}</p>
             </div>
           </md-list-item>
           <p class="description">{{recipe?.description}}</p>
@@ -38,7 +37,7 @@ import {Rating} from './rating.component';
             <span md-icon [class.fav-button]="recipe?.rating == '1'">favorite</span>
           </md-icon>
         </button>
-        <button md-icon-button>
+        <button md-icon-button (click)="openChat()">
           <md-icon>chat_bubble_outline</md-icon>
         </button>
       </md-card-content>
@@ -103,14 +102,17 @@ import {Rating} from './rating.component';
 })
 export class RecipeComponent implements OnInit, OnDestroy {
   public recipe: Recipe;
+  public author: User;
   public trustedImageUrl: SafeResourceUrl;
 
+  private chatroomIdObservable: Observable<string>;
   private recipeSubscription: Subscription;
 
   constructor(
       private route: ActivatedRoute, private apiService: ApiService,
       private domSanitizer: DomSanitizer, private router: Router,
-      private errorReportService: ErrorReportService) {}
+      private errorReportService: ErrorReportService, public location: Location,
+      public chatroomService: ChatroomService) {}
 
   public ngOnInit(): void {
     this.route.params
@@ -119,6 +121,15 @@ export class RecipeComponent implements OnInit, OnDestroy {
           this.recipeSubscription = recipeObservable.subscribe((recipe) => {
             console.log(recipe);
             this.recipe = recipe;
+
+            this.chatroomService.getCurrentUserChatroomIdObservable(recipe.authorId)
+                .subscribe((chatroomIdObservable) => {
+                  this.chatroomIdObservable = chatroomIdObservable;
+                });
+
+            this.apiService.getUserInfoObservable(recipe.authorId).subscribe((user) => {
+              this.author = user;
+            });
           }, (err) => this.errorReportService.send(err));
         });
   }
@@ -128,7 +139,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
   }
 
   public onNavigatingBack() {
-    this.router.navigateByUrl('recipes/all');
+    this.location.back();
   }
 
   public likeRecipe(recipe: Recipe) {
@@ -152,5 +163,16 @@ export class RecipeComponent implements OnInit, OnDestroy {
     };
 
     this.apiService.pushNewCartEntryForCurrentUser(newCartEntry);
+  }
+
+  public openChat() {
+    let subscription = this.chatroomIdObservable.subscribe((chatroomId) => {
+      if (chatroomId) {
+        this.router.navigateByUrl(`/home/chatroom/${chatroomId}`);
+        subscription.unsubscribe();
+      } else {
+        this.chatroomService.createNewChatroom(this.recipe.authorId);
+      }
+    });
   }
 }

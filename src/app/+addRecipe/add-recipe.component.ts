@@ -1,3 +1,4 @@
+import {Location} from '@angular/common';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
@@ -68,7 +69,8 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
 
   constructor(
       private af: AngularFire, private errorReportService: ErrorReportService,
-      private fb: FormBuilder, private apiService: ApiService, private router: Router) {}
+      private fb: FormBuilder, private apiService: ApiService, private router: Router,
+      public location: Location) {}
 
   public ngOnInit() {
     this.logInSubscription = this.af.auth.subscribe(
@@ -97,6 +99,10 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
 
   public uploadPhoto() {
     console.log('add photo TODO');
+  }
+
+  public onNavigatingBack() {
+    this.location.back();
   }
 
   public onAddRecipe() {

@@ -1,15 +1,22 @@
 import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 import {Subscription} from 'rxjs/Subscription';
 import {ApiService, Recipe} from '../../api';
 
 @Component({
   selector: 'recipe-list',
   template: `
-  <search-bar (searchInputChange)="onSearchInputChange($event)"></search-bar>
- <div class="page-content">
-  <md-list>
-    <recipe-list-item *ngFor="let recipe of filteredRecipes" [recipe]="recipe"></recipe-list-item>
-  </md-list>
+  <md-toolbar class="top-toolbar"  color="primary">
+    <search-bar (searchInputChange)="onSearchInputChange($event)"></search-bar>
+    <span class="toolbar-spacer"></span>
+    <button md-icon-button (click)="onNavigateToChatrooms()">
+      <md-icon>chat</md-icon>
+    </button>
+  </md-toolbar>
+  <div class="page-content">
+    <md-list>
+      <recipe-list-item *ngFor="let recipe of filteredRecipes" [recipe]="recipe"></recipe-list-item>
+    </md-list>
   </div>
   `,
   styleUrls: ['./recipe-list.component.scss']
@@ -30,7 +37,7 @@ export class RecipeListComponent implements OnInit {
     this.filterRecipeList();
   }
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, public router: Router) {}
 
   public ngOnInit(): void {
     this.recipesSubscription = this.apiService.getAllRecipes().subscribe((recipes) => {
@@ -43,6 +50,10 @@ export class RecipeListComponent implements OnInit {
     this.searchInput = input;
 
     this.filterRecipeList();
+  }
+
+  public onNavigateToChatrooms(): void {
+    this.router.navigateByUrl('/home/chatrooms');
   }
 
   private filterRecipeList(): void {

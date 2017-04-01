@@ -43,7 +43,7 @@ export class RecipeListItemComponent implements OnInit {
 
   public showDetails(recipe: Recipe) {
     console.log(recipe.$key);
-    this.router.navigateByUrl(`/recipes/recipe/${recipe.$key}`);
+    this.router.navigateByUrl(`/recipe/${recipe.$key}`);
   }
 
   public likeRecipe(recipe: Recipe) {

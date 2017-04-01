@@ -7,3 +7,5 @@ export {Ingredient, ingredientReceiveScheme, IngredientSchema} from './ingredien
 export {Mapper} from './mapper';
 export {PushRecipeSchema, Recipe, recipeReceiveScheme, RecipeSchema} from './recipe';
 export {PushUserSchema, User, userReceiveScheme, UserSchema} from './user';
+export * from './message';
+export * from './chatroom';
