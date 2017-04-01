@@ -101,6 +101,10 @@ export class CreateAccountComponent implements OnInit {
   }
 
   public onUploadAvatarReturnAvatarPath(): void {
+    if (this.avatarUploader.queue.length === 0) {
+      this.onUploadComplete('');
+    }
+
     this.loading = true;
     for (let item of this.avatarUploader.queue) {
       item.upload();
