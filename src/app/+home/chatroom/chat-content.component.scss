@@ -1,0 +1,53 @@
+@import '~@angular/material/core/theming/theming';
+
+.chat-content {
+    position: absolute;
+    top: 8px;
+    bottom: 68px;
+    overflow: auto;
+    width: 100%
+}
+
+.message-entry {
+  margin-top: 12px;
+
+  .other-user {
+    img {
+      position: absolute;
+      left: 12px;
+    }
+
+    md-card {
+      margin-left: 64px;
+    }
+  }
+
+  .current-user {
+    display: flex;
+    .spacer {
+      flex: 1 1 auto;
+    }
+    img {
+      margin-right: 12px;
+    }
+
+    md-card {
+      margin-right: 12px;
+      background-color: map-get($mat-blue , 300);
+    }
+  }
+
+  md-card {
+    display: inline-block;
+    padding: 12px;
+    max-width: 70%;
+  }
+
+  img {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+}
+
