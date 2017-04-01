@@ -166,9 +166,10 @@ export class RecipeComponent implements OnInit, OnDestroy {
   }
 
   public openChat() {
-    this.chatroomIdObservable.subscribe((chatroomId) => {
+    let subscription = this.chatroomIdObservable.subscribe((chatroomId) => {
       if (chatroomId) {
         this.router.navigateByUrl(`/home/chatroom/${chatroomId}`);
+        subscription.unsubscribe();
       } else {
         this.chatroomService.createNewChatroom(this.recipe.authorId);
       }
