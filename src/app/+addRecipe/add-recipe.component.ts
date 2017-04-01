@@ -107,7 +107,7 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
   }
 
   public validateStepsArraySize(): boolean {
-    if (this.stepsArray.length === 0 || this.stepsArray.length === undefined) {
+    if (this.stepsArray.length === 1 || this.stepsArray.length === undefined) {
       return false;
     }
     return true;
@@ -162,7 +162,7 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
   }
 
   public validateIngredientsArraySize(): boolean {
-    if (this.ingredientsArray.length === 0 || this.ingredientsArray.length === undefined) {
+    if (this.ingredientsArray.length === 1 || this.ingredientsArray.length === undefined) {
       return false;
     }
     return true;
@@ -224,13 +224,13 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
 
   private initStep() {
     return this.fb.group({
-      stepDescription: [''],
+      stepDescription: ['', [Validators.required]],
     });
   }
 
   private initIngredient() {
     return this.fb.group({
-      ingredientDescription: [''],
+      ingredientDescription: ['', [Validators.required]],
     });
   }
 
