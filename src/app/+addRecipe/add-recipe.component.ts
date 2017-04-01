@@ -40,8 +40,9 @@ import {ErrorReportService} from '../error-report';
             <button md-icon-button class="addPhoto" (click)="uploadPhoto()">
               <md-icon>add_a_photo</md-icon>
             </button>
-            <md-input-container [dividerColor]="stepDescInputColor()" class="step-desc-input-container">
+            <md-input-container [dividerColor]="stepDescInputColor(i)" class="step-desc-input-container">
               <input mdInput placeholder="Step {{i+1}}" type="text" formControlName="stepDescription">
+              <md-hint *ngIf="!validateStepDescNotEmpty(i)" id="empty-step-desc-warning">Recipe step description cannot be empty</md-hint>
             </md-input-container>
           </div>
         </div>
@@ -51,8 +52,9 @@ import {ErrorReportService} from '../error-report';
         </div>
 
         <div formArrayName="ingredientsList">
-          <md-input-container md-no-float *ngFor="let ingredient of ingredientsArray.controls; let i = index" [formGroupName]="i">
+          <md-input-container md-no-float [dividerColor]="ingredientInputColor(i)" *ngFor="let ingredient of ingredientsArray.controls; let i = index" [formGroupName]="i">
             <input mdInput placeholder="Ingredient {{i+1}}" type="text" formControlName="ingredientDescription">
+            <md-hint *ngIf="!validateIngredientNotEmpty(i)" id="empty-ingredient-warning">Recipe ingredient cannot be empty</md-hint>
           </md-input-container>
         </div>
         <div>
@@ -127,12 +129,28 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
     return this.addRecipeForm.controls['recipeDescription'].valid;
   }
 
-  public stepDescInputColor(): string {
-    return this.inputColor(this.validateStepDescNotEmpty());
+  public stepDescInputColor(index: number): string {
+    return this.inputColor(this.validateStepDescNotEmpty(index));
   }
 
-  public validateStepDescNotEmpty(): boolean {
-    return this.addRecipeForm.controls['stepDescription'].valid;
+  public validateStepDescNotEmpty(index: number): boolean {
+    let stepDescValue = this.stepsArray.at(index).value['stepDescription'];
+    if (stepDescValue === '') {
+      return false;
+    }
+    return true;
+  }
+
+  public ingredientInputColor(index: number): string {
+    return this.inputColor(this.validateIngredientNotEmpty(index));
+  }
+
+  public validateIngredientNotEmpty(index: number): boolean {
+    let ingredientValue = this.ingredientsArray.at(index).value['ingredientDescription'];
+    if (ingredientValue === '') {
+      return false;
+    }
+    return true;
   }
 
   public addIngredient() {
