@@ -11,7 +11,7 @@ import {ApiService, Chatroom, ChatroomService, User} from '../../api';
     <button md-icon-button (click)="onNavigateBack()">
       <md-icon>arrow_back</md-icon>
     </button>
-    <span>Conversations</span>
+    <span>Messages</span>
   </md-toolbar>
   <div class="page-content">
     <md-list>
