@@ -6,3 +6,4 @@ export {MockApiStub} from './mock-api.service';
 export * from './objects';
 export {WebServiceException} from './WebServiceException';
 export {ChatroomService} from './chatroom.service';
+export {DEFAULT_IMAGE_LOCATION} from './default-image-location';
