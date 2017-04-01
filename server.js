@@ -153,15 +153,6 @@ chatNamespace.on('connection', (socket) => {
   });
 });
 
-// io.on('connection', (socket) => {
-
-//   console.log(socket);
-
-//   socket.on('register', (userId) => {
-//     console.log(`User ${userId} registered.`);
-//   });
-// });
-
 http.listen(3000, () => {
   console.log('Server started on port 3000.');
 });
