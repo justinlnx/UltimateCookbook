@@ -18,8 +18,6 @@ export class ChatroomService {
 
   public getCurrentUserChatroomsObservable(): Observable<Observable<Chatroom[]>> {
     return this.apiService.getCurrentUserObservable().map((user) => {
-      // this.disconnectSocketIfPossible();
-
       this.user = user;
       let userId = user.id;
 

@@ -23,23 +23,23 @@ import {ErrorReportService} from '../error-report';
     <md-card>
       <md-card-title>{{recipe.name}}</md-card-title>
       <md-card-content>
-      <md-list>
-      <md-list-item class="md-2-line">
-         <img md-card-avatar class = "avatar" [src]="recipe.avatar">
-         <div class="mat-list-text">
-            <p md-line class = "name">{{author?.name}}</p>
-          </div>
-      </md-list-item>
-      <p class = "description">{{recipe?.description}}</p>
-      </md-list>
-      <button md-icon-button>
-        <md-icon (click)="likeRecipe(recipe); $event.stopPropagation()">
-          <span md-icon [class.fav-button]="recipe?.rating == '1'">favorite</span>
-        </md-icon>
-      </button>
-      <button md-icon-button (click)="openChat()">
-        <md-icon>chat_bubble_outline</md-icon>
-      </button>
+        <md-list>
+          <md-list-item class="md-2-line">
+            <img md-card-avatar class="avatar" [src]="recipe.avatar">
+            <div class="mat-list-text">
+              <p md-line class = "name">{{author?.name}}</p>
+            </div>
+          </md-list-item>
+          <p class="description">{{recipe?.description}}</p>
+        </md-list>
+        <button md-icon-button>
+          <md-icon (click)="likeRecipe(recipe); $event.stopPropagation()">
+            <span md-icon [class.fav-button]="recipe?.rating == '1'">favorite</span>
+          </md-icon>
+        </button>
+        <button md-icon-button (click)="openChat()">
+          <md-icon>chat_bubble_outline</md-icon>
+        </button>
       </md-card-content>
     </md-card>
 
