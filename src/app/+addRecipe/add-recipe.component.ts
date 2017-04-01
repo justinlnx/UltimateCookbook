@@ -27,12 +27,12 @@ import {ErrorReportService} from '../error-report';
       <form class="recipeForm" [formGroup]="addRecipeForm" novalidate>
         <md-input-container md-no-float [dividerColor]="titleInputColor()">
             <input mdInput placeholder="Title" type="text" formControlName="recipeName">
-            <md-hint *ngIf="!validTitleNotEmpty()" id="empty-title-warning">Recipe title cannot be empty</md-hint>
+            <md-hint *ngIf="!validateTitleNotEmpty()" id="empty-title-warning">Recipe title cannot be empty</md-hint>
         </md-input-container>
 
         <md-input-container md-no-float [dividerColor]="descriptionInputColor()" class="md-block">
           <input mdInput placeholder="Description" type="text" formControlName="recipeDescription">
-          <md-hint *ngIf="!validDescriptionNotEmpty()" id="empty-desc-warning">Recipe description cannot be empty</md-hint>
+          <md-hint *ngIf="!validateDescriptionNotEmpty()" id="empty-desc-warning">Recipe description cannot be empty</md-hint>
         </md-input-container>
 
         <div formArrayName="stepDesc" class="step-description">
@@ -40,7 +40,7 @@ import {ErrorReportService} from '../error-report';
             <button md-icon-button class="addPhoto" (click)="uploadPhoto()">
               <md-icon>add_a_photo</md-icon>
             </button>
-            <md-input-container class="step-desc-input-container">
+            <md-input-container [dividerColor]="stepDescInputColor()" class="step-desc-input-container">
               <input mdInput placeholder="Step {{i+1}}" type="text" formControlName="stepDescription">
             </md-input-container>
           </div>
@@ -112,19 +112,27 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
   }
 
   public titleInputColor(): string {
-    return this.inputColor(this.validTitleNotEmpty());
+    return this.inputColor(this.validateTitleNotEmpty());
   }
 
-  public validTitleNotEmpty(): boolean {
+  public validateTitleNotEmpty(): boolean {
     return this.addRecipeForm.controls['recipeName'].valid;
   }
 
   public descriptionInputColor(): string {
-    return this.inputColor(this.validDescriptionNotEmpty());
+    return this.inputColor(this.validateDescriptionNotEmpty());
   }
 
-  public validDescriptionNotEmpty(): boolean {
+  public validateDescriptionNotEmpty(): boolean {
     return this.addRecipeForm.controls['recipeDescription'].valid;
+  }
+
+  public stepDescInputColor(): string {
+    return this.inputColor(this.validateStepDescNotEmpty());
+  }
+
+  public validateStepDescNotEmpty(): boolean {
+    return this.addRecipeForm.controls['stepDescription'].valid;
   }
 
   public addIngredient() {
