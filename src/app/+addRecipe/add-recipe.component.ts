@@ -26,34 +26,45 @@ import {ErrorReportService} from '../error-report';
     <login-warning *ngIf="!userLoggedIn"></login-warning>
     <div class="add-field" *ngIf="userLoggedIn">
       <form class="recipeForm" [formGroup]="addRecipeForm" novalidate>
-        <md-input-container md-no-float>
+        <md-input-container md-no-float [dividerColor]="titleInputColor()">
             <input mdInput placeholder="Title" type="text" formControlName="recipeName">
+            <md-hint *ngIf="!validateTitleNotEmpty()" id="empty-title-warning">Recipe title cannot be empty</md-hint>
         </md-input-container>
 
-        <md-input-container md-no-float class="md-block">
+        <md-input-container md-no-float [dividerColor]="descriptionInputColor()" class="md-block">
           <input mdInput placeholder="Description" type="text" formControlName="recipeDescription">
+          <md-hint *ngIf="!validateDescriptionNotEmpty()" id="empty-desc-warning">Recipe description cannot be empty</md-hint>
         </md-input-container>
 
-        <div formArrayName="stepDesc">
-          <md-input-container md-no-float *ngFor="let step of stepsArray.controls; let i = index" [formGroupName]="i">
+        <div formArrayName="stepDesc" class="step-description">
+          <div class="step-desc-item" *ngFor="let step of stepsArray.controls; let i = index" [formGroupName]="i">
             <button md-icon-button class="addPhoto" (click)="uploadPhoto()">
               <md-icon>add_a_photo</md-icon>
             </button>
-            <textarea mdInput placeholder="Step {{i+1}}" type="text" formControlName="stepDescription"></textarea>
-          </md-input-container>
+            <md-input-container [dividerColor]="stepDescInputColor(i)" class="step-desc-input-container">
+              <input mdInput placeholder="Step {{i+1}}" type="text" formControlName="stepDescription">
+              <md-hint *ngIf="!validateStepDescNotEmpty(i)" id="empty-step-desc-warning">Recipe step description cannot be empty</md-hint>
+            </md-input-container>
+          </div>
         </div>
-        <button md-raised-button (click)="addStep()">+ Step</button>
+        <div>
+          <button md-raised-button (click)="addStep()">Add Step</button>
+          <button md-raised-button (click)="removeStep()" [disabled]='!validateStepsArraySize()'>Remove Step</button>
+        </div>
 
         <div formArrayName="ingredientsList">
-          <md-input-container md-no-float *ngFor="let ingredient of ingredientsArray.controls; let i = index" [formGroupName]="i">
+          <md-input-container md-no-float [dividerColor]="ingredientInputColor(i)" *ngFor="let ingredient of ingredientsArray.controls; let i = index" [formGroupName]="i">
             <input mdInput placeholder="Ingredient {{i+1}}" type="text" formControlName="ingredientDescription">
+            <md-hint *ngIf="!validateIngredientNotEmpty(i)" id="empty-ingredient-warning">Recipe ingredient cannot be empty</md-hint>
           </md-input-container>
         </div>
-        <button md-raised-button (click)="addIngredient()">+ Ingredient</button>
+        <div>
+          <button md-raised-button (click)="addIngredient()">Add Ingredient</button>
+          <button md-raised-button (click)="removeIngredient()" [disabled]='!validateIngredientsArraySize()'>Remove Ingredient</button>
+        </div>
       </form>
     </div>
   </div>
-
   `,
   styleUrls: ['./add-recipe.component.scss']
 })
@@ -93,8 +104,62 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
     this.stepsArray.push(this.initStep());
   }
 
+  public removeStep() {
+    this.stepsArray.removeAt(this.stepsArray.length - 1);
+  }
+
+  public validateStepsArraySize(): boolean {
+    if (!this.stepsArray || this.stepsArray.length <= 1) {
+      return false;
+    }
+    return true;
+  }
+
+  public titleInputColor(): string {
+    return this.inputColor(this.validateTitleNotEmpty());
+  }
+
+  public validateTitleNotEmpty(): boolean {
+    return this.addRecipeForm.controls['recipeName'].valid;
+  }
+
+  public descriptionInputColor(): string {
+    return this.inputColor(this.validateDescriptionNotEmpty());
+  }
+
+  public validateDescriptionNotEmpty(): boolean {
+    return this.addRecipeForm.controls['recipeDescription'].valid;
+  }
+
+  public stepDescInputColor(index: number): string {
+    return this.inputColor(this.validateStepDescNotEmpty(index));
+  }
+
+  public validateStepDescNotEmpty(index: number): boolean {
+    return this.stepsArray.at(index).valid;
+  }
+
+  public ingredientInputColor(index: number): string {
+    return this.inputColor(this.validateIngredientNotEmpty(index));
+  }
+
+  public validateIngredientNotEmpty(index: number): boolean {
+    return this.ingredientsArray.at(index).valid;
+  }
+
   public addIngredient() {
     this.ingredientsArray.push(this.initIngredient());
+  }
+
+  public removeIngredient() {
+    this.ingredientsArray.removeAt(this.ingredientsArray.length - 1);
+  }
+
+  public validateIngredientsArraySize(): boolean {
+    if (!this.ingredientsArray || this.ingredientsArray.length <= 1) {
+      return false;
+    }
+    return true;
   }
 
   public uploadPhoto() {
@@ -136,6 +201,10 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
 
   get ingredientsArray(): FormArray {
     return this.addRecipeForm.get('ingredientsList') as FormArray;
+  }
+
+  private inputColor(valid: boolean): string {
+    return valid ? 'primary' : 'warn';
   }
 
   private createAddRecipeForm() {
