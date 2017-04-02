@@ -57,10 +57,10 @@ export class CartHomeComponent implements OnInit, OnDestroy {
   public map: any;
   public nearByStores: NearByStore[] = [];
   public cartObservable: Observable<CartEntry[]>;
-  private loginStatusSubscription: Subscription;
-  private _isLoggedIn: boolean;
+  public searchElementRef: ElementRef;
 
-  @ViewChild('search') public searchElementRef: ElementRef;
+  @ViewChild('search') private loginStatusSubscription: Subscription;
+  private _isLoggedIn: boolean;
   constructor(
       public apiService: ApiService, private errorReportService: ErrorReportService,
       private mapsAPILoader: MapsAPILoader, public router: Router) {}
@@ -109,7 +109,9 @@ export class CartHomeComponent implements OnInit, OnDestroy {
               this.mapSetUp();
             });
           },
-          () => {this.errorReportService.send('Error: Google map API fails at current time')},
+          () => {
+            this.errorReportService.send('Error: Google map API fails at current time');
+          },
           {maximumAge: 60000, timeout: 5000, enableHighAccuracy: true});
     } else {
       this.errorReportService.send('Browser doesn\'t support Geolocation');
@@ -120,7 +122,7 @@ export class CartHomeComponent implements OnInit, OnDestroy {
     let pyrmont = new google.maps.LatLng(this.lat, this.lng);
     let map =
         new google.maps.Map(document.getElementById('map'), {center: pyrmont, zoom: this.zoom});
-    let marker = new google.maps.Marker({map: map, position: {lat: this.lat, lng: this.lng}});
+    let marker = new google.maps.Marker({map, position: {lat: this.lat, lng: this.lng}});
     marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
     let service = new google.maps.places.PlacesService(map);
     let request: any = {

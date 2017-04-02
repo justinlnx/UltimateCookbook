@@ -53,7 +53,8 @@ import {ErrorReportService} from '../error-report';
         </div>
 
         <div formArrayName="ingredientsList">
-          <md-input-container md-no-float [dividerColor]="ingredientInputColor(i)" *ngFor="let ingredient of ingredientsArray.controls; let i = index" [formGroupName]="i">
+          <md-input-container md-no-float [dividerColor]="ingredientInputColor(i)" 
+            *ngFor="let ingredient of ingredientsArray.controls; let i = index" [formGroupName]="i">
             <input mdInput placeholder="Ingredient {{i+1}}" type="text" formControlName="ingredientDescription">
             <md-hint *ngIf="!validateIngredientNotEmpty(i)" id="empty-ingredient-warning">Recipe ingredient cannot be empty</md-hint>
           </md-input-container>
