@@ -32,13 +32,15 @@ import {ErrorReportService} from '../error-report';
           </md-list-item>
           <p class="description">{{recipe?.description}}</p>
         </md-list>
-        <button md-icon-button>
-          <md-icon (click)="likeRecipe(recipe); $event.stopPropagation()">
-            <span md-icon [class.fav-button]="recipe?.rating == '1'">favorite</span>
+        <button md-icon-button  *ngIf="!isOwner(recipe)" (click)="likeRecipe(recipe)">
+          <md-icon>
+            <span md-icon [class.fav-button]="isLiked(recipe)">favorite</span>
           </md-icon>
         </button>
-        <button md-icon-button (click)="openChat()">
-          <md-icon>chat_bubble_outline</md-icon>
+        <button md-icon-button  *ngIf="!isOwner(recipe)" (click)="openChat()">
+          <md-icon>
+            <span>chat_bubble_outline</span>
+          </md-icon>
         </button>
       </md-card-content>
     </md-card>
@@ -144,6 +146,14 @@ export class RecipeComponent implements OnInit, OnDestroy {
 
   public likeRecipe(recipe: Recipe) {
     this.apiService.toggleLike(recipe);
+  }
+
+  public isLiked(recipe: Recipe): boolean {
+    return this.apiService.isLiked(recipe);
+  }
+
+  public isOwner(recipe: Recipe): boolean {
+    return this.apiService.ownsRecipe(recipe);
   }
 
   public isImage(imageSource: string): boolean {
