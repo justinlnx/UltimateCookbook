@@ -16,6 +16,7 @@ import {ErrorReportService} from '../error-report';
       <button md-icon-button class="back-button" (click)="onNavigatingBack()">
         <md-icon>arrow_back</md-icon>
       </button>
+      <span>{{recipe.name}}</span>
     </span>
   </md-toolbar>
 
@@ -149,11 +150,17 @@ export class RecipeComponent implements OnInit, OnDestroy {
   }
 
   public isLiked(recipe: Recipe): boolean {
-    return this.apiService.isLiked(recipe);
+    if (this.apiService.isLoggedIn()) {
+      return this.apiService.isLiked(recipe);
+    }
+    return false;
   }
 
   public isOwner(recipe: Recipe): boolean {
-    return this.apiService.ownsRecipe(recipe);
+    if (this.apiService.isLoggedIn()) {
+      return this.apiService.ownsRecipe(recipe);
+    }
+    return false;
   }
 
   public isImage(imageSource: string): boolean {
