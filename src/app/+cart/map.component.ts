@@ -42,7 +42,7 @@ export class MapComponent implements OnInit {
       this.DestinationLng = Number(params['lng']);
       this.DestinationLat = Number(params['lat']);
       this.showStore();
-    })
+    });
   }
   public onNavigatingBack() {
     this.location.back();
@@ -58,11 +58,13 @@ export class MapComponent implements OnInit {
               this.mapSetUp();
             });
           },
-          () => {this.errorReportService.send(
-              'Warning: The Geolocation service failed on your device browser at current time ')},
+          () => {
+            this.errorReportService.send(
+                'Warning: The Geolocation service failed on your device browser at current time ');
+          },
           {maximumAge: 60000, timeout: 5000, enableHighAccuracy: true});
     } else {
-      this.errorReportService.send('Browser doesn\'t support Geolocation')
+      this.errorReportService.send('Browser doesn\'t support Geolocation');
     }
   }
 
@@ -71,10 +73,10 @@ export class MapComponent implements OnInit {
     let map = new google.maps.Map(
         document.getElementById('mapForEachStore'), {center: pyrmont, zoom: this.zoom});
     let selfMarker =
-        new google.maps.Marker({map: map, position: {lat: this.SelfLat, lng: this.SelfLng}});
+        new google.maps.Marker({map, position: {lat: this.SelfLat, lng: this.SelfLng}});
     selfMarker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
     let destinationMarker = new google.maps.Marker(
-        {map: map, position: {lat: this.DestinationLat, lng: this.DestinationLng}});
+        {map, position: {lat: this.DestinationLat, lng: this.DestinationLng}});
     let Selfinfowindow = new google.maps.InfoWindow({content: 'current location'});
     let Storeinfowindow = new google.maps.InfoWindow({content: 'store location'});
     Selfinfowindow.open(map, selfMarker);

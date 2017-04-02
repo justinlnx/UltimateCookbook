@@ -66,8 +66,7 @@ export class ChatroomService {
   }
 
   public sendNewMessage(chatroomId: string, message: PushMessageSchema): void {
-    this.chatroomSocket.emit(
-        this.newMessageEvent(this.user.id), {chatroom: chatroomId, message: message});
+    this.chatroomSocket.emit(this.newMessageEvent(this.user.id), {chatroom: chatroomId, message});
   }
 
   public createNewChatroom(otherUserId: string): void {
@@ -100,7 +99,7 @@ export class ChatroomService {
     let rawChatroomsObservable: Observable<ChatroomSchema[]> = Rx.Observable.create((observer) => {
       this.chatroomSocket = io(CHATROOM_SOCKET_NAMESPACE);
 
-      this.chatroomSocket.emit(this.registerEvent(), {userId: userId}, (ack) => {
+      this.chatroomSocket.emit(this.registerEvent(), {userId}, (ack) => {
         console.log(ack);
 
         this.chatroomSocket.on(this.getChatroomsEvent(userId), (chatrooms) => {

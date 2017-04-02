@@ -25,25 +25,21 @@ describe('account page', () => {
 
     it('should display "Create Account" Button in proper state', () => {
       expect(accountPage.getCreateAccButtonLabel()).toEqual('Create Account');
-      expect(accountPage.getCreateAccButtonEnabledState()).toBeFalsy();
+      expect(accountPage.getCreateAccButtonEnabledState()).toBeTruthy();
     });
 
     it('"Email" and "Password" should be empty and error messages are shown', () => {
       let emailInput = accountPage.getEmailInputElement();
       let passwordInput = accountPage.getPasswordInputElement();
-      let usernameInput = accountPage.getUsernameInputElement();
 
       expect(accountPage.getElementAttributePlaceholder(emailInput)).toEqual('Email');
       expect(accountPage.getElementAttributePlaceholder(passwordInput)).toEqual('Password');
-      expect(accountPage.getElementAttributePlaceholder(usernameInput)).toEqual('User name');
 
       let emailInputWarning = accountPage.getEmailInputWarningMessage();
       let passwordInputWarning = accountPage.getPasswordInputWarningMessage();
-      let usernameInputWarning = accountPage.getUsernameInputWarningMessage();
 
       expect(emailInputWarning).toEqual('Incorrect email format');
       expect(passwordInputWarning).toEqual('Incorrect password format');
-      expect(usernameInputWarning).toEqual('Incorrect user name format');
     });
   });
 
@@ -96,43 +92,23 @@ describe('account page', () => {
       });
     });
 
-    describe('"Username" validation checking', () => {
-      it('Empty "Username" should display error message', () => {
-        entersUsernameInput('');
-
-        let warningMessage = accountPage.getUsernameInputWarningMessage();
-        expect(warningMessage).toEqual('Incorrect user name format');
-      });
-
-      it('Valid "Username" should display no error message', () => {
-        entersUsernameInput(validUserName);
-
-        let warningMessage = $('username-input-warning');
-        expect(warningMessage.isPresent()).toBeFalsy();
-      });
-    });
-
     describe('Valid inputs should enable "Sign In" and "Create Account" buttons', () => {
       it('Valid "Email" and "Password" enables "Sign In" and disables "Create Account"', () => {
         entersEmailInput(validEmail);
         entersPasswordInput(validPassword);
-        entersUsernameInput('');
 
         browser.sleep(1000);
 
         expect(accountPage.getSignInButtonEnabledState()).toBeTruthy();
-        expect(accountPage.getCreateAccButtonEnabledState()).toBeFalsy();
       });
 
       it('Valid "Email", "Password", and "Username" shoud enable both buttons', () => {
         entersEmailInput(validEmail);
         entersPasswordInput(validPassword);
-        entersUsernameInput(validUserName);
 
         browser.sleep(1000);
 
         expect(accountPage.getSignInButtonEnabledState()).toBeTruthy();
-        expect(accountPage.getCreateAccButtonEnabledState()).toBeTruthy();
       });
     });
 
@@ -180,26 +156,6 @@ describe('account page', () => {
         expect(profileElement.getText()).toEqual('Profile');
 
         signOut();
-      });
-
-      describe('create account with correct input formats results in different action', () => {
-        let createAccountBtnElement: ElementFinder;
-
-        beforeEach(() => {
-          createAccountBtnElement = accountPage.getCreateAccountButtonElement();
-        })
-
-        it('create account with existing email displays error message', () => {
-          entersEmailInput(validEmail);
-          entersPasswordInput(invalidPassword);
-          entersUsernameInput(validUserName);
-
-          createAccountBtnElement.click();
-          browser.sleep(500);
-
-          let expectedErrorMessage = 'The email address is already in use by another account.';
-          verifySnackBarMsgIsDisplayed(expectedErrorMessage);
-        });
       });
     });
 
