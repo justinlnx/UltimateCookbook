@@ -33,12 +33,12 @@ import {ErrorReportService} from '../error-report';
           </md-list-item>
           <p class="description">{{recipe?.description}}</p>
         </md-list>
-        <button md-icon-button  *ngIf="!isOwner(recipe) && isLoggedIn()" (click)="likeRecipe(recipe)">
+        <button md-icon-button  *ngIf="isLoggedIn() && !isOwner(recipe)" (click)="likeRecipe(recipe)">
           <md-icon>
             <span md-icon [class.fav-button]="isLiked(recipe)">favorite</span>
           </md-icon>
         </button>
-        <button md-icon-button  *ngIf="!isOwner(recipe) && isLoggedIn()" (click)="openChat()">
+        <button md-icon-button  *ngIf="isLoggedIn() && !isOwner(recipe)" (click)="openChat()">
           <md-icon>
             <span>chat_bubble_outline</span>
           </md-icon>
@@ -54,7 +54,7 @@ import {ErrorReportService} from '../error-report';
         </md-list>
       </md-card-content>
       <md-card-actions>
-        <button md-icon-button *ngIf="!isOwner(recipe) && isLoggedIn()" (click)="addNewCartEntry()">
+        <button md-icon-button *ngIf="isLoggedIn() && !isOwner(recipe)" (click)="addNewCartEntry()">
           <md-icon>add_shopping_cart</md-icon>
         </button>
       </md-card-actions>
@@ -87,7 +87,7 @@ import {ErrorReportService} from '../error-report';
               <md-divider></md-divider>
             </md-card-content>
         </div>
-        <md-card-content *ngIf="!isOwner(recipe) && isLoggedIn()">
+        <md-card-content *ngIf="isLoggedIn() && !isOwner(recipe)">
           <div>
             <md-input-container>
               <input mdInput placeholder="Write a comment...">
