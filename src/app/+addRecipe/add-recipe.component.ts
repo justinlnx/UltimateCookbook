@@ -107,7 +107,7 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
   }
 
   public validateStepsArraySize(): boolean {
-    if (this.stepsArray.length === 1 || this.stepsArray.length === undefined) {
+    if (!this.stepsArray || this.stepsArray.length <= 1) {
       return false;
     }
     return true;
@@ -134,11 +134,7 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
   }
 
   public validateStepDescNotEmpty(index: number): boolean {
-    let stepDescValue = this.stepsArray.at(index).value['stepDescription'];
-    if (stepDescValue === '') {
-      return false;
-    }
-    return true;
+    return this.stepsArray.at(index).valid;
   }
 
   public ingredientInputColor(index: number): string {
@@ -146,11 +142,7 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
   }
 
   public validateIngredientNotEmpty(index: number): boolean {
-    let ingredientValue = this.ingredientsArray.at(index).value['ingredientDescription'];
-    if (ingredientValue === '') {
-      return false;
-    }
-    return true;
+    return this.ingredientsArray.at(index).valid;
   }
 
   public addIngredient() {
@@ -162,7 +154,7 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
   }
 
   public validateIngredientsArraySize(): boolean {
-    if (this.ingredientsArray.length === 1 || this.ingredientsArray.length === undefined) {
+    if (!this.ingredientsArray || this.ingredientsArray.length <= 1) {
       return false;
     }
     return true;
