@@ -57,10 +57,11 @@ export class CartHomeComponent implements OnInit, OnDestroy {
   public map: any;
   public nearByStores: NearByStore[] = [];
   public cartObservable: Observable<CartEntry[]>;
-  public searchElementRef: ElementRef;
+  @ViewChild('search') public searchElementRef: ElementRef;
 
-  @ViewChild('search') private loginStatusSubscription: Subscription;
+  private loginStatusSubscription: Subscription;
   private _isLoggedIn: boolean;
+
   constructor(
       public apiService: ApiService, private errorReportService: ErrorReportService,
       private mapsAPILoader: MapsAPILoader, public router: Router) {}
