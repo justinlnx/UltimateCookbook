@@ -1,0 +1,41 @@
+@import '~@angular/material/core/theming/theming';
+@import 'src/styles/styles';
+
+md-hint {
+  color: mat-color($recipes-app-warn);
+}
+
+form {
+    md-input-container {
+        width: 90%;
+        margin: 10px;
+    }
+
+    .create-btn {
+        margin: 10px;
+    }
+
+    #avatar-upload {
+        display: none;
+    }
+
+    md-card {
+        margin: 10px;
+    }
+
+    .upload-line {
+        display: flex;
+        
+        button {
+            margin-right: 12px;
+        }
+        
+        .avatar-file-name {
+            flex: 1 1 auto;
+            
+            input {
+                color: black !important;
+            }
+        }
+    }
+}

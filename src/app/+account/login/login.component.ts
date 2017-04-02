@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+
 import {ApiService} from '../../api';
 import {ErrorReportService} from '../../error-report';
 
@@ -13,7 +15,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
       public apiService: ApiService, public fb: FormBuilder,
-      public errorReportService: ErrorReportService) {}
+      public errorReportService: ErrorReportService, private router: Router) {}
 
   public ngOnInit() {
     this.createForm();
@@ -27,10 +29,6 @@ export class LoginComponent implements OnInit {
     return this.inputColor(this.validPasswordInput());
   }
 
-  public userNameInputColor(): string {
-    return this.inputColor(this.validUserNameInput());
-  }
-
   public validEmailInput(): boolean {
     return this.loginForm.controls['email'].valid;
   }
@@ -39,25 +37,16 @@ export class LoginComponent implements OnInit {
     return this.loginForm.controls['password'].valid;
   }
 
-  public validUserNameInput(): boolean {
-    return this.loginForm.controls['name'].valid;
-  }
-
   public onSignIn() {
     this.apiService.login(this.loginForm.value.email, this.loginForm.value.password);
   }
 
   public onCreateAccount() {
-    this.createUser(
-        this.loginForm.value.email, this.loginForm.value.password, this.loginForm.value.name);
+    this.router.navigateByUrl('/account/create');
   }
 
   public validSigninInput(): boolean {
     return this.validEmailInput() && this.validPasswordInput();
-  }
-
-  public validCreateInput(): boolean {
-    return this.validEmailInput() && this.validPasswordInput() && this.validUserNameInput();
   }
 
   private inputColor(valid: boolean): string {
@@ -76,12 +65,7 @@ export class LoginComponent implements OnInit {
           Validators.required, Validators.pattern(passwordRegex), Validators.minLength(6),
           Validators.maxLength(16)
         ]
-      ],
-      name: ['', [Validators.required]]
+      ]
     });
-  }
-
-  private createUser(email: string, password: string, name: string) {
-    this.apiService.createUser(email, password, name);
   }
 }
