@@ -9,7 +9,11 @@
   ],
   "contributors": [
     "Zhenan Cui <zca37@sfu.ca>",
-    ""
+    "Ningxuan Liang <njliang@sfu.ca>",
+    "Xin Tian <xta13@sfu.ca>",
+    "Tianpei Shen <tianpeis@sfu.ca>",
+    "Chenjian Zhu <cza53@sfu.ca>",
+    "Weiyuan Cheng <wyc22@sfu.ca>"
   ],
   "license": "MIT",
   "scripts": {

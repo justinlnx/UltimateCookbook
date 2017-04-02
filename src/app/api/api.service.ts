@@ -7,7 +7,6 @@ import * as Rx from 'rxjs/Rx';
 import {ErrorReportService} from '../error-report';
 
 import {commentsUrl, PUBLIC_RECIPES_URL, userCartUrl, USERS_URL} from './api-urls';
-import {generateGuid} from './guid';
 import {Mapper} from './objects';
 import {PushRecipeSchema, Recipe, recipeReceiveScheme, RecipeSchema} from './objects';
 import {PushCommentSchema} from './objects';
