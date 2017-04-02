@@ -109,8 +109,7 @@ export class CartHomeComponent implements OnInit, OnDestroy {
               this.mapSetUp();
             });
           },
-          () => {this.errorReportService.send(
-              'Warning: The Geolocation service failed on your device browser at current time')},
+          () => {this.errorReportService.send('Error: Google map API fails at current time')},
           {maximumAge: 60000, timeout: 5000, enableHighAccuracy: true});
     } else {
       this.errorReportService.send('Browser doesn\'t support Geolocation');
