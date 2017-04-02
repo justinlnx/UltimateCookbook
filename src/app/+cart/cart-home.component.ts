@@ -1,11 +1,12 @@
-import { Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MapsAPILoader } from 'angular2-google-maps/core';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { Router } from '@angular/router';
-import { ApiService, CartEntry, Recipe } from '../api';
-import { ErrorReportService } from '../error-report';
+import {Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {FormControl} from '@angular/forms';
+import {Router} from '@angular/router';
+import {MapsAPILoader} from 'angular2-google-maps/core';
+import {Observable} from 'rxjs/Observable';
+import {Subscription} from 'rxjs/Subscription';
+
+import {ApiService, CartEntry, Recipe} from '../api';
+import {ErrorReportService} from '../error-report';
 
 interface NearByStore {
   rating: number;
@@ -13,7 +14,7 @@ interface NearByStore {
   location: string;
   geometry: any;
 }
-interface Location { }
+
 @Component({
   selector: 'cart-home',
   template: `
@@ -61,7 +62,8 @@ export class CartHomeComponent implements OnInit, OnDestroy {
 
   @ViewChild('search') public searchElementRef: ElementRef;
   constructor(
-    public apiService: ApiService, private errorReportService: ErrorReportService, private mapsAPILoader: MapsAPILoader, public router: Router) { }
+      public apiService: ApiService, private errorReportService: ErrorReportService,
+      private mapsAPILoader: MapsAPILoader, public router: Router) {}
 
   set isLoggedIn(status: boolean) {
     this._isLoggedIn = status;
@@ -76,10 +78,12 @@ export class CartHomeComponent implements OnInit, OnDestroy {
     this.loginStatusSubscription = this.apiService.getLoginObservable().subscribe((status) => {
       this.isLoggedIn = status;
     });
-    // set google maps defaults
-    this.zoom = 12;
-    this.lat = 49.246292;
-    this.lng = -123.116226;
+    const defaultLat = 49.246292;
+    const defaultLng = -123.116226;
+    const defaultZoom = 12;
+    this.zoom = defaultZoom;
+    this.lat = defaultLat;
+    this.lng = defaultLng;
     this.searchControl = new FormControl();
     this.getAllStores();
   }
@@ -97,18 +101,17 @@ export class CartHomeComponent implements OnInit, OnDestroy {
   private getAllStores() {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          this.lat = position.coords.latitude;
-          this.lng = position.coords.longitude;
-          this.zoom = 12;
-          this.mapsAPILoader.load().then(() => {
-            this.mapSetUp();
-          });
-        },
-        () => {
-          this.errorReportService.send('Warning: The Geolocation service failed on your device browser at current time, unable to get your current location. Please try it later ')
-        },
-        { maximumAge: 60000, timeout: 5000, enableHighAccuracy: true });
+          (position) => {
+            this.lat = position.coords.latitude;
+            this.lng = position.coords.longitude;
+            this.zoom = 12;
+            this.mapsAPILoader.load().then(() => {
+              this.mapSetUp();
+            });
+          },
+          () => {this.errorReportService.send(
+              'Warning: The Geolocation service failed on your device browser at current time')},
+          {maximumAge: 60000, timeout: 5000, enableHighAccuracy: true});
     } else {
       this.errorReportService.send('Browser doesn\'t support Geolocation');
     }
@@ -117,19 +120,9 @@ export class CartHomeComponent implements OnInit, OnDestroy {
   private mapSetUp() {
     let pyrmont = new google.maps.LatLng(this.lat, this.lng);
     let map =
-      new google.maps.Map(document.getElementById('map'), { center: pyrmont, zoom: this.zoom });
-    let marker = new google.maps.Marker({ map: map, position: { lat: this.lat, lng: this.lng } });
+        new google.maps.Map(document.getElementById('map'), {center: pyrmont, zoom: this.zoom});
+    let marker = new google.maps.Marker({map: map, position: {lat: this.lat, lng: this.lng}});
     marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
-    let cityCircle = new google.maps.Circle({
-      strokeColor: '#3F51B5',
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      fillColor: '#5C6BC0',
-      fillOpacity: 0.35,
-      map: map,
-      center: { lat: this.lat, lng: this.lng },
-      radius: 5000
-    });
     let service = new google.maps.places.PlacesService(map);
     let request: any = {
       location: pyrmont,
@@ -138,6 +131,7 @@ export class CartHomeComponent implements OnInit, OnDestroy {
       rankby: google.maps.places.RankBy.DISTANCE,
       types: ['grocery_or_supermarket']
     };
+
     service.nearbySearch(request, (results) => {
       for (let result of results) {
         this.nearByStores.push({
