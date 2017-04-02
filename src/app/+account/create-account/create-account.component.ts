@@ -1,3 +1,4 @@
+import {Location} from '@angular/common';
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MdSnackBar} from '@angular/material';
@@ -42,10 +43,14 @@ export class CreateAccountComponent implements OnInit {
   constructor(
       private af: AngularFire, private errorReportService: ErrorReportService,
       private fb: FormBuilder, private apiService: ApiService, private router: Router,
-      private snackBar: MdSnackBar) {}
+      private snackBar: MdSnackBar, private location: Location) {}
 
   public ngOnInit() {
     this.createCreateAccountForm();
+  }
+
+  public onNavigatingBack() {
+    this.location.back();
   }
 
   public onCreateAccount() {

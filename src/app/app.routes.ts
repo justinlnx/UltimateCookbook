@@ -11,5 +11,6 @@ export const ROUTES: Routes = [
   {path: 'personal_recipes', loadChildren: './+personalRecipes#PersonalRecipesModule'},
   {path: 'addRecipe', loadChildren: './+addRecipe#AddRecipeModule'},
   {path: 'account', loadChildren: './+account#AccountModule'},
+  {path: 'recipe', loadChildren: './+recipe#RecipeModule'},
   {path: '**', component: NoContentComponent},
 ];
