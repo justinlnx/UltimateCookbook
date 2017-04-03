@@ -1,12 +1,12 @@
-import { Location } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import {Location} from '@angular/common';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import {ActivatedRoute, Params, Router} from '@angular/router';
+import {Observable} from 'rxjs/Observable';
+import {Subscription} from 'rxjs/Subscription';
 
-import { ApiService, ChatroomService, PushCartEntrySchema, Recipe, User } from '../api';
-import { ErrorReportService } from '../error-report';
+import {ApiService, ChatroomService, PushCartEntrySchema, Recipe, User} from '../api';
+import {ErrorReportService} from '../error-report';
 
 @Component({
   selector: 'recipe',
@@ -112,29 +112,31 @@ export class RecipeComponent implements OnInit, OnDestroy {
   private recipeSubscription: Subscription;
 
   constructor(
-    private route: ActivatedRoute, private apiService: ApiService,
-    private domSanitizer: DomSanitizer, private router: Router,
-    private errorReportService: ErrorReportService, public location: Location,
-    public chatroomService: ChatroomService) { }
+      private route: ActivatedRoute, private apiService: ApiService,
+      private domSanitizer: DomSanitizer, private router: Router,
+      private errorReportService: ErrorReportService, public location: Location,
+      public chatroomService: ChatroomService) {}
 
   public ngOnInit(): void {
     this.route.params
-      .switchMap((params: Params) => Observable.of(this.apiService.getRecipe(params['id'])))
-      .subscribe((recipeObservable) => {
-        this.recipeSubscription = recipeObservable.subscribe((recipe) => {
-          console.log(recipe);
-          this.recipe = recipe;
+        .switchMap((params: Params) => Observable.of(this.apiService.getRecipe(params['id'])))
+        .subscribe((recipeObservable) => {
+          this.recipeSubscription = recipeObservable.subscribe((recipe) => {
+            console.log(recipe);
+            this.recipe = recipe;
 
-          this.chatroomService.getCurrentUserChatroomIdObservable(recipe.authorId)
-            .subscribe((chatroomIdObservable) => {
-              this.chatroomIdObservable = chatroomIdObservable;
+            if (this.apiService.isLoggedIn()) {
+              this.chatroomService.getCurrentUserChatroomIdObservable(recipe.authorId)
+                  .subscribe((chatroomIdObservable) => {
+                    this.chatroomIdObservable = chatroomIdObservable;
+                  });
+            }
+
+            this.apiService.getUserInfoObservable(recipe.authorId).subscribe((user) => {
+              this.author = user;
             });
-
-          this.apiService.getUserInfoObservable(recipe.authorId).subscribe((user) => {
-            this.author = user;
-          });
-        }, (err) => this.errorReportService.send(err));
-      });
+          }, (err) => this.errorReportService.send(err));
+        });
   }
 
   public ngOnDestroy(): void {
@@ -179,7 +181,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
     let newCartEntry: PushCartEntrySchema = {
       recipeId: this.recipe.$key,
       ingredients: this.recipe.ingredients.map((ingredient) => {
-        return { content: ingredient, bought: false };
+        return {content: ingredient, bought: false};
       })
     };
 
