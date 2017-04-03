@@ -73,6 +73,7 @@ export class ChatroomsListItemComponent implements OnChanges {
 
     this.apiService.getUserInfoObservable(otherUserId).subscribe((user) => {
       this.otherUser = user;
+      this.updateBypassAvatarUrl();
     });
   }
 
