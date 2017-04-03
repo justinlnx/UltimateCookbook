@@ -78,15 +78,17 @@ export class CartHomeComponent implements OnInit, OnDestroy {
     this.cartObservable = this.apiService.getCartObservableOfCurrentUser().first();
     this.loginStatusSubscription = this.apiService.getLoginObservable().subscribe((status) => {
       this.isLoggedIn = status;
+      if (this.isLoggedIn) {
+        const defaultLat = 49.246292;
+        const defaultLng = -123.116226;
+        const defaultZoom = 12;
+        this.zoom = defaultZoom;
+        this.lat = defaultLat;
+        this.lng = defaultLng;
+        this.searchControl = new FormControl();
+        this.getAllStores();
+      }
     });
-    const defaultLat = 49.246292;
-    const defaultLng = -123.116226;
-    const defaultZoom = 12;
-    this.zoom = defaultZoom;
-    this.lat = defaultLat;
-    this.lng = defaultLng;
-    this.searchControl = new FormControl();
-    this.getAllStores();
   }
 
   public ngOnDestroy() {
