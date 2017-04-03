@@ -6,7 +6,7 @@ import {SafeResourceUrl} from '@angular/platform-browser';
 import {Router} from '@angular/router';
 import {AngularFire, FirebaseAuthState} from 'angularfire2';
 
-import {ApiService, DEFAULT_IMAGE_LOCATION, PushRecipeSchema, Recipe} from '../../api';
+import {ApiService, DEFAULT_USER_AVATAR_URL, PushRecipeSchema, Recipe} from '../../api';
 import {ErrorReportService} from '../../error-report';
 import {createSingleFileUploader, FileUploader} from '../../file-upload';
 
@@ -107,7 +107,7 @@ export class CreateAccountComponent implements OnInit {
 
   public onUploadAvatarReturnAvatarPath(): void {
     if (this.avatarUploader.queue.length === 0) {
-      this.onUploadComplete(DEFAULT_IMAGE_LOCATION);
+      this.onUploadComplete(DEFAULT_USER_AVATAR_URL);
     }
 
     this.loading = true;

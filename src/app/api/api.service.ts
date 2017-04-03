@@ -7,6 +7,7 @@ import * as Rx from 'rxjs/Rx';
 import {ErrorReportService} from '../error-report';
 
 import {commentsUrl, PUBLIC_RECIPES_URL, userCartUrl, USERS_URL} from './api-urls';
+import {DEFAULT_RECIPE_AVATAR_URL} from './default-image-urls';
 import {Mapper} from './objects';
 import {PushRecipeSchema, Recipe, recipeReceiveScheme, RecipeSchema} from './objects';
 import {PushCommentSchema} from './objects';
@@ -84,8 +85,8 @@ export class ApiService {
             (state) => {
               let id = state.uid;
 
-              let newUser: PushUserSchema = {
-                id, name, avatar: avatarPath, recipes: [], likedRecipes: [], cart: []};
+              let newUser: PushUserSchema =
+                  {id, name, avatar: avatarPath, recipes: [], likedRecipes: [], cart: []};
 
               this.userListObservable.push(newUser).then(
                   (_) => console.log(`User created: ${email}, ${password}, ${name}, ${avatarPath}`),
@@ -270,6 +271,10 @@ export class ApiService {
   }
 
   public addRecipe(recipe: PushRecipeSchema): void {
+    if (!recipe.avatar || recipe.avatar === '') {
+      recipe.avatar = DEFAULT_RECIPE_AVATAR_URL;
+    }
+
     this.recipeListObservable.push(recipe).then(
         (_) => console.log('success.'), (err) => this.errorReportService.send(err.message));
   }
