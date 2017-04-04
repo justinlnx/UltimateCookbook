@@ -154,12 +154,13 @@ export class RecipeComponent implements OnInit, OnDestroy {
     this.location.back();
   }
 
-  public removeRecipe() {
+  public removeRecipe(): void {
     let dialogRef = this.mdDialog.open(DeleteRecipeDialogComponent);
+    let selected: string;
     dialogRef.afterClosed().subscribe((result) => {
-      console.log(result);
       if (result === 'Yes') {
         this.apiService.deleteRecipe(this.recipe);
+        this.location.back();
       }
     });
   }
