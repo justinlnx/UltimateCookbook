@@ -220,6 +220,8 @@ export class RecipeComponent implements OnInit, OnDestroy {
         let userId = currentUser.id;
 
         this.apiService.commentOnRecipe(this.recipe, {content, userId});
+
+        this.commentInputControl.setValue('');
       });
     }
   }
