@@ -6,7 +6,7 @@ import * as Rx from 'rxjs/Rx';
 
 import {ErrorReportService} from '../error-report';
 
-import {commentsUrl, PUBLIC_RECIPES_URL, userCartUrl, USERS_URL} from './api-urls';
+import {PUBLIC_RECIPES_URL, recipeUrl, userCartUrl, USERS_URL} from './api-urls';
 import {DEFAULT_RECIPE_AVATAR_URL} from './default-image-urls';
 import {Mapper} from './objects';
 import {PushRecipeSchema, Recipe, recipeReceiveScheme, RecipeSchema} from './objects';
@@ -236,13 +236,17 @@ export class ApiService {
     });
   }
 
-  public commentOnRecipe(recipe: Recipe, comment: PushCommentSchema): void {
+  public commentOnRecipe(recipe: Recipe, pushComment: PushCommentSchema): void {
     this.checkAuthState();
 
     let recipeId = recipe.$key;
 
-    this.af.database.list(commentsUrl(recipeId))
-        .push(comment)
+    let comments = recipe.comments;
+    let pushComments = comments.map((comment) => comment.asPushSchema());
+    pushComments.push(pushComment);
+
+    this.af.database.object(recipeUrl(recipeId))
+        .update({comments: pushComments})
         .then((_) => console.log('success.'), (err) => this.errorReportService.send(err.message));
   }
 
