@@ -1,6 +1,7 @@
 import {Location} from '@angular/common';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
+import {MdDialog} from '@angular/material';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
@@ -8,6 +9,8 @@ import {Subscription} from 'rxjs/Subscription';
 
 import {ApiService, ChatroomService, PushCartEntrySchema, Recipe, User} from '../api';
 import {ErrorReportService} from '../error-report';
+
+import {DeleteRecipeDialogComponent} from './delete-recipe-dialog.component';
 
 @Component({
   selector: 'recipe',
@@ -18,7 +21,7 @@ import {ErrorReportService} from '../error-report';
       </button>
       <span>{{recipe?.name}}</span>
       <span class="toolbar-spacer"></span>
-      <button md-icon-button class="delete-button">
+      <button md-icon-button *ngIf="isLoggedIn() && isOwner(recipe)" (click)="removeRecipe()">
         <md-icon>delete</md-icon>
       </button>
   </md-toolbar>
@@ -117,7 +120,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
       private route: ActivatedRoute, private apiService: ApiService,
       private domSanitizer: DomSanitizer, private router: Router,
       private errorReportService: ErrorReportService, public location: Location,
-      public chatroomService: ChatroomService) {}
+      public chatroomService: ChatroomService, private mdDialog: MdDialog) {}
 
   public ngOnInit(): void {
     this.route.params
@@ -149,6 +152,16 @@ export class RecipeComponent implements OnInit, OnDestroy {
 
   public onNavigatingBack() {
     this.location.back();
+  }
+
+  public removeRecipe() {
+    let dialogRef = this.mdDialog.open(DeleteRecipeDialogComponent);
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log(result);
+      if (result === 'Yes') {
+        this.apiService.deleteRecipe(this.recipe);
+      }
+    });
   }
 
   public likeRecipe(recipe: Recipe) {
