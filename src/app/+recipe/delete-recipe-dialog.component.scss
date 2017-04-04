@@ -1,6 +1,11 @@
 h1[md-dialog-title] {
-  text-align: center;
+  text-align: left;
 }
+
 div[md-dialog-content] {
-  text-align: center;
+  text-align: left;
+}
+
+button {
+  width: 50%;
 }
