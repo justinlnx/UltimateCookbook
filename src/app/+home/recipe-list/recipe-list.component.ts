@@ -1,7 +1,11 @@
 import {Component, OnInit} from '@angular/core';
+import {MdDialog} from '@angular/material';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs/Subscription';
+
 import {ApiService, Recipe} from '../../api';
+
+import {ChatroomNavigationWarningComponent} from './chatroom-navigation-warning.component';
 
 @Component({
   selector: 'recipe-list',
@@ -37,7 +41,7 @@ export class RecipeListComponent implements OnInit {
     this.filterRecipeList();
   }
 
-  constructor(private apiService: ApiService, public router: Router) {}
+  constructor(public apiService: ApiService, public router: Router, public mdDialog: MdDialog) {}
 
   public ngOnInit(): void {
     this.recipesSubscription = this.apiService.getAllRecipes().subscribe((recipes) => {
@@ -53,7 +57,11 @@ export class RecipeListComponent implements OnInit {
   }
 
   public onNavigateToChatrooms(): void {
-    this.router.navigateByUrl('/home/chatrooms');
+    if (!this.apiService.isLoggedIn()) {
+      this.mdDialog.open(ChatroomNavigationWarningComponent);
+    } else {
+      this.router.navigateByUrl('/home/chatrooms');
+    }
   }
 
   private filterRecipeList(): void {
