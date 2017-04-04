@@ -3,10 +3,13 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {AngularFire, FirebaseAuthState} from 'angularfire2';
+import {Subject} from 'rxjs/Subject';
 import {Subscription} from 'rxjs/Subscription';
 
 import {ApiService, PushRecipeSchema, Recipe} from '../api';
 import {ErrorReportService} from '../error-report';
+import {createSingleFileUploader, FileUploader} from '../file-upload';
+import {IndeterminateProgressBarService} from '../global-progress-bars';
 
 @Component({
   selector: 'add-recipe',
@@ -38,13 +41,17 @@ import {ErrorReportService} from '../error-report';
 
         <div formArrayName="stepDesc" class="step-description">
           <div class="step-desc-item" *ngFor="let step of stepsArray.controls; let i = index" [formGroupName]="i">
-            <button md-icon-button class="addPhoto" (click)="uploadPhoto()">
+            <button md-icon-button class="addPhoto" [class.selected]="stepPhotoSeleted(i)" (click)="onSelectPhoto(i)">
               <md-icon>add_a_photo</md-icon>
             </button>
             <md-input-container [dividerColor]="stepDescInputColor(i)" class="step-desc-input-container">
               <input mdInput placeholder="Step {{i+1}}" type="text" formControlName="stepDescription">
               <md-hint *ngIf="!validateStepDescNotEmpty(i)" id="empty-step-desc-warning">Recipe step description cannot be empty</md-hint>
             </md-input-container>
+            <hidden-file-selector [uploader]="imageUploader"
+                                  [clickEventSubject]="stepPhotoClickSubjects[i]"
+                                  (onSelected)="onStepPhotoSelected($event, i)">
+            </hidden-file-selector>
           </div>
         </div>
         <div>
@@ -72,6 +79,10 @@ import {ErrorReportService} from '../error-report';
 export class AddRecipeComponent implements OnInit, OnDestroy {
   public userLoggedIn: boolean = false;
   public addRecipeForm: FormGroup;
+  public imageUploader = createSingleFileUploader();
+
+  public stepPhotoClickSubjects: Subject<string>[] = [];
+
   private logInSubscription: Subscription;
   private authState: FirebaseAuthState;
 
@@ -79,10 +90,18 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
     return this.addRecipeForm.valid;
   }
 
+  get stepsArray(): FormArray {
+    return this.addRecipeForm.get('stepDesc') as FormArray;
+  }
+
+  get ingredientsArray(): FormArray {
+    return this.addRecipeForm.get('ingredientsList') as FormArray;
+  }
+
   constructor(
       private af: AngularFire, private errorReportService: ErrorReportService,
       private fb: FormBuilder, private apiService: ApiService, private router: Router,
-      public location: Location) {}
+      public location: Location, public loadingService: IndeterminateProgressBarService) {}
 
   public ngOnInit() {
     this.logInSubscription = this.af.auth.subscribe(
@@ -106,6 +125,7 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
   }
 
   public removeStep() {
+    this.stepPhotoClickSubjects.pop();
     this.stepsArray.removeAt(this.stepsArray.length - 1);
   }
 
@@ -163,8 +183,18 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  public uploadPhoto() {
-    console.log('add photo TODO');
+  public onSelectPhoto(index: number): void {
+    this.stepPhotoClickSubjects[index].next('open');
+  }
+
+  public stepPhotoSeleted(index: number): boolean {
+    let stepFormGroup = this.stepsArray.at(index);
+
+    return stepFormGroup.get('imageFileUrl').value !== '';
+  }
+
+  public onStepPhotoSelected(fileName: string, index: number): void {
+    this.stepsArray.at(index).get('imageFileUrl').setValue(fileName);
   }
 
   public onNavigatingBack() {
@@ -172,12 +202,35 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
   }
 
   public onAddRecipe() {
+    this.uploadImages();
+  }
+
+  private uploadImages(): void {
+    this.loadingService.addTask();
+
+    const self = this;
+
+    for (let item of this.imageUploader.queue) {
+      item.onComplete = (response: string) => {
+        self.updateDownloadableUrlForSteps(item.file.name, response);
+      }
+    }
+
+    this.imageUploader.uploadAll();
+
+    this.imageUploader.onCompleteAll = () => {
+      self.loadingService.taskFinished();
+      self.onUploadComplete();
+    }
+  }
+
+  private onUploadComplete(): void {
     let avatar = '';
     let name = this.addRecipeForm.value.recipeName;
     let description = this.addRecipeForm.value.recipeDescription;
     let authorId = this.authState.uid;
     let steps = this.stepsArray.controls.map((control) => {
-      return {content: control.value.stepDescription, imageSource: ''};
+      return {content: control.value.stepDescription, imageSource: control.value.imageFileUrl};
     });
     let ingredients = this.ingredientsArray.controls.map((control) => {
       return control.value.ingredientDescription;
@@ -196,12 +249,19 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
     }
   }
 
-  get stepsArray(): FormArray {
-    return this.addRecipeForm.get('stepDesc') as FormArray;
-  }
+  private updateDownloadableUrlForSteps(originalFilename, downloadableUrl): void {
+    console.log(originalFilename);
+    console.log(downloadableUrl);
+    for (let stepArrayIndex = 0; stepArrayIndex < this.stepsArray.length; stepArrayIndex++) {
+      let stepControlGroup = this.stepsArray.at(stepArrayIndex);
+      let imageControl = stepControlGroup.get('imageFileUrl');
 
-  get ingredientsArray(): FormArray {
-    return this.addRecipeForm.get('ingredientsList') as FormArray;
+      let imageFileName = imageControl.value;
+
+      if (imageFileName === originalFilename) {
+        imageControl.setValue(downloadableUrl);
+      }
+    }
   }
 
   private inputColor(valid: boolean): string {
@@ -219,12 +279,14 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
         this.initIngredient(),
       ])
     });
+
+    this.stepPhotoClickSubjects.push(new Subject<string>());
   }
 
   private initStep() {
-    return this.fb.group({
-      stepDescription: ['', [Validators.required]],
-    });
+    this.stepPhotoClickSubjects.push(new Subject<string>());
+
+    return this.fb.group({stepDescription: ['', [Validators.required]], imageFileUrl: ['']});
   }
 
   private initIngredient() {

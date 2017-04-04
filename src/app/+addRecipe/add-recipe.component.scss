@@ -17,6 +17,10 @@ form {
 
   .addPhoto {
     margin-left: 0px;
+
+    &.selected {
+      color: map-get($mat-pink , 500);
+    }
   }
 
   .step-desc-item {
