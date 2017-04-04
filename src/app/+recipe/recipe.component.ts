@@ -13,12 +13,14 @@ import {ErrorReportService} from '../error-report';
   selector: 'recipe',
   template: `
   <md-toolbar class="top-toolbar" color="primary">
-    <span class = "topBar">
-      <button md-icon-button class="back-button" (click)="onNavigatingBack()">
+    <button md-icon-button class="back-button" (click)="onNavigatingBack()">
         <md-icon>arrow_back</md-icon>
       </button>
       <span>{{recipe?.name}}</span>
-    </span>
+      <span class="toolbar-spacer"></span>
+      <button md-icon-button class="delete-button">
+        <md-icon>delete</md-icon>
+      </button>
   </md-toolbar>
 
   <div class="page-content" *ngIf="!!recipe">
