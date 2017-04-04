@@ -32,3 +32,19 @@ form {
     }
   }
 }
+
+.upload-line {
+  display: flex;
+
+  button {
+    margin-right: 12px;
+  }
+
+  .avatar-file-name {
+    flex: 1 1 auto;
+
+    input {
+      color: black !important;
+    }
+  }
+}

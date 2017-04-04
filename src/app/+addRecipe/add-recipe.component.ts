@@ -29,6 +29,18 @@ import {IndeterminateProgressBarService} from '../global-progress-bars';
     <login-warning *ngIf="!userLoggedIn"></login-warning>
     <div class="add-field" *ngIf="userLoggedIn">
       <form class="recipeForm" [formGroup]="addRecipeForm" novalidate>
+        <div class="upload-line">
+          <button md-mini-fab (click)="onSelectAvatar()">
+            <md-icon>file_upload</md-icon>
+          </button>
+          <md-input-container class="avatar-file-name">
+            <input mdInput type="text" disabled [value]="avatarUploadFileName" placeholder="Recipe avatar">
+          </md-input-container>
+          <hidden-file-selector [uploader]="imageUploader"
+                                [clickEventSubject]="avatarClickSubject"
+                                (onSelected)="onAvatarSelected($event)">
+          </hidden-file-selector>
+        </div>
         <md-input-container md-no-float [dividerColor]="titleInputColor()">
             <input mdInput placeholder="Title" type="text" formControlName="recipeName">
             <md-hint *ngIf="!validateTitleNotEmpty()" id="empty-title-warning">Recipe title cannot be empty</md-hint>
@@ -81,6 +93,9 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
   public addRecipeForm: FormGroup;
   public imageUploader = createSingleFileUploader();
 
+  public avatarUploadFileName = '';
+
+  public avatarClickSubject = new Subject<string>();
   public stepPhotoClickSubjects: Subject<string>[] = [];
 
   private logInSubscription: Subscription;
@@ -183,6 +198,14 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
     return true;
   }
 
+  public onSelectAvatar(): void {
+    this.avatarClickSubject.next('open');
+  }
+
+  public onAvatarSelected(fileName: string): void {
+    this.avatarUploadFileName = fileName;
+  }
+
   public onSelectPhoto(index: number): void {
     this.stepPhotoClickSubjects[index].next('open');
   }
@@ -213,6 +236,7 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
     for (let item of this.imageUploader.queue) {
       item.onComplete = (response: string) => {
         self.updateDownloadableUrlForSteps(item.file.name, response);
+        self.updateAvatarUrl(item.file.name, response);
       }
     }
 
@@ -225,7 +249,7 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
   }
 
   private onUploadComplete(): void {
-    let avatar = '';
+    let avatar = this.avatarUploadFileName;
     let name = this.addRecipeForm.value.recipeName;
     let description = this.addRecipeForm.value.recipeDescription;
     let authorId = this.authState.uid;
@@ -250,8 +274,6 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
   }
 
   private updateDownloadableUrlForSteps(originalFilename, downloadableUrl): void {
-    console.log(originalFilename);
-    console.log(downloadableUrl);
     for (let stepArrayIndex = 0; stepArrayIndex < this.stepsArray.length; stepArrayIndex++) {
       let stepControlGroup = this.stepsArray.at(stepArrayIndex);
       let imageControl = stepControlGroup.get('imageFileUrl');
@@ -261,6 +283,12 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
       if (imageFileName === originalFilename) {
         imageControl.setValue(downloadableUrl);
       }
+    }
+  }
+
+  private updateAvatarUrl(originalFilename, downloadableUrl): void {
+    if (originalFilename === this.avatarUploadFileName) {
+      this.avatarUploadFileName = downloadableUrl;
     }
   }
 
