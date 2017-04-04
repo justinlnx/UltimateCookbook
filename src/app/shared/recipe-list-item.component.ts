@@ -18,9 +18,14 @@ import {ApiService, Recipe} from '../api';
               (click)="likeRecipe(recipe); $event.stopPropagation()">
         <md-icon [class.fav-button]="isLiked(recipe)">favorite</md-icon>
       </button>
-      <md-chip-list *ngIf="isOwner(recipe)" [selectable]="false">
-        <md-chip>Owned</md-chip>
-      </md-chip-list>
+      <div *ngIf="isOwner(recipe)">
+        <button md-icon-button (click)="deleteRecipe(recipe)">
+          <md-icon class="material-icons">delete</md-icon>
+        </button>
+        <md-chip-list [selectable]="false">
+          <md-chip>Owned</md-chip>
+        </md-chip-list>
+      </div>
     </div>
   </md-list-item>
   <md-divider></md-divider>`,
