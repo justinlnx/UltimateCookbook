@@ -1,5 +1,4 @@
 import {Component} from '@angular/core';
-import {MdDialogRef} from '@angular/material';
 
 @Component({
   selector: 'delete-recipe-dialog',
@@ -11,7 +10,7 @@ import {MdDialogRef} from '@angular/material';
         <button md-button (click)="dialogRef.close('Cancel')">Cancel</button>
     </div>
   `,
+  styleUrls: ['./delete-recipe-dialog.component.scss']
 })
 export class DeleteRecipeDialogComponent {
-  constructor(public dialogRef: MdDialogRef<DeleteRecipeDialogComponent>) {}
 }
