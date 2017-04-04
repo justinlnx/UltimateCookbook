@@ -1,5 +1,6 @@
 import {Location} from '@angular/common';
 import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormControl, Validators} from '@angular/forms';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
@@ -85,12 +86,13 @@ import {ErrorReportService} from '../error-report';
         </div>
         <md-card-content *ngIf="isLoggedIn() && !isOwner(recipe)">
           <div>
-            <md-input-container>
-              <input mdInput placeholder="Write a comment...">
+            <md-input-container [dividerColor]="commentInputColor()">
+              <input mdInput placeholder="Write a comment..." [formControl]="commentInputControl">
+              <md-hint *ngIf="!validCommentInput()">Comment is empty.</md-hint>
             </md-input-container>
           </div>
           <md-card-actions>
-            <button md-raised-button>Add</button>
+            <button md-raised-button (click)="onPostComment()">Add</button>
           </md-card-actions>
         </md-card-content>
       </md-card-content>
@@ -103,6 +105,8 @@ export class RecipeComponent implements OnInit, OnDestroy {
   public recipe: Recipe;
   public author: User;
   public trustedImageUrl: SafeResourceUrl;
+
+  public commentInputControl = new FormControl('', [Validators.required]);
 
   private chatroomIdObservable: Observable<string>;
   private recipeSubscription: Subscription;
@@ -199,5 +203,24 @@ export class RecipeComponent implements OnInit, OnDestroy {
 
   public getUserInfoObservable(userId: string): Observable<User> {
     return this.apiService.getUserInfoObservable(userId);
+  }
+
+  public commentInputColor(): string {
+    return this.validCommentInput() ? 'primary' : 'warn';
+  }
+
+  public validCommentInput(): boolean {
+    return this.commentInputControl.valid;
+  }
+
+  public onPostComment(): void {
+    if (this.commentInputControl.valid) {
+      this.apiService.getCurrentUserObservable().first().subscribe((currentUser) => {
+        let content = this.commentInputControl.value;
+        let userId = currentUser.id;
+
+        this.apiService.commentOnRecipe(this.recipe, {content, userId});
+      });
+    }
   }
 }
