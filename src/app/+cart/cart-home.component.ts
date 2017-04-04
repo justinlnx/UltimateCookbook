@@ -1,5 +1,4 @@
 import {Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {FormControl} from '@angular/forms';
 import {Router} from '@angular/router';
 import {MapsAPILoader} from 'angular2-google-maps/core';
 import {Observable} from 'rxjs/Observable';
@@ -52,7 +51,6 @@ interface NearByStore {
 export class CartHomeComponent implements OnInit, OnDestroy {
   public lat: number;
   public lng: number;
-  public searchControl: FormControl;
   public zoom: number;
   public map: any;
   public nearByStores: NearByStore[] = [];
@@ -76,16 +74,15 @@ export class CartHomeComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     this.cartObservable = this.apiService.getCartObservableOfCurrentUser().first();
+    const defaultLat = 49.246292;
+    const defaultLng = -123.116226;
+    const defaultZoom = 12;
+    this.zoom = defaultZoom;
+    this.lat = defaultLat;
+    this.lng = defaultLng;
     this.loginStatusSubscription = this.apiService.getLoginObservable().subscribe((status) => {
       this.isLoggedIn = status;
       if (this.isLoggedIn) {
-        const defaultLat = 49.246292;
-        const defaultLng = -123.116226;
-        const defaultZoom = 12;
-        this.zoom = defaultZoom;
-        this.lat = defaultLat;
-        this.lng = defaultLng;
-        this.searchControl = new FormControl();
         this.getAllStores();
       }
     });
