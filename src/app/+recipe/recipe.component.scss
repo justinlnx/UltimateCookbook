@@ -24,6 +24,12 @@ md-input-container {
 .description {
   line-height: 200%;
 }
+@import '~@angular/material/core/theming/theming';
+@import 'src/styles/styles';
+
+md-hint {
+  color: mat-color($recipes-app-warn);
+}
 
 .fav-button {
     color: map-get($mat-red, 600);
@@ -43,11 +49,6 @@ md-input-container {
 .name {
   white-space: normal !important;
   font-size: 16px !important;
-}
-
-.comment {
-  color: #616161;
-  font-size: 14px !important;
 }
 
 .textarea {
