@@ -4,12 +4,13 @@ import {RouterModule} from '@angular/router';
 
 import {SharedModule} from '../shared';
 
+import {CommentListItemComponent} from './comment-list-item.component';
 import {RecipeComponent} from './recipe.component';
 import {routes} from './recipe.routes';
 
 @NgModule({
   imports: [SharedModule, RouterModule.forChild(routes)],
-  declarations: [RecipeComponent],
+  declarations: [RecipeComponent, CommentListItemComponent],
 })
 export class RecipeModule {
 }

@@ -16,11 +16,11 @@ import {ErrorReportService} from '../error-report';
       <button md-icon-button class="back-button" (click)="onNavigatingBack()">
         <md-icon>arrow_back</md-icon>
       </button>
-      <span>{{recipe.name}}</span>
+      <span>{{recipe?.name}}</span>
     </span>
   </md-toolbar>
 
-  <div class="page-content">
+  <div class="page-content" *ngIf="!!recipe">
     <md-card>
       <md-card-title>{{recipe.name}}</md-card-title>
       <md-card-content>
@@ -31,7 +31,7 @@ import {ErrorReportService} from '../error-report';
               <p md-line class = "name">{{author?.name}}</p>
             </div>
           </md-list-item>
-          <p class="description">{{recipe?.description}}</p>
+          <p class="description">{{recipe.description}}</p>
         </md-list>
         <button md-icon-button  *ngIf="isLoggedIn() && !isOwner(recipe)" (click)="likeRecipe(recipe)">
           <md-icon>
@@ -49,7 +49,7 @@ import {ErrorReportService} from '../error-report';
     <md-card>
       <md-card-title>Ingredients</md-card-title>
       <md-card-content>
-        <md-list *ngFor="let ingredient of recipe?.ingredients">
+        <md-list *ngFor="let ingredient of recipe.ingredients">
           <p>{{ingredient}}</p>
         </md-list>
       </md-card-content>
@@ -60,7 +60,7 @@ import {ErrorReportService} from '../error-report';
       </md-card-actions>
     </md-card>
 
-    <md-card *ngFor="let step of recipe?.steps; let i = index">
+    <md-card *ngFor="let step of recipe.steps; let i = index">
       <md-card-title>Steps {{i+1}}</md-card-title>
       <md-card-content>
         <p>{{step.content}}</p>
@@ -73,16 +73,12 @@ import {ErrorReportService} from '../error-report';
     <md-card>
       <md-card-title>Comments</md-card-title>
       <md-card-content>
-        <div *ngFor="let comment of recipe?.comments">
+        <div *ngFor="let comment of recipe.comments">
             <md-card-content>
               <md-list>
-                <md-list-item class="md-2-line">
-                  <img md-card-avatar class="avatar" [src]="recipe.avatar">
-                  <div class="mat-list-text">
-                    <p md-line class="name"> Shiba Inu </p>
-                    <p class="comment">{{comment.content}}</p>
-                  </div>
-                </md-list-item>
+                <comment-list-item [comment]="comment.content"
+                                   [userObservable]="getUserInfoObservable(comment.userId)">
+                </comment-list-item>
               </md-list>
               <md-divider></md-divider>
             </md-card-content>
@@ -125,16 +121,18 @@ export class RecipeComponent implements OnInit, OnDestroy {
             console.log(recipe);
             this.recipe = recipe;
 
-            if (this.apiService.isLoggedIn()) {
-              this.chatroomService.getCurrentUserChatroomIdObservable(recipe.authorId)
-                  .subscribe((chatroomIdObservable) => {
-                    this.chatroomIdObservable = chatroomIdObservable;
-                  });
-            }
+            if (recipe) {
+              if (this.apiService.isLoggedIn()) {
+                this.chatroomService.getCurrentUserChatroomIdObservable(recipe.authorId)
+                    .subscribe((chatroomIdObservable) => {
+                      this.chatroomIdObservable = chatroomIdObservable;
+                    });
+              }
 
-            this.apiService.getUserInfoObservable(recipe.authorId).subscribe((user) => {
-              this.author = user;
-            });
+              this.apiService.getUserInfoObservable(recipe.authorId).subscribe((user) => {
+                this.author = user;
+              });
+            }
           }, (err) => this.errorReportService.send(err));
         });
   }
@@ -197,5 +195,9 @@ export class RecipeComponent implements OnInit, OnDestroy {
         this.chatroomService.createNewChatroom(this.recipe.authorId);
       }
     });
+  }
+
+  public getUserInfoObservable(userId: string): Observable<User> {
+    return this.apiService.getUserInfoObservable(userId);
   }
 }
