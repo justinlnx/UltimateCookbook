@@ -96,7 +96,7 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
   public avatarUploadFileName = '';
 
   public avatarClickSubject = new Subject<string>();
-  public stepPhotoClickSubjects: Subject<string>[] = [];
+  public stepPhotoClickSubjects: Array<Subject<string>> = [];
 
   private logInSubscription: Subscription;
   private authState: FirebaseAuthState;
@@ -237,7 +237,7 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
       item.onComplete = (response: string) => {
         self.updateDownloadableUrlForSteps(item.file.name, response);
         self.updateAvatarUrl(item.file.name, response);
-      }
+      };
     }
 
     this.imageUploader.uploadAll();
@@ -245,7 +245,7 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
     this.imageUploader.onCompleteAll = () => {
       self.loadingService.taskFinished();
       self.onUploadComplete();
-    }
+    };
   }
 
   private onUploadComplete(): void {
