@@ -23,12 +23,15 @@ import {AppState, InternalStateType} from './app.service';
  */
 import {ENV_PROVIDERS} from './environment';
 import {ErrorReportComponent, ErrorReportService} from './error-report';
+import {IndeterminateProgressBarComponent, IndeterminateProgressBarService} from './global-progress-bars';
 import {NoContentComponent} from './no-content';
 import {ShiftBottomNavigationComponent} from './shift-bottom-navigation';
 
 // Application wide providers
-const APP_PROVIDERS =
-    [...APP_RESOLVER_PROVIDERS, AppState, ApiService, ChatroomService, ErrorReportService];
+const APP_PROVIDERS = [
+  ...APP_RESOLVER_PROVIDERS, AppState, ApiService, ChatroomService, ErrorReportService,
+  IndeterminateProgressBarService
+];
 
 type StoreType = {
   state: InternalStateType,
@@ -53,7 +56,8 @@ export const firebaseConfig = {
     AppComponent,
     NoContentComponent,
     ErrorReportComponent,
-    ShiftBottomNavigationComponent
+    ShiftBottomNavigationComponent,
+    IndeterminateProgressBarComponent
   ],
   imports: [ // import Angular's modules
     BrowserModule,

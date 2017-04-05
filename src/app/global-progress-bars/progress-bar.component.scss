@@ -1,0 +1,13 @@
+@import '~@angular/material/core/theming/theming';
+@import 'src/styles/styles.scss';
+
+.progress-bar {
+  position: fixed;
+  top: $toolbar-height;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  z-index: 100;
+}
