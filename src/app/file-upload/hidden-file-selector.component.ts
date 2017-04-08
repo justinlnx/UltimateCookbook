@@ -1,12 +1,13 @@
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {Subject} from 'rxjs/Subject';
 
+import {downscaleImageFile, fileTooLargeForUpload} from './compression-helpers';
 import {FileUploader} from './uploader-factory';
 
 @Component({
   selector: 'hidden-file-selector',
   template: `
-  <input #uploadInput type="file" ng2FileSelect [uploader]="uploader" (change)="onFileChange()">
+  <input #uploadInput type="file" (change)="onFileChange()">
   `,
   styleUrls: ['./hidden-file-selector.component.scss']
 })
@@ -29,8 +30,21 @@ export class HiddenFileSelectorComponent implements OnInit {
 
     if (!!files && files.length > 0) {
       let selectedFile = files[0];
-      this.onSelected.emit(selectedFile.name);
+
+      if (fileTooLargeForUpload(selectedFile)) {
+        downscaleImageFile(selectedFile).then((file) => {
+          this.onCompleteCompression(file);
+        });
+      } else {
+        this.onCompleteCompression(selectedFile);
+      }
     }
+  }
+
+  private onCompleteCompression(file: File): void {
+    this.uploader.addToQueue([file], this.uploader.options);
+
+    this.onSelected.emit(file.name);
   }
 
   private openFileInputSelector(): void {
