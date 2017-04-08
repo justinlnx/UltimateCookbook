@@ -101,10 +101,6 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
   private logInSubscription: Subscription;
   private authState: FirebaseAuthState;
 
-  get validAddRecipeForm(): boolean {
-    return this.addRecipeForm.valid;
-  }
-
   get stepsArray(): FormArray {
     return this.addRecipeForm.get('stepDesc') as FormArray;
   }
@@ -133,6 +129,10 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     this.logInSubscription.unsubscribe();
+  }
+
+  public validAddRecipeForm(): boolean {
+    return this.addRecipeForm.valid;
   }
 
   public addStep() {
@@ -225,7 +225,11 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
   }
 
   public onAddRecipe() {
-    this.uploadImages();
+    if (this.validAddRecipeForm()) {
+      this.uploadImages();
+    } else {
+      this.errorReportService.send('Please fill in the required attributes');
+    }
   }
 
   private uploadImages(): void {
