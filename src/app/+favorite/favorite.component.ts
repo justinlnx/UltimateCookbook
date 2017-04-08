@@ -13,7 +13,7 @@ import {ApiService, Recipe} from '../api';
   <div class="page-content">
     <login-warning *ngIf="!isLoggedIn"></login-warning>
     <md-list *ngIf="isLoggedIn">
-      <div class="warning-area" *ngIf="(recipeList | async)?.length==0">
+      <div class="warning-area" *ngIf="(recipeList | async)?.length === 0">
         <md-icon>favorite</md-icon>
           <div>You currently do not have any favorite recipes.</div>
       </div>

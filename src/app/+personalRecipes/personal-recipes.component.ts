@@ -14,7 +14,7 @@ import {ApiService, Recipe} from '../api';
   <div class="page-content">
     <login-warning *ngIf="!isLoggedIn"></login-warning>
     <div *ngIf="isLoggedIn">
-      <div class="warning-area" *ngIf="(ownedRecipeList | async)?.length==0">
+      <div class="warning-area" *ngIf="(ownedRecipeList | async)?.length === 0">
         <md-icon>local_library</md-icon>
           <div>You currently do not own any recipes.</div>
       </div>
