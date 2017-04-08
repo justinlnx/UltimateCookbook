@@ -229,6 +229,11 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
   }
 
   private uploadImages(): void {
+    if (this.imageUploader.queue.length === 0) {
+      this.onUploadComplete();
+      return;
+    }
+
     this.loadingService.addTask();
 
     const self = this;
