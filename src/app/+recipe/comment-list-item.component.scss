@@ -1,4 +1,10 @@
 .comment {
   color: #616161;
   font-size: 14px !important;
+
+  white-space: normal !important;
+
+  max-height: 56px;
+
+  overflow-y: scroll;
 }
