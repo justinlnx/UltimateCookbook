@@ -17,34 +17,34 @@ interface NearByStore {
 @Component({
   selector: 'cart-home',
   template: `
-    <md-toolbar class="top-toolbar" color="primary">
-      <span>Cart</span>
-    </md-toolbar>
-   <div class="page-content">
-     <login-warning *ngIf="!isLoggedIn"></login-warning>
-    </div>
-    <div class="page-content">
-        <div id="map"></div>
-        <md-tab-group *ngIf="isLoggedIn">
-            <md-tab class="list-label" label="LIST">
-              <cart-item *ngFor="let cartEntry of cartObservable | async"
-                          [cartEntry]="cartEntry" onclick="a()">
-              </cart-item>
-            </md-tab>
-            <md-tab class="location-label" label="LOCATION">
-              <md-card *ngFor="let nearByStore of nearByStores" (click)="onNavigateToStoreMap(nearByStore)">
-                <md-card-title>{{nearByStore.name}}</md-card-title>
-                <md-card-content>
-                <div>
-                  <p>Location: {{nearByStore.location}}</p>
-                  <p>Rating: {{nearByStore.rating}}/5</p>
-                </div>
-                </md-card-content>
-              </md-card>
-            </md-tab>
-        </md-tab-group>
-    </div>
-    `,
+  <md-toolbar class="top-toolbar" color="primary">
+    <span>Cart</span>
+  </md-toolbar>
+  <div class="page-content">
+    <login-warning *ngIf="!isLoggedIn"></login-warning>
+    <div id="map"></div>
+    <md-tab-group *ngIf="isLoggedIn">
+      <md-tab class="list-label" label="LIST">
+        <div class="warning-area" *ngIf="(cartObservable | async)?.length === 0">
+          <md-icon>shopping_cart</md-icon>
+          <div>You currently do not have any cart entries.</div>
+        </div>
+        <cart-item *ngFor="let cartEntry of cartObservable | async" [cartEntry]="cartEntry" onclick="a()"></cart-item>
+      </md-tab>
+      <md-tab class="location-label" label="LOCATION">
+        <md-card *ngFor="let nearByStore of nearByStores" (click)="onNavigateToStoreMap(nearByStore)">
+          <md-card-title>{{nearByStore.name}}</md-card-title>
+          <md-card-content>
+            <div>
+              <p>Location: {{nearByStore.location}}</p>
+              <p>Rating: {{nearByStore.rating}}/5</p>
+            </div>
+          </md-card-content>
+        </md-card>
+      </md-tab>
+    </md-tab-group>
+  </div>
+  `,
   styleUrls: ['./cart-home.component.scss']
 })
 

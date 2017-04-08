@@ -55,7 +55,7 @@ export function downscaleImageFile(file: File): Promise<File> {
           resolve(resizedFile);
         }, 'image/jpeg', 0.95);
       };
-      image.src = (<any>readerEvent).target.result;
+      image.src = (<any> readerEvent).target.result;
     };
     reader.readAsDataURL(file);
   });
