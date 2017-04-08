@@ -21,7 +21,7 @@ import {DeleteRecipeDialogComponent} from './delete-recipe-dialog.component';
       </button>
       <span>{{recipe?.name}}</span>
       <span class="toolbar-spacer"></span>
-      <button md-icon-button *ngIf="isLoggedIn() && isOwner(recipe)" (click)="removeRecipe()">
+      <button md-icon-button *ngIf="isLoggedIn() && !!recipe && isOwner(recipe)" (click)="removeRecipe()">
         <md-icon>delete</md-icon>
       </button>
   </md-toolbar>
