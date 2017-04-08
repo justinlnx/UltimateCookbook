@@ -7,8 +7,8 @@ export function fileTooLargeForUpload(file: File): boolean {
 }
 
 function resize(width: number, height: number): {width: number, height: number} {
-  var MAX_WIDTH = DEFAULT_IMAGE_UPLOAD_WIDTH;
-  var MAX_HEIGHT = DEFAULT_IMAGE_UPLOAD_HEIGHT;
+  let MAX_WIDTH = DEFAULT_IMAGE_UPLOAD_WIDTH;
+  let MAX_HEIGHT = DEFAULT_IMAGE_UPLOAD_HEIGHT;
 
   if (width > height) {
     if (width > MAX_WIDTH) {
@@ -31,13 +31,12 @@ export function downscaleImageFile(file: File): Promise<File> {
 
   return new Promise((resolve: (file: File) => void, reject: (reason: string) => void) => {
 
-    var reader = new FileReader();
-    reader.onload = function(readerEvent) {
-      var image = new Image();
-      image.onload = function(imageEvent) {
-        var canvas = document.createElement('canvas');
-        var canvasContext = canvas.getContext('2d');
-        canvasContext.drawImage(image, 0, 0);
+    let reader = new FileReader();
+    reader.onload = (readerEvent) => {
+      let image = new Image();
+      image.onload = (imageEvent) => {
+        let canvas = document.createElement('canvas');
+        let canvasContext = canvas.getContext('2d');
 
         let newSize = resize(image.width, image.height);
         let newWidth = newSize.width;
@@ -46,11 +45,9 @@ export function downscaleImageFile(file: File): Promise<File> {
         canvas.width = newWidth;
         canvas.height = newHeight;
 
-        var canvasContext = canvas.getContext('2d');
-
         canvasContext.drawImage(image, 0, 0, newWidth, newHeight);
 
-        var resizedImage = canvas.toBlob((blob) => {
+        let resizedImage = canvas.toBlob((blob) => {
           let newFileName = `resized${originalFileName}`;
           let resizedFile =
               new File([blob], newFileName, {type: contentType, lastModified: Date.now()});
