@@ -78,6 +78,7 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
         self.user.avatar = response;
         self.apiService.updateUserInfo(self.user);
 
+        this.clearSelection();
         this.loading = false;
       };
     }
@@ -85,5 +86,9 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
 
   private updateAvatarSafeUrl(user: User) {
     this.avatarUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(user.avatar);
+  }
+
+  private clearSelection(): void {
+    this.avatarUploadInput.nativeElement.value = '';
   }
 }
