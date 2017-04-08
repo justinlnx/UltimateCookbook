@@ -25,7 +25,7 @@ interface NearByStore {
     <div id="map"></div>
     <md-tab-group *ngIf="isLoggedIn">
       <md-tab class="list-label" label="LIST">
-        <div class="warning-area" *ngIf='(cartObservable | async)?.length==0'>
+        <div class="warning-area" *ngIf="(cartObservable | async)?.length==0">
           <md-icon>shopping_cart</md-icon>
           <div>You currently do not have any cart entries.</div>
         </div>
