@@ -85,8 +85,8 @@ export class ApiService {
             (state) => {
               let id = state.uid;
 
-              let newUser: PushUserSchema =
-                  {id, name, avatar: avatarPath, recipes: [], likedRecipes: [], cart: []};
+              let newUser: PushUserSchema = {
+                id, name, avatar: avatarPath, recipes: [], likedRecipes: [], cart: []};
 
               this.userListObservable.push(newUser).then(
                   (_) => console.log(`User created: ${email}, ${password}, ${name}, ${avatarPath}`),
