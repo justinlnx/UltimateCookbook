@@ -29,7 +29,7 @@ interface NearByStore {
           <md-icon>shopping_cart</md-icon>
           <div>You currently do not have any cart entries.</div>
         </div>
-        <cart-item *ngFor="let cartEntry of cartObservable | async" [cartEntry]="cartEntry" onclick="a()"></cart-item>
+        <cart-item *ngFor="let cartEntry of cartObservable | async" [cartEntry]="cartEntry"></cart-item>
       </md-tab>
       <md-tab class="location-label" label="LOCATION">
         <md-card *ngFor="let nearByStore of nearByStores" (click)="onNavigateToStoreMap(nearByStore)">
