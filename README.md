@@ -1,9 +1,10 @@
-# Group 403 Forbidden Demo website
+# Group 403 Forbidden Project
 ## CMPT 470
 
 ### Quick start
 
 # Table of Contents
+* [Deployed Server](#deployed-server)
 * [File Structure](#file-structure)
 * [Getting Started](#getting-started)
     * [Dependencies](#dependencies)
@@ -17,6 +18,14 @@
 * [Frequently asked questions](#frequently-asked-questions)
 * [License](#license)
 
+## Deployed Server
+https://ec2-35-162-38-217.us-west-2.compute.amazonaws.com/#/home/explore
+
+Note: Google Map API services require https. However, we currently do have own a certificate for https. Proceed in unsafe mode to view details.
+
+http://ec2-35-162-38-217.us-west-2.compute.amazonaws.com/#/home/explore
+
+Supports all features but Google Map API service. 
 
 ## File Structure
 We use the component approach in our starter. This is the new standard for developing Angular apps and a great way to ensure maintainable code by encapsulation of our behavior logic. A component is basically a self contained app usually in a single file or a folder with each concern as a file: style, template, specs, e2e, and component class. Here's how it looks:
