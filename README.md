@@ -1,5 +1,5 @@
 # Group 403 Forbidden Project
-## CMPT 470
+## CMPT 470 Web-based Information Systems
 
 ### Quick start
 
